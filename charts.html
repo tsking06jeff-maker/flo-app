@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flo — Spending Charts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --sky: #38bdf8; --sky-dark: #0ea5e9; --sky-light: #bae6fd;
+      --sky-pale: #f0faff; --text: #0f172a; --muted: #64748b;
+      --border: #e2e8f0; --bg: #f8fafc;
+    }
+    body { background: var(--bg); color: var(--text); font-family: 'Sora', sans-serif; min-height: 100vh; }
+
+    .sidebar { position: fixed; top: 0; left: 0; width: 224px; height: 100vh; background: white; border-right: 1px solid var(--border); padding: 1.5rem 1rem; display: flex; flex-direction: column; z-index: 10; }
+    .sidebar-logo { padding: 0.25rem 0.5rem 1.75rem; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; font-size: 0.85rem; font-weight: 500; color: var(--muted); cursor: pointer; transition: all 0.15s; text-decoration: none; margin-bottom: 2px; }
+    .nav-item:hover, .nav-item.active { background: var(--sky-pale); color: var(--sky-dark); }
+    .nav-icon { font-size: 0.95rem; width: 18px; text-align: center; }
+    .sidebar-bottom { margin-top: auto; }
+    .user-pill { display: flex; align-items: center; gap: 9px; padding: 10px 12px; border-radius: 10px; background: var(--sky-pale); }
+    .user-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--sky-dark); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.72rem; font-weight: 600; flex-shrink: 0; }
+    .user-info { flex: 1; overflow: hidden; }
+    .user-email { font-size: 0.73rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .user-label { font-size: 0.68rem; color: #94a3b8; }
+    .sign-out-btn { background: none; border: none; color: #cbd5e1; cursor: pointer; font-size: 0.9rem; padding: 2px 4px; }
+
+    .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid var(--border); padding: 8px 0 max(8px, env(safe-area-inset-bottom)); z-index: 100; justify-content: space-around; }
+    .bottom-nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 16px; border-radius: 10px; cursor: pointer; color: var(--muted); font-size: 0.65rem; font-weight: 500; border: none; background: none; font-family: 'Sora', sans-serif; }
+    .bottom-nav-item.active { color: var(--sky-dark); }
+    .bottom-nav-icon { font-size: 1.2rem; }
+    .mobile-topbar { display: none; position: fixed; top: 0; left: 0; right: 0; background: white; border-bottom: 1px solid var(--border); padding: 12px 1.25rem; z-index: 10; align-items: center; justify-content: space-between; }
+
+    .main { margin-left: 224px; padding: 2rem 2.5rem 3rem; }
+    .page-header { margin-bottom: 2rem; }
+    .page-header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; }
+    .page-header p { color: var(--muted); font-size: 0.85rem; margin-top: 3px; }
+
+    .tab-bar { display: flex; gap: 6px; margin-bottom: 1.75rem; background: white; border: 1px solid var(--border); border-radius: 12px; padding: 5px; width: fit-content; }
+    .tab { padding: 7px 18px; border-radius: 8px; font-size: 0.83rem; font-weight: 500; cursor: pointer; border: none; background: none; font-family: 'Sora', sans-serif; color: var(--muted); transition: all 0.15s; }
+    .tab.active { background: var(--sky-dark); color: white; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+    .grid-full { margin-bottom: 1.25rem; }
+    .card { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+    .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+    .card-title { font-size: 0.85rem; font-weight: 600; }
+    .card-sub { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+
+    .chart-wrap { position: relative; height: 260px; }
+    .chart-wrap-sm { position: relative; height: 220px; }
+
+    .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 1rem; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: var(--muted); }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+    .txn-full-list { display: flex; flex-direction: column; gap: 6px; }
+    .txn-row { display: flex; align-items: center; justify-content: space-between; padding: 11px 14px; background: var(--sky-pale); border: 1px solid var(--border); border-radius: 10px; }
+    .txn-left { display: flex; align-items: center; gap: 10px; }
+    .txn-cat-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .txn-note { font-size: 0.85rem; font-weight: 500; }
+    .txn-meta { font-size: 0.73rem; color: var(--muted); margin-top: 2px; }
+    .txn-amt { font-size: 0.95rem; font-weight: 600; color: var(--sky-dark); white-space: nowrap; }
+
+    .empty-state { text-align: center; padding: 3rem 1rem; color: var(--muted); font-size: 0.88rem; }
+
+    .filter-row { display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; }
+    .filter-btn { padding: 6px 14px; border-radius: 99px; border: 1px solid var(--border); background: white; color: var(--muted); font-size: 0.78rem; font-family: 'Sora', sans-serif; cursor: pointer; transition: all 0.15s; }
+    .filter-btn.active { background: var(--sky-dark); color: white; border-color: var(--sky-dark); }
+
+    .summary-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem; }
+    .summary-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 1rem; }
+    .summary-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 6px; }
+    .summary-value { font-size: 1.4rem; font-weight: 600; letter-spacing: -0.02em; }
+    .summary-value.sky { color: var(--sky-dark); }
+    .summary-value.green { color: #16a34a; }
+    .summary-value.red { color: #dc2626; }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .bottom-nav { display: flex; }
+      .mobile-topbar { display: flex; }
+      .main { margin-left: 0; padding: 5rem 1rem 6rem; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .summary-row { grid-template-columns: 1fr 1fr; }
+      .tab-bar { width: 100%; justify-content: stretch; }
+      .tab { flex: 1; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <svg width="96" height="34" viewBox="0 0 96 34">
+        <rect x="0" y="0" width="34" height="34" rx="17" fill="#0ea5e9"/>
+        <path d="M7 17 Q11 11 16 17 Q21 23 25 17" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <text x="42" y="23" font-family="'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="300" fill="#0f172a" letter-spacing="2.5">FLO</text>
+      </svg>
+    </div>
+    <a class="nav-item" onclick="window.location.href='/index.html'"><span class="nav-icon">◉</span> Dashboard</a>
+    <a class="nav-item active"><span class="nav-icon">📊</span> Charts</a>
+    <a class="nav-item" onclick="window.location.href='/setup.html'"><span class="nav-icon">⚙</span> Edit budget</a>
+    <a class="nav-item" onclick="window.location.href='/account.html'"><span class="nav-icon">👤</span> Account</a>
+    <div class="sidebar-bottom">
+      <div class="user-pill">
+        <div class="user-avatar" id="user-initials">?</div>
+        <div class="user-info">
+          <div class="user-email" id="user-email">—</div>
+          <div class="user-label">let your money flow</div>
+        </div>
+        <button class="sign-out-btn" onclick="signOut()">⇥</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="mobile-topbar">
+    <svg width="52" height="20" viewBox="0 0 52 20">
+      <rect x="0" y="0" width="20" height="20" rx="10" fill="#0ea5e9"/>
+      <path d="M4 10 Q7 6 10 10 Q13 14 16 10" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <text x="24" y="14" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="300" fill="#0f172a" letter-spacing="1.5">FLO</text>
+    </svg>
+    <span style="font-size:0.9rem;font-weight:600;">Charts</span>
+    <button onclick="signOut()" style="background:none;border:none;color:var(--muted);font-size:0.8rem;font-family:'Sora',sans-serif;cursor:pointer;">Sign out</button>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="bottom-nav-item" onclick="window.location.href='/index.html'"><span class="bottom-nav-icon">◉</span><span>Dashboard</span></button>
+    <button class="bottom-nav-item active"><span class="bottom-nav-icon">📊</span><span>Charts</span></button>
+    <button class="bottom-nav-item" onclick="window.location.href='/index.html#ai-section'"><span class="bottom-nav-icon">✦</span><span>Ask Flo</span></button>
+    <button class="bottom-nav-item" onclick="window.location.href='/account.html'"><span class="bottom-nav-icon">👤</span><span>Account</span></button>
+  </div>
+
+  <div class="main">
+    <div class="page-header">
+      <h1>Spending charts</h1>
+      <p>Visualize where your money goes</p>
+    </div>
+
+    <div class="tab-bar">
+      <button class="tab active" onclick="switchTab('overview')">Overview</button>
+      <button class="tab" onclick="switchTab('history')">History</button>
+      <button class="tab" onclick="switchTab('trends')">Trends</button>
+    </div>
+
+    <!-- Overview tab -->
+    <div id="tab-overview">
+      <div class="summary-row" id="summary-row"></div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Spending by category</div>
+              <div class="card-sub">This month's breakdown</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="donut-chart"></canvas></div>
+          <div class="legend" id="donut-legend"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Budget vs spent</div>
+              <div class="card-sub">How each category is tracking</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="bar-chart"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- History tab -->
+    <div id="tab-history" style="display:none;">
+      <div class="card grid-full">
+        <div class="card-header">
+          <div class="card-title">Transaction history</div>
+        </div>
+        <div class="filter-row" id="cat-filters"></div>
+        <div class="txn-full-list" id="txn-full-list"></div>
+      </div>
+    </div>
+
+    <!-- Trends tab -->
+    <div id="tab-trends" style="display:none;">
+      <div class="card grid-full">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Daily spending</div>
+            <div class="card-sub">How much you spent each day this month</div>
+          </div>
+        </div>
+        <div class="chart-wrap"><canvas id="line-chart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase } from './Supabase.js'
+
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) { window.location.href = '/login.html' }
+    const user = session.user
+    document.getElementById('user-email').textContent = user.email
+    document.getElementById('user-initials').textContent = user.email[0].toUpperCase()
+
+    window.signOut = async function() {
+      await supabase.auth.signOut()
+      window.location.href = '/login.html'
+    }
+
+    // Fetch all data
+    const { data: budget } = await supabase.from('budgets').select('*').eq('user_id', user.id).limit(1).single()
+    const { data: categories } = await supabase.from('categories').select('*').eq('user_id', user.id)
+    const { data: txns } = await supabase
+      .from('transactions').select('*, categories(name, color)')
+      .eq('user_id', user.id).order('date', { ascending: false }).limit(200)
+
+    if (!budget || !categories) { window.location.href = '/setup.html'; }
+
+    const catMap = {}
+    categories.forEach(c => catMap[c.id] = c)
+
+    // ── Summary cards ──
+    const totalSpent = txns?.reduce((s, t) => s + Number(t.amount), 0) || 0
+    const remaining = budget.income - budget.savings_goal - totalSpent
+    const totalBudget = categories.reduce((s, c) => s + c.budget, 0)
+
+    document.getElementById('summary-row').innerHTML = `
+      <div class="summary-card"><div class="summary-label">Total spent</div><div class="summary-value red">$${totalSpent.toLocaleString()}</div></div>
+      <div class="summary-card"><div class="summary-label">Remaining</div><div class="summary-value ${remaining >= 0 ? 'green' : 'red'}">$${Math.abs(remaining).toLocaleString()}${remaining < 0 ? ' over' : ''}</div></div>
+      <div class="summary-card"><div class="summary-label">Savings goal</div><div class="summary-value sky">$${budget.savings_goal.toLocaleString()}</div></div>
+    `
+
+    // ── Spending by category (donut) ──
+    const spentByCat = {}
+    txns?.forEach(t => {
+      const name = t.categories?.name || 'Uncategorized'
+      spentByCat[name] = (spentByCat[name] || 0) + Number(t.amount)
+    })
+
+    const catNames = Object.keys(spentByCat)
+    const catColors = catNames.map(name => {
+      const cat = categories.find(c => c.name === name)
+      return cat?.color || '#94a3b8'
+    })
+    const catAmounts = catNames.map(name => spentByCat[name])
+
+    if (catNames.length > 0) {
+      new Chart(document.getElementById('donut-chart'), {
+        type: 'doughnut',
+        data: {
+          labels: catNames,
+          datasets: [{ data: catAmounts, backgroundColor: catColors, borderWidth: 2, borderColor: '#fff' }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          cutout: '65%'
+        }
+      })
+
+      const legend = document.getElementById('donut-legend')
+      catNames.forEach((name, i) => {
+        const item = document.createElement('div')
+        item.className = 'legend-item'
+        item.innerHTML = `<div class="legend-dot" style="background:${catColors[i]}"></div><span>${name}: $${catAmounts[i].toLocaleString()}</span>`
+        legend.appendChild(item)
+      })
+    } else {
+      document.getElementById('donut-chart').parentElement.innerHTML = '<div class="empty-state">No transactions yet</div>'
+    }
+
+    // ── Budget vs spent (bar) ──
+    const budgetLabels = categories.map(c => c.name)
+    const budgetAmounts = categories.map(c => c.budget)
+    const spentAmounts = categories.map(c => spentByCat[c.name] || 0)
+    const barColors = categories.map((c, i) => spentAmounts[i] > budgetAmounts[i] ? '#ef4444' : '#38bdf8')
+
+    new Chart(document.getElementById('bar-chart'), {
+      type: 'bar',
+      data: {
+        labels: budgetLabels,
+        datasets: [
+          { label: 'Budget', data: budgetAmounts, backgroundColor: '#e2e8f0', borderRadius: 6 },
+          { label: 'Spent', data: spentAmounts, backgroundColor: barColors, borderRadius: 6 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom', labels: { font: { family: 'Sora', size: 11 }, boxWidth: 12 } } },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { family: 'Sora', size: 11 } } },
+          y: { grid: { color: '#f1f5f9' }, ticks: { font: { family: 'Sora', size: 11 }, callback: v => '$' + v.toLocaleString() } }
+        }
+      }
+    })
+
+    // ── Transaction history ──
+    let activeFilter = 'all'
+    const filterRow = document.getElementById('cat-filters')
+
+    const allBtn = document.createElement('button')
+    allBtn.className = 'filter-btn active'
+    allBtn.textContent = 'All'
+    allBtn.onclick = () => setFilter('all', allBtn)
+    filterRow.appendChild(allBtn)
+
+    categories.forEach(cat => {
+      const btn = document.createElement('button')
+      btn.className = 'filter-btn'
+      btn.textContent = cat.name
+      btn.onclick = () => setFilter(cat.name, btn)
+      filterRow.appendChild(btn)
+    })
+
+    function setFilter(name, btn) {
+      activeFilter = name
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'))
+      btn.classList.add('active')
+      renderHistory()
+    }
+
+    function renderHistory() {
+      const list = document.getElementById('txn-full-list')
+      const filtered = activeFilter === 'all'
+        ? txns
+        : txns?.filter(t => t.categories?.name === activeFilter)
+
+      if (!filtered || !filtered.length) {
+        list.innerHTML = '<div class="empty-state">No transactions found</div>'
+        return
+      }
+
+      list.innerHTML = ''
+      filtered.forEach(t => {
+        const row = document.createElement('div')
+        row.className = 'txn-row'
+        const color = t.categories ? categories.find(c => c.name === t.categories.name)?.color || '#94a3b8' : '#94a3b8'
+        const date = t.date ? new Date(t.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''
+        row.innerHTML = `
+          <div class="txn-left">
+            <div class="txn-cat-dot" style="background:${color}"></div>
+            <div>
+              <div class="txn-note">${t.note || 'No note'}</div>
+              <div class="txn-meta">${t.categories?.name || 'Uncategorized'}${date ? ' · ' + date : ''}</div>
+            </div>
+          </div>
+          <div class="txn-amt">$${Number(t.amount).toLocaleString()}</div>
+        `
+        list.appendChild(row)
+      })
+    }
+
+    renderHistory()
+
+    // ── Daily spending line chart ──
+    const dailySpend = {}
+    txns?.forEach(t => {
+      if (t.date) {
+        dailySpend[t.date] = (dailySpend[t.date] || 0) + Number(t.amount)
+      }
+    })
+
+    const sortedDays = Object.keys(dailySpend).sort()
+    const dayLabels = sortedDays.map(d => {
+      const date = new Date(d + 'T00:00:00')
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    })
+    const dayAmounts = sortedDays.map(d => dailySpend[d])
+
+    if (sortedDays.length > 0) {
+      new Chart(document.getElementById('line-chart'), {
+        type: 'line',
+        data: {
+          labels: dayLabels,
+          datasets: [{
+            label: 'Daily spending',
+            data: dayAmounts,
+            borderColor: '#0ea5e9',
+            backgroundColor: 'rgba(56,189,248,0.08)',
+            borderWidth: 2,
+            pointBackgroundColor: '#0ea5e9',
+            pointRadius: 4,
+            fill: true,
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { display: false }, ticks: { font: { family: 'Sora', size: 11 } } },
+            y: { grid: { color: '#f1f5f9' }, ticks: { font: { family: 'Sora', size: 11 }, callback: v => '$' + v } }
+          }
+        }
+      })
+    } else {
+      document.getElementById('line-chart').parentElement.innerHTML = '<div class="empty-state">Log some transactions to see trends</div>'
+    }
+
+    // ── Tab switching ──
+    window.switchTab = function(tab) {
+      ;['overview', 'history', 'trends'].forEach(t => {
+        document.getElementById('tab-' + t).style.display = t === tab ? 'block' : 'none'
+      })
+      document.querySelectorAll('.tab').forEach((btn, i) => {
+        btn.classList.toggle('active', ['overview', 'history', 'trends'][i] === tab)
+      })
+    }
+  </script>
+</body>
+</html>

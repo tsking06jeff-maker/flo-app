@@ -13,19 +13,9 @@
       --muted: #64748b; --border: #e2e8f0; --bg: #f8fafc;
     }
     body { background: var(--bg); color: var(--text); font-family: 'Sora', sans-serif; min-height: 100vh; }
-
-    /* ── Sidebar (desktop) ── */
-    .sidebar {
-      position: fixed; top: 0; left: 0; width: 224px; height: 100vh;
-      background: white; border-right: 1px solid var(--border);
-      padding: 1.5rem 1rem; display: flex; flex-direction: column; z-index: 10;
-    }
+    .sidebar { position: fixed; top: 0; left: 0; width: 224px; height: 100vh; background: white; border-right: 1px solid var(--border); padding: 1.5rem 1rem; display: flex; flex-direction: column; z-index: 10; }
     .sidebar-logo { padding: 0.25rem 0.5rem 1.75rem; }
-    .nav-item {
-      display: flex; align-items: center; gap: 10px; padding: 9px 12px;
-      border-radius: 10px; font-size: 0.85rem; font-weight: 500; color: var(--muted);
-      cursor: pointer; transition: all 0.15s; text-decoration: none; margin-bottom: 2px;
-    }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; font-size: 0.85rem; font-weight: 500; color: var(--muted); cursor: pointer; transition: all 0.15s; text-decoration: none; margin-bottom: 2px; }
     .nav-item:hover, .nav-item.active { background: var(--sky-pale); color: var(--sky-dark); }
     .nav-icon { font-size: 0.95rem; width: 18px; text-align: center; }
     .sidebar-bottom { margin-top: auto; }
@@ -36,40 +26,18 @@
     .user-label { font-size: 0.68rem; color: #94a3b8; }
     .sign-out-btn { background: none; border: none; color: #cbd5e1; cursor: pointer; font-size: 0.9rem; padding: 2px 4px; }
     .sign-out-btn:hover { color: var(--muted); }
-
-    /* ── Bottom nav (mobile) ── */
-    .bottom-nav {
-      display: none; position: fixed; bottom: 0; left: 0; right: 0;
-      background: white; border-top: 1px solid var(--border);
-      padding: 8px 0 max(8px, env(safe-area-inset-bottom));
-      z-index: 100; justify-content: space-around;
-    }
-    .bottom-nav-item {
-      display: flex; flex-direction: column; align-items: center; gap: 3px;
-      padding: 6px 16px; border-radius: 10px; cursor: pointer;
-      color: var(--muted); font-size: 0.65rem; font-weight: 500; border: none;
-      background: none; font-family: 'Sora', sans-serif; transition: color 0.15s;
-    }
+    .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid var(--border); padding: 8px 0 max(8px, env(safe-area-inset-bottom)); z-index: 100; justify-content: space-around; }
+    .bottom-nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 12px; border-radius: 10px; cursor: pointer; color: var(--muted); font-size: 0.65rem; font-weight: 500; border: none; background: none; font-family: 'Sora', sans-serif; transition: color 0.15s; }
     .bottom-nav-item.active { color: var(--sky-dark); }
     .bottom-nav-icon { font-size: 1.2rem; }
-
-    /* ── Mobile top bar ── */
-    .mobile-topbar {
-      display: none; position: fixed; top: 0; left: 0; right: 0;
-      background: white; border-bottom: 1px solid var(--border);
-      padding: 12px 1.25rem; z-index: 10;
-      align-items: center; justify-content: space-between;
-    }
+    .mobile-topbar { display: none; position: fixed; top: 0; left: 0; right: 0; background: white; border-bottom: 1px solid var(--border); padding: 12px 1.25rem; z-index: 10; align-items: center; justify-content: space-between; }
     .mobile-user { display: flex; align-items: center; gap: 8px; }
     .mobile-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--sky-dark); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.68rem; font-weight: 600; }
-
-    /* ── Main content ── */
     .main { margin-left: 224px; padding: 2rem 2.5rem 3rem; }
     .page-header { margin-bottom: 2rem; display: flex; align-items: flex-start; justify-content: space-between; }
     .page-header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; }
     .page-header p { color: var(--muted); font-size: 0.85rem; margin-top: 3px; }
     .date-badge { font-size: 0.78rem; color: var(--muted); background: white; border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; white-space: nowrap; }
-
     .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.75rem; }
     .stat { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; }
     .stat-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 8px; }
@@ -78,20 +46,17 @@
     .stat-value.green { color: #16a34a; }
     .stat-value.red { color: #dc2626; }
     .stat-sub { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
-
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
     .card { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
     .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
     .card-title { font-size: 0.85rem; font-weight: 600; }
     .card-link { font-size: 0.78rem; color: var(--sky-dark); background: none; border: none; font-family: 'Sora', sans-serif; cursor: pointer; }
     .card-link:hover { text-decoration: underline; }
-
     .cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .cat-pill { display: flex; align-items: center; gap: 8px; background: var(--sky-pale); border: 1px solid var(--border); border-radius: 10px; padding: 9px 12px; }
     .cat-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
     .cat-pill-name { font-size: 0.8rem; font-weight: 500; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .cat-pill-amt { font-size: 0.78rem; color: var(--muted); white-space: nowrap; }
-
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
     .field label { font-size: 0.75rem; font-weight: 500; color: var(--muted); display: block; margin-bottom: 5px; }
     input, select { outline: none; }
@@ -100,13 +65,11 @@
     .btn-save { background: var(--sky-dark); color: white; border: none; border-radius: 8px; padding: 11px; font-size: 0.85rem; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; width: 100%; margin-top: 6px; }
     .btn-save:hover { background: #0284c7; }
     #form-msg { font-size: 0.78rem; color: var(--muted); text-align: center; margin-top: 8px; min-height: 16px; }
-
     .txn-list { display: flex; flex-direction: column; gap: 6px; }
     .txn-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 13px; background: var(--sky-pale); border: 1px solid var(--border); border-radius: 10px; }
     .txn-note { font-size: 0.85rem; font-weight: 500; }
     .txn-cat { font-size: 0.73rem; color: var(--muted); margin-top: 2px; }
     .txn-amt { font-size: 0.98rem; font-weight: 600; color: var(--sky-dark); white-space: nowrap; }
-
     .chat-msgs { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1rem; max-height: 260px; overflow-y: auto; }
     .msg-ai { background: var(--sky-pale); border: 1px solid var(--sky-light); border-radius: 12px 12px 12px 4px; padding: 11px 13px; font-size: 0.85rem; line-height: 1.6; max-width: 90%; }
     .msg-user { background: var(--sky-dark); color: white; border-radius: 12px 12px 4px 12px; padding: 11px 13px; font-size: 0.85rem; max-width: 90%; align-self: flex-end; margin-left: auto; }
@@ -117,8 +80,6 @@
     .quick-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
     .qp { font-size: 0.73rem; padding: 5px 11px; border-radius: 99px; border: 1px solid var(--border); background: white; color: var(--muted); cursor: pointer; font-family: 'Sora', sans-serif; transition: all 0.15s; }
     .qp:hover { border-color: var(--sky); color: var(--sky-dark); background: var(--sky-pale); }
-
-    /* ── Mobile styles ── */
     @media (max-width: 768px) {
       .sidebar { display: none; }
       .bottom-nav { display: flex; }
@@ -137,7 +98,6 @@
       .chat-msgs { max-height: 200px; }
       .card { padding: 1.25rem; }
     }
-
     @media (max-width: 380px) {
       .stats { grid-template-columns: 1fr 1fr; }
       .stat-value { font-size: 1.1rem; }
@@ -146,7 +106,6 @@
 </head>
 <body>
 
-  <!-- Desktop sidebar -->
   <div class="sidebar">
     <div class="sidebar-logo">
       <svg width="96" height="34" viewBox="0 0 96 34">
@@ -156,6 +115,7 @@
       </svg>
     </div>
     <a class="nav-item active"><span class="nav-icon">◉</span> Dashboard</a>
+    <a class="nav-item" onclick="window.location.href='/charts.html'"><span class="nav-icon">📊</span> Charts</a>
     <a class="nav-item" onclick="window.location.href='/setup.html'"><span class="nav-icon">⚙</span> Edit budget</a>
     <a class="nav-item" onclick="window.location.href='/account.html'"><span class="nav-icon">👤</span> Account</a>
     <div class="sidebar-bottom">
@@ -170,7 +130,6 @@
     </div>
   </div>
 
-  <!-- Mobile top bar -->
   <div class="mobile-topbar">
     <div class="mobile-user">
       <div class="mobile-avatar" id="user-initials-mobile">?</div>
@@ -183,11 +142,14 @@
     <button onclick="signOut()" style="background:none;border:none;color:var(--muted);font-size:0.8rem;font-family:'Sora',sans-serif;cursor:pointer;">Sign out</button>
   </div>
 
-  <!-- Mobile bottom nav -->
   <div class="bottom-nav">
     <button class="bottom-nav-item active" onclick="scrollToTop()">
       <span class="bottom-nav-icon">◉</span>
-      <span>Dashboard</span>
+      <span>Home</span>
+    </button>
+    <button class="bottom-nav-item" onclick="window.location.href='/charts.html'">
+      <span class="bottom-nav-icon">📊</span>
+      <span>Charts</span>
     </button>
     <button class="bottom-nav-item" onclick="scrollToSection('log-section')">
       <span class="bottom-nav-icon">＋</span>
@@ -203,7 +165,6 @@
     </button>
   </div>
 
-  <!-- Main content -->
   <div class="main">
     <div class="page-header">
       <div>
@@ -228,7 +189,6 @@
         </div>
         <div class="cat-grid" id="categories"></div>
       </div>
-
       <div class="card" id="log-section">
         <div class="card-header"><div class="card-title">Log a transaction</div></div>
         <div class="form-row">
@@ -243,10 +203,12 @@
 
     <div class="grid-2">
       <div class="card">
-        <div class="card-header"><div class="card-title">Recent transactions</div></div>
+        <div class="card-header">
+          <div class="card-title">Recent transactions</div>
+          <button class="card-link" onclick="window.location.href='/charts.html'">View all →</button>
+        </div>
         <div class="txn-list" id="transactions-list"></div>
       </div>
-
       <div class="card" id="ai-section">
         <div class="card-header"><div class="card-title">Ask Flo AI</div></div>
         <div class="chat-msgs" id="chat-messages">
