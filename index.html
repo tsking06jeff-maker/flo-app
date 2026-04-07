@@ -12,43 +12,25 @@
       --muted: #64748b; --border: #e2e8f0; --bg: #f8fafc;
     }
     body { background: var(--bg); color: var(--text); font-family: 'Sora', sans-serif; min-height: 100vh; }
-
-    .sidebar {
-      position: fixed; top: 0; left: 0; width: 224px; height: 100vh;
-      background: white; border-right: 1px solid var(--border);
-      padding: 1.5rem 1rem; display: flex; flex-direction: column; z-index: 10;
-    }
+    .sidebar { position: fixed; top: 0; left: 0; width: 224px; height: 100vh; background: white; border-right: 1px solid var(--border); padding: 1.5rem 1rem; display: flex; flex-direction: column; z-index: 10; }
     .sidebar-logo { padding: 0.25rem 0.5rem 1.75rem; }
-    .nav-item {
-      display: flex; align-items: center; gap: 10px; padding: 9px 12px;
-      border-radius: 10px; font-size: 0.85rem; font-weight: 500; color: var(--muted);
-      cursor: pointer; transition: all 0.15s; text-decoration: none; margin-bottom: 2px;
-    }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; font-size: 0.85rem; font-weight: 500; color: var(--muted); cursor: pointer; transition: all 0.15s; text-decoration: none; margin-bottom: 2px; }
     .nav-item:hover { background: var(--sky-pale); color: var(--sky-dark); }
     .nav-item.active { background: var(--sky-pale); color: var(--sky-dark); }
     .nav-icon { font-size: 0.95rem; width: 18px; text-align: center; }
     .sidebar-bottom { margin-top: auto; }
-    .user-pill {
-      display: flex; align-items: center; gap: 9px;
-      padding: 10px 12px; border-radius: 10px; background: var(--sky-pale);
-    }
-    .user-avatar {
-      width: 30px; height: 30px; border-radius: 50%; background: var(--sky-dark);
-      display: flex; align-items: center; justify-content: center;
-      color: white; font-size: 0.72rem; font-weight: 600; flex-shrink: 0;
-    }
+    .user-pill { display: flex; align-items: center; gap: 9px; padding: 10px 12px; border-radius: 10px; background: var(--sky-pale); }
+    .user-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--sky-dark); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.72rem; font-weight: 600; flex-shrink: 0; }
     .user-info { flex: 1; overflow: hidden; }
     .user-email { font-size: 0.73rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .user-label { font-size: 0.68rem; color: #94a3b8; }
     .sign-out-btn { background: none; border: none; color: #cbd5e1; cursor: pointer; font-size: 0.9rem; padding: 2px 4px; }
     .sign-out-btn:hover { color: var(--muted); }
-
     .main { margin-left: 224px; padding: 2rem 2.5rem 3rem; }
     .page-header { margin-bottom: 2rem; display: flex; align-items: flex-start; justify-content: space-between; }
     .page-header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; }
     .page-header p { color: var(--muted); font-size: 0.85rem; margin-top: 3px; }
     .date-badge { font-size: 0.78rem; color: var(--muted); background: white; border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; }
-
     .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.75rem; }
     .stat { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; }
     .stat-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 8px; }
@@ -57,39 +39,30 @@
     .stat-value.green { color: #16a34a; }
     .stat-value.red { color: #dc2626; }
     .stat-sub { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
-
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
     .card { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
     .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
     .card-title { font-size: 0.85rem; font-weight: 600; }
     .card-link { font-size: 0.78rem; color: var(--sky-dark); background: none; border: none; font-family: 'Sora', sans-serif; cursor: pointer; }
     .card-link:hover { text-decoration: underline; }
-
     .cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .cat-pill { display: flex; align-items: center; gap: 8px; background: var(--sky-pale); border: 1px solid var(--border); border-radius: 10px; padding: 9px 12px; }
     .cat-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
     .cat-pill-name { font-size: 0.8rem; font-weight: 500; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .cat-pill-amt { font-size: 0.78rem; color: var(--muted); white-space: nowrap; }
-
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
     .field label { font-size: 0.75rem; font-weight: 500; color: var(--muted); display: block; margin-bottom: 5px; }
     input, select { outline: none; }
-    .inp {
-      width: 100%; background: var(--sky-pale); border: 1.5px solid var(--border);
-      border-radius: 8px; padding: 9px 12px; color: var(--text); font-size: 0.85rem;
-      font-family: 'Sora', sans-serif; transition: border-color 0.2s, background 0.2s;
-    }
+    .inp { width: 100%; background: var(--sky-pale); border: 1.5px solid var(--border); border-radius: 8px; padding: 9px 12px; color: var(--text); font-size: 0.85rem; font-family: 'Sora', sans-serif; transition: border-color 0.2s, background 0.2s; }
     .inp:focus { border-color: var(--sky); background: white; }
-    .btn-save { background: var(--sky-dark); color: white; border: none; border-radius: 8px; padding: 11px; font-size: 0.85rem; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; width: 100%; margin-top: 6px; transition: background 0.15s; }
+    .btn-save { background: var(--sky-dark); color: white; border: none; border-radius: 8px; padding: 11px; font-size: 0.85rem; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; width: 100%; margin-top: 6px; }
     .btn-save:hover { background: #0284c7; }
     #form-msg { font-size: 0.78rem; color: var(--muted); text-align: center; margin-top: 8px; min-height: 16px; }
-
     .txn-list { display: flex; flex-direction: column; gap: 6px; }
     .txn-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 13px; background: var(--sky-pale); border: 1px solid var(--border); border-radius: 10px; }
     .txn-note { font-size: 0.85rem; font-weight: 500; }
     .txn-cat { font-size: 0.73rem; color: var(--muted); margin-top: 2px; }
     .txn-amt { font-size: 0.98rem; font-weight: 600; color: var(--sky-dark); white-space: nowrap; }
-
     .chat-msgs { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1rem; max-height: 260px; overflow-y: auto; }
     .msg-ai { background: var(--sky-pale); border: 1px solid var(--sky-light); border-radius: 12px 12px 12px 4px; padding: 11px 13px; font-size: 0.85rem; line-height: 1.6; max-width: 90%; }
     .msg-user { background: var(--sky-dark); color: white; border-radius: 12px 12px 4px 12px; padding: 11px 13px; font-size: 0.85rem; max-width: 90%; align-self: flex-end; margin-left: auto; }
@@ -103,7 +76,6 @@
   </style>
 </head>
 <body>
-
   <div class="sidebar">
     <div class="sidebar-logo">
       <svg width="96" height="34" viewBox="0 0 96 34">
@@ -112,10 +84,8 @@
         <text x="42" y="23" font-family="'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="300" fill="#0f172a" letter-spacing="2.5">FLO</text>
       </svg>
     </div>
-
     <a class="nav-item active"><span class="nav-icon">◉</span> Dashboard</a>
-    <a class="nav-item" onclick="window.location.href='/setup.html'" style="cursor:pointer;"><span class="nav-icon">⚙</span> Edit budget</a>
-
+    <a class="nav-item" onclick="window.location.href='/setup.html'"><span class="nav-icon">⚙</span> Edit budget</a>
     <div class="sidebar-bottom">
       <div class="user-pill">
         <div class="user-avatar" id="user-initials">?</div>
@@ -138,23 +108,10 @@
     </div>
 
     <div class="stats">
-      <div class="stat">
-        <div class="stat-label">Monthly income</div>
-        <div class="stat-value sky" id="income">—</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Spending budget</div>
-        <div class="stat-value" id="total-budget">—</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Total spent</div>
-        <div class="stat-value" id="total-spent">—</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Remaining</div>
-        <div class="stat-value" id="remaining">—</div>
-        <div class="stat-sub" id="savings-sub"></div>
-      </div>
+      <div class="stat"><div class="stat-label">Monthly income</div><div class="stat-value sky" id="income">—</div></div>
+      <div class="stat"><div class="stat-label">Spending budget</div><div class="stat-value" id="total-budget">—</div></div>
+      <div class="stat"><div class="stat-label">Total spent</div><div class="stat-value" id="total-spent">—</div></div>
+      <div class="stat"><div class="stat-label">Remaining</div><div class="stat-value" id="remaining">—</div><div class="stat-sub" id="savings-sub"></div></div>
     </div>
 
     <div class="grid-2">
@@ -165,19 +122,13 @@
         </div>
         <div class="cat-grid" id="categories"></div>
       </div>
-
       <div class="card">
-        <div class="card-header">
-          <div class="card-title">Log a transaction</div>
-        </div>
+        <div class="card-header"><div class="card-title">Log a transaction</div></div>
         <div class="form-row">
           <div class="field"><label>Amount ($)</label><input id="amount" type="number" class="inp" placeholder="0.00" /></div>
           <div class="field"><label>Category</label><select id="category" class="inp"><option value="">Select...</option></select></div>
         </div>
-        <div class="field" style="margin-bottom:0;">
-          <label>Note (optional)</label>
-          <input id="note" type="text" class="inp" placeholder="e.g. Lunch at Chipotle" />
-        </div>
+        <div class="field" style="margin-bottom:0;"><label>Note (optional)</label><input id="note" type="text" class="inp" placeholder="e.g. Lunch at Chipotle" /></div>
         <button class="btn-save" onclick="saveTransaction()">Save transaction</button>
         <p id="form-msg"></p>
       </div>
@@ -185,16 +136,11 @@
 
     <div class="grid-2">
       <div class="card">
-        <div class="card-header">
-          <div class="card-title">Recent transactions</div>
-        </div>
+        <div class="card-header"><div class="card-title">Recent transactions</div></div>
         <div class="txn-list" id="transactions-list"></div>
       </div>
-
       <div class="card">
-        <div class="card-header">
-          <div class="card-title">Ask Flo AI</div>
-        </div>
+        <div class="card-header"><div class="card-title">Ask Flo AI</div></div>
         <div class="chat-msgs" id="chat-messages">
           <div class="msg-ai">Hi! I can see your budget and spending. Ask me anything — purchases, savings tips, or a full summary.</div>
         </div>
@@ -218,10 +164,10 @@
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) { window.location.href = '/login.html' }
     const user = session.user
+    const accessToken = session.access_token
 
-    const email = user.email
-    document.getElementById('user-email').textContent = email
-    document.getElementById('user-initials').textContent = email[0].toUpperCase()
+    document.getElementById('user-email').textContent = user.email
+    document.getElementById('user-initials').textContent = user.email[0].toUpperCase()
 
     const now = new Date()
     const hour = now.getHours()
@@ -309,7 +255,8 @@
     window.askAI = async function() {
       const input = document.getElementById('ai-input')
       const question = input.value.trim()
-      if (!question) return
+      if (!question || question.length > 2000) return
+
       const msgs = document.getElementById('chat-messages')
       msgs.innerHTML += `<div class="msg-user">${question}</div>`
       input.value = ''
@@ -320,30 +267,42 @@
       const { data: fb } = await supabase.from('budgets').select('*').eq('user_id', user.id).limit(1).single()
       const { data: fc } = await supabase.from('categories').select('*').eq('user_id', user.id)
       const { data: ft } = await supabase.from('transactions').select('*, categories(name)').eq('user_id', user.id).order('created_at', { ascending: false }).limit(20)
-      const totalSpent = ft?.reduce((s,t) => s+Number(t.amount), 0) || 0
+
+      const totalSpent = ft?.reduce((s, t) => s + Number(t.amount), 0) || 0
       const bycat = {}
-      ft?.forEach(t => { const n = t.categories?.name||'Misc'; bycat[n]=(bycat[n]||0)+Number(t.amount) })
+      ft?.forEach(t => { const n = t.categories?.name || 'Misc'; bycat[n] = (bycat[n] || 0) + Number(t.amount) })
 
       const sys = `You are Flo, a concise and friendly AI financial advisor. User's data:
-Income: $${fb?.income||0}/mo | Savings goal: $${fb?.savings_goal||0}/mo | Spent: $${totalSpent.toFixed(2)} | Remaining: $${((fb?.income||0)-totalSpent-(fb?.savings_goal||0)).toFixed(2)}
-Categories: ${fc?.map(c=>c.name+' $'+c.budget).join(', ')||'none'}
-Spending by category: ${Object.entries(bycat).map(([k,v])=>k+' $'+v.toFixed(2)).join(', ')||'none yet'}
-Recent: ${ft?.slice(0,8).map(t=>'$'+Number(t.amount).toFixed(2)+' '+(t.categories?.name||'misc')+(t.note?' ('+t.note+')':'')).join(', ')||'none'}
+Income: $${fb?.income || 0}/mo | Savings goal: $${fb?.savings_goal || 0}/mo | Spent: $${totalSpent.toFixed(2)} | Remaining: $${((fb?.income || 0) - totalSpent - (fb?.savings_goal || 0)).toFixed(2)}
+Categories: ${fc?.map(c => c.name + ' $' + c.budget).join(', ') || 'none'}
+Spending by category: ${Object.entries(bycat).map(([k, v]) => k + ' $' + v.toFixed(2)).join(', ') || 'none yet'}
+Recent: ${ft?.slice(0, 8).map(t => '$' + Number(t.amount).toFixed(2) + ' ' + (t.categories?.name || 'misc') + (t.note ? ' (' + t.note + ')' : '')).join(', ') || 'none'}
 Be direct. Under 3 sentences. For purchases, give a clear yes/no recommendation.`
 
       try {
         const res = await fetch('/api/chat', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: sys, messages: [{ role: 'user', content: question }] })
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`
+          },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 1000,
+            system: sys,
+            messages: [{ role: 'user', content: question }]
+          })
         })
         const data = await res.json()
+        if (data.error) { document.getElementById(lid).textContent = data.error; return }
         const reply = data.content?.[0]?.text || 'Sorry, could not get a response.'
         document.getElementById(lid).textContent = reply
         document.getElementById(lid).style.color = 'var(--text)'
-      } catch { document.getElementById(lid).textContent = 'Error reaching AI.' }
+      } catch {
+        document.getElementById(lid).textContent = 'Error reaching AI. Please try again.'
+      }
       msgs.scrollTop = msgs.scrollHeight
     }
   </script>
-
 </body>
 </html>
