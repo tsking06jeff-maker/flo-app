@@ -12,14 +12,9 @@
       --muted: #64748b; --border: #e2e8f0;
     }
     body {
-      background: var(--sky-pale);
-      color: var(--text);
-      font-family: 'Sora', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
+      background: var(--sky-pale); color: var(--text);
+      font-family: 'Sora', sans-serif; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center; padding: 2rem;
     }
     .wrapper { width: 100%; max-width: 420px; }
     .logo-area { text-align: center; margin-bottom: 2.5rem; }
@@ -57,7 +52,23 @@
     }
     .btn-secondary:hover { border-color: var(--sky); color: var(--sky-dark); }
     #msg { font-size: 0.82rem; color: var(--muted); text-align: center; margin-top: 1rem; min-height: 20px; }
-    .footer { text-align: center; font-size: 0.78rem; color: #cbd5e1; margin-top: 1.5rem; }
+    #msg.success { color: #16a34a; }
+    #msg.error { color: #dc2626; }
+    .terms-note {
+      font-size: 0.75rem; color: var(--muted); text-align: center;
+      margin-top: 1.25rem; line-height: 1.6;
+    }
+    .terms-note a { color: var(--sky-dark); text-decoration: none; }
+    .terms-note a:hover { text-decoration: underline; }
+    .footer { text-align: center; font-size: 0.75rem; color: #cbd5e1; margin-top: 1.5rem; display: flex; justify-content: center; gap: 1.25rem; }
+    .footer a { color: #94a3b8; text-decoration: none; }
+    .footer a:hover { color: var(--muted); }
+    .deleted-banner {
+      display: none; background: #f0fdf4; border: 1px solid #bbf7d0;
+      border-radius: 10px; padding: 12px 16px; font-size: 0.85rem;
+      color: #166534; text-align: center; margin-bottom: 1.25rem;
+    }
+    .deleted-banner.show { display: block; }
   </style>
 </head>
 <body>
@@ -71,9 +82,13 @@
       <p class="tagline">let your money flow</p>
     </div>
 
+    <div class="deleted-banner" id="deleted-banner">
+      Your account has been deleted. Thanks for using Flo.
+    </div>
+
     <div class="card">
-      <div class="card-title">Welcome back</div>
-      <div class="card-sub">Sign in to your account to continue</div>
+      <div class="card-title" id="card-title">Welcome back</div>
+      <div class="card-sub" id="card-sub">Sign in to your account to continue</div>
 
       <div class="field">
         <label>Email address</label>
@@ -87,24 +102,45 @@
       <div class="divider">or</div>
       <button class="btn-secondary" onclick="signUp()">Create a free account</button>
       <p id="msg"></p>
+
+      <div class="terms-note">
+        By creating an account you agree to our
+        <a href="/terms.html">Terms of Service</a> and
+        <a href="/privacy.html">Privacy Policy</a>.
+      </div>
     </div>
 
-    <p class="footer">Flo — Smart budgeting powered by AI</p>
+    <div class="footer">
+      <a href="/terms.html">Terms</a>
+      <a href="/privacy.html">Privacy</a>
+      <span style="color:#e2e8f0;">·</span>
+      <span>Flo — Smart budgeting powered by AI</span>
+    </div>
   </div>
 
   <script type="module">
     import { supabase } from './Supabase.js'
+
     const { data: { session } } = await supabase.auth.getSession()
     if (session) window.location.href = '/index.html'
+
+    // Show deleted account banner if redirected from account deletion
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('deleted') === 'true') {
+      document.getElementById('deleted-banner').classList.add('show')
+      document.getElementById('card-title').textContent = 'Account deleted'
+      document.getElementById('card-sub').textContent = 'Create a new account or sign in with a different email.'
+    }
 
     window.signIn = async function() {
       const email = document.getElementById('email').value
       const password = document.getElementById('password').value
       const msg = document.getElementById('msg')
-      if (!email || !password) { msg.textContent = 'Please fill in both fields.'; return }
+      if (!email || !password) { msg.textContent = 'Please fill in both fields.'; msg.className = 'error'; return }
       msg.textContent = 'Signing in...'
+      msg.className = ''
       const { error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) { msg.textContent = error.message; return }
+      if (error) { msg.textContent = error.message; msg.className = 'error'; return }
       window.location.href = '/index.html'
     }
 
@@ -112,13 +148,15 @@
       const email = document.getElementById('email').value
       const password = document.getElementById('password').value
       const msg = document.getElementById('msg')
-      if (!email || !password) { msg.textContent = 'Please fill in both fields.'; return }
-      if (password.length < 6) { msg.textContent = 'Password must be at least 6 characters.'; return }
+      if (!email || !password) { msg.textContent = 'Please fill in both fields.'; msg.className = 'error'; return }
+      if (password.length < 6) { msg.textContent = 'Password must be at least 6 characters.'; msg.className = 'error'; return }
       msg.textContent = 'Creating account...'
+      msg.className = ''
       const { data, error } = await supabase.auth.signUp({ email, password })
-      if (error) { msg.textContent = error.message; return }
+      if (error) { msg.textContent = error.message; msg.className = 'error'; return }
       if (data.user) await supabase.from('profiles').insert({ id: data.user.id, full_name: email })
-      msg.textContent = 'Account created! You can now sign in.'
+      msg.textContent = '✓ Account created! You can now sign in.'
+      msg.className = 'success'
     }
   </script>
 </body>

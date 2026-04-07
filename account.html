@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Flo — Account Settings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --sky: #38bdf8; --sky-dark: #0ea5e9; --sky-pale: #f0faff; --text: #0f172a; --muted: #64748b; --border: #e2e8f0; --danger: #ef4444; --danger-pale: #fef2f2; }
+    body { background: var(--sky-pale); color: var(--text); font-family: 'Sora', sans-serif; min-height: 100vh; padding: 2rem; }
+    .container { max-width: 560px; margin: 0 auto; }
+    .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2.5rem; }
+    .logo-link { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .back-link { font-size: 0.85rem; color: var(--muted); cursor: pointer; background: none; border: none; font-family: 'Sora', sans-serif; }
+    .back-link:hover { color: var(--sky-dark); }
+    h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 4px; }
+    .subtitle { font-size: 0.85rem; color: var(--muted); margin-bottom: 2rem; }
+    .card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem; margin-bottom: 1.25rem; }
+    .card-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 1rem; }
+    .info-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
+    .info-row:last-child { border-bottom: none; }
+    .info-label { color: var(--muted); }
+    .info-value { font-weight: 500; }
+    .danger-card { background: var(--danger-pale); border: 1px solid #fecaca; border-radius: 16px; padding: 1.75rem; }
+    .danger-title { font-size: 0.85rem; font-weight: 600; color: var(--danger); margin-bottom: 8px; }
+    .danger-desc { font-size: 0.85rem; color: #7f1d1d; line-height: 1.6; margin-bottom: 1.25rem; }
+    .btn-danger { background: var(--danger); color: white; border: none; border-radius: 10px; padding: 12px 20px; font-size: 0.88rem; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; transition: background 0.15s; }
+    .btn-danger:hover { background: #dc2626; }
+    .btn-danger:disabled { background: #fca5a5; cursor: not-allowed; }
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
+    .modal-overlay.show { display: flex; }
+    .modal { background: white; border-radius: 16px; padding: 2rem; max-width: 400px; width: 90%; }
+    .modal h2 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
+    .modal p { font-size: 0.88rem; color: var(--muted); line-height: 1.6; margin-bottom: 1.5rem; }
+    .modal-actions { display: flex; gap: 10px; }
+    .btn-cancel { flex: 1; padding: 12px; border-radius: 10px; border: 1.5px solid var(--border); background: white; color: var(--muted); font-size: 0.88rem; font-family: 'Sora', sans-serif; cursor: pointer; }
+    .btn-cancel:hover { border-color: var(--sky); color: var(--sky-dark); }
+    .confirm-input { width: 100%; background: #fef2f2; border: 1.5px solid #fecaca; border-radius: 8px; padding: 10px 12px; color: var(--text); font-size: 0.88rem; font-family: 'Sora', sans-serif; outline: none; margin-bottom: 1rem; }
+    .confirm-input:focus { border-color: var(--danger); }
+    #delete-msg { font-size: 0.82rem; color: var(--muted); margin-top: 8px; min-height: 16px; }
+    .policy-links { display: flex; gap: 1.5rem; font-size: 0.8rem; margin-top: 1.5rem; }
+    .policy-links a { color: var(--muted); text-decoration: none; }
+    .policy-links a:hover { color: var(--sky-dark); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <a class="logo-link" href="/index.html">
+        <svg width="80" height="28" viewBox="0 0 80 28">
+          <rect x="0" y="0" width="28" height="28" rx="14" fill="#0ea5e9"/>
+          <path d="M6 14 Q9 9 13 14 Q17 19 21 14" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <text x="34" y="19" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="300" fill="#0f172a" letter-spacing="2">FLO</text>
+        </svg>
+      </a>
+      <button class="back-link" onclick="window.location.href='/index.html'">← Back to dashboard</button>
+    </div>
+
+    <h1>Account settings</h1>
+    <p class="subtitle">Manage your account and data</p>
+
+    <div class="card">
+      <div class="card-title">Account info</div>
+      <div class="info-row"><span class="info-label">Email</span><span class="info-value" id="user-email">—</span></div>
+      <div class="info-row"><span class="info-label">Member since</span><span class="info-value" id="member-since">—</span></div>
+      <div class="info-row"><span class="info-label">Transactions logged</span><span class="info-value" id="txn-count">—</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Your data</div>
+      <div class="info-row">
+        <span class="info-label">Terms of Service</span>
+        <a href="/terms.html" style="font-size:0.85rem;color:var(--sky-dark);">View →</a>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Privacy Policy</span>
+        <a href="/privacy.html" style="font-size:0.85rem;color:var(--sky-dark);">View →</a>
+      </div>
+    </div>
+
+    <div class="danger-card">
+      <div class="danger-title">Delete account</div>
+      <p class="danger-desc">Permanently delete your account and all associated data including your budget, categories, and transaction history. This action cannot be undone.</p>
+      <button class="btn-danger" onclick="showDeleteModal()">Delete my account</button>
+    </div>
+
+    <div class="policy-links">
+      <a href="/terms.html">Terms of Service</a>
+      <a href="/privacy.html">Privacy Policy</a>
+    </div>
+  </div>
+
+  <!-- Confirm delete modal -->
+  <div class="modal-overlay" id="delete-modal">
+    <div class="modal">
+      <h2>Are you sure?</h2>
+      <p>This will permanently delete your account and all your data. Type <strong>DELETE</strong> below to confirm.</p>
+      <input type="text" class="confirm-input" id="confirm-input" placeholder="Type DELETE to confirm" />
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="hideDeleteModal()">Cancel</button>
+        <button class="btn-danger" id="confirm-delete-btn" onclick="deleteAccount()" disabled>Delete forever</button>
+      </div>
+      <p id="delete-msg"></p>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase } from './Supabase.js'
+
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) { window.location.href = '/login.html' }
+    const user = session.user
+
+    document.getElementById('user-email').textContent = user.email
+    document.getElementById('member-since').textContent = new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+
+    const { count } = await supabase.from('transactions').select('*', { count: 'exact', head: true }).eq('user_id', user.id)
+    document.getElementById('txn-count').textContent = count || 0
+
+    document.getElementById('confirm-input').addEventListener('input', function() {
+      document.getElementById('confirm-delete-btn').disabled = this.value !== 'DELETE'
+    })
+
+    window.showDeleteModal = () => document.getElementById('delete-modal').classList.add('show')
+    window.hideDeleteModal = () => {
+      document.getElementById('delete-modal').classList.remove('show')
+      document.getElementById('confirm-input').value = ''
+      document.getElementById('confirm-delete-btn').disabled = true
+      document.getElementById('delete-msg').textContent = ''
+    }
+
+    window.deleteAccount = async function() {
+      const msg = document.getElementById('delete-msg')
+      const btn = document.getElementById('confirm-delete-btn')
+      btn.disabled = true
+      msg.textContent = 'Deleting your data...'
+
+      try {
+        // Delete all user data
+        await supabase.from('transactions').delete().eq('user_id', user.id)
+        await supabase.from('categories').delete().eq('user_id', user.id)
+        await supabase.from('budgets').delete().eq('user_id', user.id)
+        await supabase.from('profiles').delete().eq('id', user.id)
+
+        // Sign out
+        await supabase.auth.signOut()
+        window.location.href = '/login.html?deleted=true'
+      } catch (err) {
+        msg.textContent = 'Something went wrong. Please try again.'
+        btn.disabled = false
+      }
+    }
+  </script>
+</body>
+</html>

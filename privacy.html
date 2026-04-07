@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Flo — Privacy Policy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --sky: #38bdf8; --sky-dark: #0ea5e9; --sky-pale: #f0faff; --text: #0f172a; --muted: #64748b; --border: #e2e8f0; }
+    body { background: var(--sky-pale); color: var(--text); font-family: 'Sora', sans-serif; min-height: 100vh; padding: 2rem; }
+    .container { max-width: 720px; margin: 0 auto; }
+    .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3rem; }
+    .logo-link { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .back-link { font-size: 0.85rem; color: var(--muted); cursor: pointer; background: none; border: none; font-family: 'Sora', sans-serif; }
+    .back-link:hover { color: var(--sky-dark); }
+    .card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 2.5rem; }
+    h1 { font-size: 1.7rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 6px; }
+    .updated { font-size: 0.82rem; color: var(--muted); margin-bottom: 2rem; }
+    h2 { font-size: 1rem; font-weight: 600; margin: 2rem 0 0.6rem; }
+    p { font-size: 0.9rem; line-height: 1.75; color: #334155; margin-bottom: 0.75rem; }
+    ul { padding-left: 1.5rem; margin-bottom: 0.75rem; }
+    li { font-size: 0.9rem; line-height: 1.75; color: #334155; margin-bottom: 4px; }
+    a { color: var(--sky-dark); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .footer-links { display: flex; gap: 1.5rem; margin-top: 2rem; font-size: 0.82rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <a class="logo-link" href="/index.html">
+        <svg width="80" height="28" viewBox="0 0 80 28">
+          <rect x="0" y="0" width="28" height="28" rx="14" fill="#0ea5e9"/>
+          <path d="M6 14 Q9 9 13 14 Q17 19 21 14" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <text x="34" y="19" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="300" fill="#0f172a" letter-spacing="2">FLO</text>
+        </svg>
+      </a>
+      <button class="back-link" onclick="history.back()">← Back</button>
+    </div>
+
+    <div class="card">
+      <h1>Privacy Policy</h1>
+      <p class="updated">Last updated: April 2026</p>
+
+      <p>Your privacy matters to us. This policy explains what data Flo collects, how we use it, and your rights over it.</p>
+
+      <h2>1. What we collect</h2>
+      <p>When you use Flo, we collect:</p>
+      <ul>
+        <li>Your email address (for account creation and login)</li>
+        <li>Financial data you enter — income, budgets, categories, and transactions</li>
+        <li>Questions you ask the AI advisor</li>
+        <li>Basic usage data (when you log in, which features you use)</li>
+      </ul>
+
+      <h2>2. How we use your data</h2>
+      <p>We use your data to:</p>
+      <ul>
+        <li>Provide and improve the Flo service</li>
+        <li>Power the AI advisor with your financial context</li>
+        <li>Send important account emails (password reset, security alerts)</li>
+        <li>Understand how users interact with the app</li>
+      </ul>
+
+      <h2>3. What we don't do</h2>
+      <p>We do not sell your personal data to third parties. We do not share your financial data with advertisers. We do not use your data to train AI models.</p>
+
+      <h2>4. Third-party services</h2>
+      <p>Flo uses the following third-party services to operate:</p>
+      <ul>
+        <li>Supabase — database and authentication (your data is stored here)</li>
+        <li>Anthropic Claude — AI responses (your financial summary is sent to generate advice)</li>
+        <li>Vercel — hosting</li>
+      </ul>
+      <p>Each of these services has their own privacy policy. Your AI questions and financial summary are sent to Anthropic to generate responses but are not stored by them beyond the request.</p>
+
+      <h2>5. Data security</h2>
+      <p>Your data is protected by row-level security — meaning you can only access your own data. Passwords are handled entirely by Supabase Auth and are never stored in plain text. All data is transmitted over HTTPS.</p>
+
+      <h2>6. Your rights</h2>
+      <p>You have the right to:</p>
+      <ul>
+        <li>Access all data we hold about you</li>
+        <li>Correct inaccurate data</li>
+        <li>Delete your account and all associated data</li>
+        <li>Export your data</li>
+      </ul>
+      <p>You can delete your account at any time from your account settings page.</p>
+
+      <h2>7. Data retention</h2>
+      <p>When you delete your account, all your personal data, financial data, and transaction history is permanently deleted within 30 days.</p>
+
+      <h2>8. Children's privacy</h2>
+      <p>Flo is not intended for children under 13. We do not knowingly collect data from children under 13.</p>
+
+      <h2>9. Changes to this policy</h2>
+      <p>We may update this policy from time to time. We'll notify you of significant changes via email or an in-app notice.</p>
+
+      <h2>10. Contact</h2>
+      <p>If you have questions about your privacy or want to exercise your data rights, please reach out through the app.</p>
+
+      <div class="footer-links">
+        <a href="/terms.html">Terms of Service</a>
+        <a href="/index.html">Back to Flo</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -86,6 +86,7 @@
     </div>
     <a class="nav-item active"><span class="nav-icon">◉</span> Dashboard</a>
     <a class="nav-item" onclick="window.location.href='/setup.html'"><span class="nav-icon">⚙</span> Edit budget</a>
+    <a class="nav-item" onclick="window.location.href='/account.html'"><span class="nav-icon">👤</span> Account</a>
     <div class="sidebar-bottom">
       <div class="user-pill">
         <div class="user-avatar" id="user-initials">?</div>
@@ -282,16 +283,8 @@ Be direct. Under 3 sentences. For purchases, give a clear yes/no recommendation.
       try {
         const res = await fetch('/api/chat', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`
-          },
-          body: JSON.stringify({
-            model: 'claude-sonnet-4-20250514',
-            max_tokens: 1000,
-            system: sys,
-            messages: [{ role: 'user', content: question }]
-          })
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${accessToken}` },
+          body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: sys, messages: [{ role: 'user', content: question }] })
         })
         const data = await res.json()
         if (data.error) { document.getElementById(lid).textContent = data.error; return }

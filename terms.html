@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Flo — Terms of Service</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --sky: #38bdf8; --sky-dark: #0ea5e9; --sky-pale: #f0faff; --text: #0f172a; --muted: #64748b; --border: #e2e8f0; }
+    body { background: var(--sky-pale); color: var(--text); font-family: 'Sora', sans-serif; min-height: 100vh; padding: 2rem; }
+    .container { max-width: 720px; margin: 0 auto; }
+    .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3rem; }
+    .logo-link { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .back-link { font-size: 0.85rem; color: var(--muted); cursor: pointer; background: none; border: none; font-family: 'Sora', sans-serif; }
+    .back-link:hover { color: var(--sky-dark); }
+    .card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 2.5rem; }
+    h1 { font-size: 1.7rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 6px; }
+    .updated { font-size: 0.82rem; color: var(--muted); margin-bottom: 2rem; }
+    h2 { font-size: 1rem; font-weight: 600; margin: 2rem 0 0.6rem; }
+    p { font-size: 0.9rem; line-height: 1.75; color: #334155; margin-bottom: 0.75rem; }
+    ul { padding-left: 1.5rem; margin-bottom: 0.75rem; }
+    li { font-size: 0.9rem; line-height: 1.75; color: #334155; margin-bottom: 4px; }
+    a { color: var(--sky-dark); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .footer-links { display: flex; gap: 1.5rem; margin-top: 2rem; font-size: 0.82rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <a class="logo-link" href="/index.html">
+        <svg width="80" height="28" viewBox="0 0 80 28">
+          <rect x="0" y="0" width="28" height="28" rx="14" fill="#0ea5e9"/>
+          <path d="M6 14 Q9 9 13 14 Q17 19 21 14" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <text x="34" y="19" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="300" fill="#0f172a" letter-spacing="2">FLO</text>
+        </svg>
+      </a>
+      <button class="back-link" onclick="history.back()">← Back</button>
+    </div>
+
+    <div class="card">
+      <h1>Terms of Service</h1>
+      <p class="updated">Last updated: April 2026</p>
+
+      <p>Welcome to Flo. By creating an account or using our service, you agree to these terms. Please read them carefully.</p>
+
+      <h2>1. What Flo does</h2>
+      <p>Flo is a personal finance tool that helps you track your budget, log transactions, and get AI-powered financial insights. Flo is not a licensed financial advisor, bank, or investment service. The AI advice provided is for informational purposes only and should not be considered professional financial advice.</p>
+
+      <h2>2. Your account</h2>
+      <p>You must provide a valid email address to create an account. You are responsible for keeping your password secure and for all activity that occurs under your account. You must be at least 13 years old to use Flo.</p>
+
+      <h2>3. Your data</h2>
+      <p>You own your financial data. We store it securely so you can access it across sessions. We do not sell your data to third parties. See our <a href="/privacy.html">Privacy Policy</a> for full details on how we handle your information.</p>
+
+      <h2>4. Acceptable use</h2>
+      <p>You agree not to:</p>
+      <ul>
+        <li>Use Flo for any illegal purpose</li>
+        <li>Attempt to access other users' data</li>
+        <li>Abuse or overload our AI service</li>
+        <li>Reverse engineer or copy the service</li>
+      </ul>
+
+      <h2>5. AI limitations</h2>
+      <p>The AI advisor in Flo is powered by Anthropic's Claude. It provides general guidance based on the financial data you enter. It may make mistakes. Do not make major financial decisions based solely on AI recommendations — always consult a qualified financial professional for important decisions.</p>
+
+      <h2>6. Service availability</h2>
+      <p>We aim to keep Flo running smoothly but cannot guarantee 100% uptime. We may update, modify, or discontinue features at any time. We'll do our best to notify you of significant changes.</p>
+
+      <h2>7. Termination</h2>
+      <p>You can delete your account at any time from your account settings. We may suspend or terminate accounts that violate these terms.</p>
+
+      <h2>8. Limitation of liability</h2>
+      <p>Flo is provided "as is" without warranties of any kind. We are not liable for any financial losses or damages arising from your use of the service or reliance on AI-generated advice.</p>
+
+      <h2>9. Contact</h2>
+      <p>If you have questions about these terms, please reach out through the app.</p>
+
+      <div class="footer-links">
+        <a href="/privacy.html">Privacy Policy</a>
+        <a href="/index.html">Back to Flo</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
