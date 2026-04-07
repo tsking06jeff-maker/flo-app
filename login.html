@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Flo — Let your money flow</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --sky: #38bdf8; --sky-dark: #0ea5e9; --sky-light: #bae6fd;
+      --sky-pale: #f0faff; --white: #ffffff; --text: #0f172a;
+      --muted: #64748b; --border: #e2e8f0;
+    }
+    body {
+      background: var(--sky-pale);
+      color: var(--text);
+      font-family: 'Sora', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .wrapper { width: 100%; max-width: 420px; }
+    .logo-area { text-align: center; margin-bottom: 2.5rem; }
+    .logo-svg { display: block; margin: 0 auto 14px; }
+    .tagline { font-size: 0.85rem; color: var(--muted); letter-spacing: 0.01em; }
+    .card {
+      background: white; border: 1px solid var(--border);
+      border-radius: 20px; padding: 2rem;
+      box-shadow: 0 4px 24px rgba(56,189,248,0.07);
+    }
+    .card-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 4px; }
+    .card-sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.75rem; }
+    .field { margin-bottom: 1.1rem; }
+    label { font-size: 0.78rem; font-weight: 500; color: var(--muted); display: block; margin-bottom: 5px; letter-spacing: 0.02em; }
+    input {
+      width: 100%; background: var(--sky-pale); border: 1.5px solid var(--border);
+      border-radius: 10px; padding: 11px 14px; color: var(--text); font-size: 0.92rem;
+      font-family: 'Sora', sans-serif; outline: none; transition: border-color 0.2s, background 0.2s;
+    }
+    input:focus { border-color: var(--sky); background: white; }
+    .btn-primary {
+      width: 100%; padding: 13px; border-radius: 10px; border: none;
+      background: var(--sky-dark); color: white; font-size: 0.92rem; font-weight: 600;
+      font-family: 'Sora', sans-serif; cursor: pointer; margin-top: 0.5rem;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-primary:hover { background: #0284c7; }
+    .btn-primary:active { transform: scale(0.98); }
+    .divider { text-align: center; color: var(--border); font-size: 0.78rem; margin: 1rem 0; display: flex; align-items: center; gap: 10px; }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .btn-secondary {
+      width: 100%; padding: 13px; border-radius: 10px; border: 1.5px solid var(--border);
+      background: white; color: var(--muted); font-size: 0.92rem; font-weight: 500;
+      font-family: 'Sora', sans-serif; cursor: pointer; transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--sky); color: var(--sky-dark); }
+    #msg { font-size: 0.82rem; color: var(--muted); text-align: center; margin-top: 1rem; min-height: 20px; }
+    .footer { text-align: center; font-size: 0.78rem; color: #cbd5e1; margin-top: 1.5rem; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="logo-area">
+      <svg class="logo-svg" width="130" height="52" viewBox="0 0 130 52">
+        <rect x="0" y="6" width="46" height="40" rx="20" fill="#0ea5e9"/>
+        <path d="M10 26 Q15 18 20 26 Q25 34 30 26" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <text x="56" y="33" font-family="'Helvetica Neue', Arial, sans-serif" font-size="22" font-weight="300" fill="#0f172a" letter-spacing="3">FLO</text>
+      </svg>
+      <p class="tagline">let your money flow</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Welcome back</div>
+      <div class="card-sub">Sign in to your account to continue</div>
+
+      <div class="field">
+        <label>Email address</label>
+        <input id="email" type="email" placeholder="you@example.com" />
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input id="password" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter') signIn()" />
+      </div>
+      <button class="btn-primary" onclick="signIn()">Sign in</button>
+      <div class="divider">or</div>
+      <button class="btn-secondary" onclick="signUp()">Create a free account</button>
+      <p id="msg"></p>
+    </div>
+
+    <p class="footer">Flo — Smart budgeting powered by AI</p>
+  </div>
+
+  <script type="module">
+    import { supabase } from './Supabase.js'
+    const { data: { session } } = await supabase.auth.getSession()
+    if (session) window.location.href = '/index.html'
+
+    window.signIn = async function() {
+      const email = document.getElementById('email').value
+      const password = document.getElementById('password').value
+      const msg = document.getElementById('msg')
+      if (!email || !password) { msg.textContent = 'Please fill in both fields.'; return }
+      msg.textContent = 'Signing in...'
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      if (error) { msg.textContent = error.message; return }
+      window.location.href = '/index.html'
+    }
+
+    window.signUp = async function() {
+      const email = document.getElementById('email').value
+      const password = document.getElementById('password').value
+      const msg = document.getElementById('msg')
+      if (!email || !password) { msg.textContent = 'Please fill in both fields.'; return }
+      if (password.length < 6) { msg.textContent = 'Password must be at least 6 characters.'; return }
+      msg.textContent = 'Creating account...'
+      const { data, error } = await supabase.auth.signUp({ email, password })
+      if (error) { msg.textContent = error.message; return }
+      if (data.user) await supabase.from('profiles').insert({ id: data.user.id, full_name: email })
+      msg.textContent = 'Account created! You can now sign in.'
+    }
+  </script>
+</body>
+</html>

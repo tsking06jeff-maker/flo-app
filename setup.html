@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Flo — Setup</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --sky: #38bdf8; --sky-dark: #0ea5e9; --sky-light: #bae6fd;
+      --sky-pale: #f0faff; --white: #ffffff; --text: #0f172a;
+      --muted: #64748b; --border: #e2e8f0; --danger: #ef4444; --success: #22c55e;
+    }
+    body { background: var(--sky-pale); color: var(--text); font-family: 'Sora', sans-serif; min-height: 100vh; padding: 2rem; display: flex; justify-content: center; }
+    .container { width: 100%; max-width: 580px; }
+    .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0 2rem; }
+    .logo-inline { display: flex; align-items: center; gap: 10px; }
+    .steps { display: flex; gap: 6px; }
+    .step { width: 32px; height: 4px; border-radius: 99px; background: var(--border); transition: background 0.3s; }
+    .step.active { background: var(--sky); }
+    .step.done { background: var(--sky-dark); }
+    h2 { font-size: 1.55rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 6px; }
+    .subtitle { color: var(--muted); font-size: 0.88rem; margin-bottom: 2rem; }
+    .card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem; margin-bottom: 1.25rem; box-shadow: 0 2px 12px rgba(56,189,248,0.05); }
+    .card-title { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 1.25rem; }
+    label { font-size: 0.78rem; font-weight: 500; color: var(--muted); display: block; margin-bottom: 5px; }
+    input[type="text"], input[type="number"] {
+      width: 100%; background: var(--sky-pale); border: 1.5px solid var(--border);
+      border-radius: 10px; padding: 10px 14px; color: var(--text); font-size: 0.92rem;
+      font-family: 'Sora', sans-serif; outline: none; transition: border-color 0.2s, background 0.2s;
+    }
+    input:focus { border-color: var(--sky); background: white; }
+    .field { margin-bottom: 1rem; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .cat-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1rem; }
+    .cat-item { display: flex; align-items: center; gap: 10px; background: var(--sky-pale); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; }
+    .cat-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+    .cat-name { flex: 1; font-size: 0.87rem; font-weight: 500; }
+    .cat-amt { font-size: 0.85rem; color: var(--muted); }
+    .cat-remove { background: none; border: none; color: #cbd5e1; cursor: pointer; font-size: 1.1rem; padding: 0 2px; transition: color 0.15s; }
+    .cat-remove:hover { color: var(--danger); }
+    .add-row { display: grid; grid-template-columns: 1fr 110px 44px 44px; gap: 8px; align-items: center; }
+    .color-pick { width: 44px; height: 40px; border-radius: 10px; border: 1.5px solid var(--border); background: white; cursor: pointer; padding: 3px; }
+    .btn-add { width: 44px; height: 40px; background: var(--sky-dark); color: white; border: none; border-radius: 10px; font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .btn-add:hover { background: #0284c7; }
+    .btn-primary { width: 100%; padding: 13px; border-radius: 10px; border: none; background: var(--sky-dark); color: white; font-size: 0.92rem; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; transition: background 0.15s; }
+    .btn-primary:hover { background: #0284c7; }
+    .btn-ghost { padding: 13px 20px; border-radius: 10px; border: 1.5px solid var(--border); background: white; color: var(--muted); font-size: 0.9rem; font-family: 'Sora', sans-serif; cursor: pointer; }
+    .btn-ghost:hover { border-color: var(--sky); color: var(--sky-dark); }
+    .action-row { display: flex; gap: 10px; }
+    .action-row .btn-primary { flex: 1; }
+    #msg1, #msg2, #msg3 { font-size: 0.82rem; color: var(--muted); text-align: center; margin-top: 0.75rem; min-height: 18px; }
+    .review-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+    .review-row:last-child { border-bottom: none; }
+    .review-row span:first-child { color: var(--muted); }
+    .warn-box { background: #fff7ed; border: 1px solid #fed7aa; border-radius: 10px; padding: 10px 14px; font-size: 0.82rem; color: #c2410c; margin-top: 10px; }
+    .cat-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .chip { display: flex; align-items: center; gap: 6px; background: var(--sky-pale); border: 1px solid var(--border); border-radius: 99px; padding: 4px 12px; font-size: 0.8rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <div class="logo-inline">
+        <svg width="100" height="36" viewBox="0 0 100 36">
+          <rect x="0" y="0" width="36" height="36" rx="18" fill="#0ea5e9"/>
+          <path d="M8 18 Q12 12 17 18 Q22 24 26 18" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <text x="44" y="25" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="300" fill="#0f172a" letter-spacing="2.5">FLO</text>
+        </svg>
+      </div>
+      <div class="steps">
+        <div class="step active" id="s1"></div>
+        <div class="step" id="s2"></div>
+        <div class="step" id="s3"></div>
+      </div>
+    </div>
+
+    <div id="step1">
+      <h2>Set up your finances</h2>
+      <p class="subtitle">Tell us what you earn and what you want to save each month.</p>
+      <div class="card">
+        <div class="card-title">Monthly finances</div>
+        <div class="row">
+          <div class="field"><label>Monthly income ($)</label><input id="income" type="number" placeholder="e.g. 4,200" /></div>
+          <div class="field"><label>Savings goal ($)</label><input id="savings" type="number" placeholder="e.g. 700" /></div>
+        </div>
+        <div class="field">
+          <label>Spending budget ($) <span style="font-weight:400;color:#94a3b8;">auto-calculated</span></label>
+          <input id="budget-display" type="number" placeholder="Will calculate automatically" readonly style="color:var(--sky-dark);font-weight:500;" />
+        </div>
+      </div>
+      <button class="btn-primary" onclick="goToStep2()">Next: Set up categories →</button>
+      <p id="msg1"></p>
+    </div>
+
+    <div id="step2" style="display:none;">
+      <h2>Spending categories</h2>
+      <p class="subtitle">Customize your budget buckets — or keep the defaults we've prepared.</p>
+      <div class="card">
+        <div class="card-title">Your categories</div>
+        <div class="cat-list" id="cat-list"></div>
+        <div class="add-row">
+          <input id="cat-name" type="text" placeholder="Category name" />
+          <input id="cat-budget" type="number" placeholder="$ budget" />
+          <input type="color" id="cat-color" class="color-pick" value="#38bdf8" />
+          <button class="btn-add" onclick="addCategory()">+</button>
+        </div>
+      </div>
+      <div class="action-row">
+        <button class="btn-ghost" onclick="goToStep1()">← Back</button>
+        <button class="btn-primary" onclick="goToStep3()">Next: Review →</button>
+      </div>
+      <p id="msg2"></p>
+    </div>
+
+    <div id="step3" style="display:none;">
+      <h2>Looking good!</h2>
+      <p class="subtitle">Review your plan before we get you started.</p>
+      <div class="card">
+        <div class="card-title">Your plan</div>
+        <div id="review-content"></div>
+      </div>
+      <div class="action-row">
+        <button class="btn-ghost" onclick="goToStep2()">← Back</button>
+        <button class="btn-primary" id="save-btn" onclick="saveSetup()">Save &amp; go to dashboard →</button>
+      </div>
+      <p id="msg3"></p>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase } from './Supabase.js'
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) { window.location.href = '/login.html' }
+    const user = session.user
+
+    let categories = [
+      { name: 'Housing', budget: 1200, color: '#38bdf8' },
+      { name: 'Food', budget: 600, color: '#34d399' },
+      { name: 'Transport', budget: 300, color: '#fbbf24' },
+      { name: 'Entertainment', budget: 200, color: '#f472b6' },
+      { name: 'Subscriptions', budget: 150, color: '#a78bfa' },
+      { name: 'Misc', budget: 200, color: '#94a3b8' },
+    ]
+
+    document.getElementById('income').addEventListener('input', calcBudget)
+    document.getElementById('savings').addEventListener('input', calcBudget)
+    function calcBudget() {
+      const inc = parseFloat(document.getElementById('income').value) || 0
+      const sav = parseFloat(document.getElementById('savings').value) || 0
+      document.getElementById('budget-display').value = inc - sav > 0 ? inc - sav : ''
+    }
+
+    function renderCategories() {
+      const list = document.getElementById('cat-list')
+      list.innerHTML = ''
+      if (!categories.length) { list.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;padding:6px 0;">No categories yet.</p>'; return }
+      categories.forEach((cat, i) => {
+        const el = document.createElement('div')
+        el.className = 'cat-item'
+        el.innerHTML = `<div class="cat-dot" style="background:${cat.color}"></div><div class="cat-name">${cat.name}</div><div class="cat-amt">$${cat.budget.toLocaleString()}/mo</div><button class="cat-remove" onclick="removeCategory(${i})">×</button>`
+        list.appendChild(el)
+      })
+    }
+
+    window.removeCategory = function(i) { categories.splice(i, 1); renderCategories() }
+    window.addCategory = function() {
+      const name = document.getElementById('cat-name').value.trim()
+      const budget = parseFloat(document.getElementById('cat-budget').value)
+      const color = document.getElementById('cat-color').value
+      if (!name || !budget) return
+      categories.push({ name, budget, color })
+      document.getElementById('cat-name').value = ''
+      document.getElementById('cat-budget').value = ''
+      renderCategories()
+    }
+
+    function setStep(n) {
+      ;['step1','step2','step3'].forEach((id,i) => document.getElementById(id).style.display = i===n-1?'block':'none')
+      ;[1,2,3].forEach(i => { document.getElementById('s'+i).className = 'step' + (i===n?' active':i<n?' done':'') })
+    }
+
+    window.goToStep1 = () => setStep(1)
+    window.goToStep2 = function() {
+      if (!document.getElementById('income').value) { document.getElementById('msg1').textContent = 'Please enter your monthly income.'; return }
+      document.getElementById('msg1').textContent = ''
+      setStep(2); renderCategories()
+    }
+    window.goToStep3 = function() {
+      if (!categories.length) { document.getElementById('msg2').textContent = 'Add at least one category.'; return }
+      document.getElementById('msg2').textContent = ''
+      setStep(3)
+      const income = parseFloat(document.getElementById('income').value) || 0
+      const savings = parseFloat(document.getElementById('savings').value) || 0
+      const totalCat = categories.reduce((s,c) => s+c.budget, 0)
+      const spending = income - savings
+      document.getElementById('review-content').innerHTML = `
+        <div class="review-row"><span>Monthly income</span><span style="color:var(--sky-dark);font-weight:600;">$${income.toLocaleString()}</span></div>
+        <div class="review-row"><span>Savings goal</span><span>$${savings.toLocaleString()}/mo</span></div>
+        <div class="review-row"><span>Spending budget</span><span>$${spending.toLocaleString()}/mo</span></div>
+        <div class="review-row"><span>Category total</span><span style="color:${totalCat>spending?'var(--danger)':'var(--success)'};font-weight:600;">$${totalCat.toLocaleString()}</span></div>
+        ${totalCat>spending?`<div class="warn-box">⚠ Categories exceed budget by $${(totalCat-spending).toLocaleString()}. You may want to adjust.</div>`:''}
+        <div class="cat-chips">${categories.map(c=>`<div class="chip"><div style="width:8px;height:8px;border-radius:50%;background:${c.color};"></div>${c.name} · $${c.budget}</div>`).join('')}</div>
+      `
+    }
+    window.saveSetup = async function() {
+      const msg = document.getElementById('msg3')
+      const btn = document.getElementById('save-btn')
+      msg.textContent = 'Saving...' ; btn.disabled = true
+      const income = parseFloat(document.getElementById('income').value)
+      const savings = parseFloat(document.getElementById('savings').value) || 0
+      const month = new Date().toISOString().slice(0,7) + '-01'
+      const { error: be } = await supabase.from('budgets').upsert({ user_id: user.id, month, income, savings_goal: savings }, { onConflict: 'user_id,month' })
+      if (be) { msg.textContent = 'Error: '+be.message; btn.disabled=false; return }
+      await supabase.from('categories').delete().eq('user_id', user.id)
+      const { error: ce } = await supabase.from('categories').insert(categories.map(c => ({ user_id: user.id, name: c.name, budget: c.budget, color: c.color })))
+      if (ce) { msg.textContent = 'Error: '+ce.message; btn.disabled=false; return }
+      window.location.href = '/index.html'
+    }
+    renderCategories()
+  </script>
+</body>
+</html>
