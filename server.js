@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 
@@ -5,12 +6,15 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 app.use(express.static('.'))
+
 app.get('/', (req, res) => {
   res.sendFile(process.cwd() + '/index.html')
 })
+
 app.get('/test', (req, res) => {
   res.json({ ok: true })
 })
+
 app.post('/api/chat', async (req, res) => {
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -22,7 +26,6 @@ app.post('/api/chat', async (req, res) => {
       },
       body: JSON.stringify(req.body)
     })
-
     const data = await response.json()
     console.log('Anthropic response:', JSON.stringify(data))
     res.json(data)
