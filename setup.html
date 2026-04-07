@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Flo — Setup</title>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -56,6 +57,14 @@
     .warn-box { background: #fff7ed; border: 1px solid #fed7aa; border-radius: 10px; padding: 10px 14px; font-size: 0.82rem; color: #c2410c; margin-top: 10px; }
     .cat-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
     .chip { display: flex; align-items: center; gap: 6px; background: var(--sky-pale); border: 1px solid var(--border); border-radius: 99px; padding: 4px 12px; font-size: 0.8rem; }
+    @media (max-width: 768px) {
+      body { padding: 1.25rem; }
+      .container { max-width: 100%; }
+      .row { grid-template-columns: 1fr; }
+      .add-row { grid-template-columns: 1fr 90px 40px 40px; }
+      .action-row { flex-direction: column-reverse; }
+      .btn-ghost { width: 100%; }
+    }
   </style>
 </head>
 <body>
