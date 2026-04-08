@@ -290,19 +290,22 @@
     document.getElementById('income').textContent = '$' + budget.income.toLocaleString()
     document.getElementById('savings-sub').textContent = '$' + budget.savings_goal.toLocaleString() + ' saved/mo'
 
-    // Yearly goal display
+    // Yearly goal display — based on monthly savings goal, not guessed actual savings
     if (budget.yearly_goal) {
       const yearlyGoalBar = document.getElementById('yearly-goal-bar')
       yearlyGoalBar.style.display = 'block'
-      const monthsLeft = 12 - now.getMonth()
-      const savedSoFar = budget.savings_goal * now.getMonth()
-      const pct = Math.min(Math.round((savedSoFar / budget.yearly_goal) * 100), 100)
+      const monthsElapsed = now.getMonth()          // Jan=0, so months completed this year
+      const monthsLeft = Math.max(12 - now.getMonth(), 1)
+      const onPaceAmount = budget.savings_goal * monthsElapsed  // what you should have saved
+      const needed = Math.max(0, budget.yearly_goal - onPaceAmount)
+      const pct = budget.yearly_goal > 0 ? Math.min(Math.round((onPaceAmount / budget.yearly_goal) * 100), 100) : 0
       document.getElementById('yearly-pct').textContent = pct + '%'
       const fill = document.getElementById('yearly-fill')
       fill.style.width = pct + '%'
-      if (pct >= 100) fill.classList.add('over')
+      if (onPaceAmount >= budget.yearly_goal) fill.classList.add('over')
+      const neededPerMonth = Math.round(needed / monthsLeft)
       document.getElementById('yearly-sub').textContent =
-        `$${savedSoFar.toLocaleString()} saved of $${budget.yearly_goal.toLocaleString()} goal · ~$${Math.round((budget.yearly_goal - savedSoFar) / Math.max(monthsLeft, 1)).toLocaleString()}/mo needed`
+        `On pace: $${Math.round(onPaceAmount).toLocaleString()} of $${budget.yearly_goal.toLocaleString()} · $${neededPerMonth.toLocaleString()}/mo to hit goal · based on $${budget.savings_goal.toLocaleString()}/mo savings`
     }
 
     const { data: categories } = await supabase.from('categories').select('*').eq('user_id', user.id)

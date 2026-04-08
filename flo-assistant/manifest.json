@@ -4,7 +4,10 @@
   "version": "1.0.0",
   "description": "Know if you can afford it before you buy it.",
   "permissions": ["activeTab", "storage", "scripting"],
-  "host_permissions": ["https://*/*"],
+  "host_permissions": [
+    "https://flo-app-rosy.vercel.app/*",
+    "https://vtcsqcvjjlnbkqsdhrer.supabase.co/*"
+  ],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
