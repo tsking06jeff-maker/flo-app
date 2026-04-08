@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,7 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root { --sky: #38bdf8; --sky-dark: #0ea5e9; --sky-pale: #f0faff; --text: #0f172a; --muted: #64748b; --border: #e2e8f0; --bg: #f8fafc; --success: #16a34a; --danger: #dc2626; }
-    body { background: var(--bg); color: var(--text); font-family: 'Sora', sans-serif; min-height: 100vh; }
+    body { background:var(--bg); color: var(--text); font-family: 'Sora', sans-serif; min-height: 100vh; }
     .sidebar { position: fixed; top: 0; left: 0; width: 224px; height: 100vh; background: white; border-right: 1px solid var(--border); padding: 1.5rem 1rem; display: flex; flex-direction: column; z-index: 10; }
     .sidebar-logo { padding: 0.25rem 0.5rem 1.75rem; }
     .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; font-size: 0.85rem; font-weight: 500; color: var(--muted); cursor: pointer; transition: all 0.15s; text-decoration: none; margin-bottom: 2px; }
@@ -109,14 +109,14 @@
     <a class="nav-item" onclick="window.location.href='/reports.html'"><span class="nav-icon">📋</span> Reports</a>
     <a class="nav-item active"><span class="nav-icon">✈️</span> Planner</a>
     <a class="nav-item" onclick="window.location.href='/setup.html'"><span class="nav-icon">⚙</span> Edit budget</a>
-    <a class="nav-item" onclick="window.location.href='/account.html'"><span class="nav-icon">👤</span> Account</a>
+    <a class="nav-item" onclick="window.location.href='/Account.html'"><span class="nav-icon">👤</span> Account</a>
     <a class="nav-ext" onclick="showExtModal()" style="cursor:pointer;"><span class="nav-icon">🧩</span> Add extension</a>
     <div class="sidebar-bottom">
       <div class="user-pill">
         <div class="user-avatar" id="user-initials">?</div>
         <div class="user-info">
           <div class="user-name" id="user-name">—</div>
-          <div class="user-label">let your money flow</div>
+          <div class="user-label">Let your money flow</div>
         </div>
         <button class="sign-out-btn" onclick="signOut()">⇥</button>
       </div>
@@ -137,7 +137,7 @@
     <button class="bottom-nav-item" onclick="window.location.href='/index.html'"><span class="bottom-nav-icon">◉</span><span>Home</span></button>
     <button class="bottom-nav-item" onclick="window.location.href='/charts.html'"><span class="bottom-nav-icon">📊</span><span>Charts</span></button>
     <button class="bottom-nav-item active"><span class="bottom-nav-icon">✈️</span><span>Planner</span></button>
-    <button class="bottom-nav-item" onclick="window.location.href='/account.html'"><span class="bottom-nav-icon">👤</span><span>Account</span></button>
+    <button class="bottom-nav-item" onclick="window.location.href='/Account.html'"><span class="bottom-nav-icon">👤</span><span>Account</span></button>
   </div>
 
   <div class="main">
@@ -188,6 +188,12 @@
 
   <script type="module">
     import { supabase } from './Supabase.js'
+
+    const _t=localStorage.getItem('flo_theme')||'dark'
+    document.documentElement.setAttribute('data-theme',_t)
+    function applyTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('flo_theme',t);document.querySelectorAll('.toggle-track').forEach(el=>el.className='toggle-track'+(t==='dark'?' on':''));document.querySelectorAll('.theme-label').forEach(el=>el.textContent=t==='dark'?'Dark mode':'Light mode')}
+    applyTheme(_t)
+    window.toggleTheme=()=>applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark')
 
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) { localStorage.clear(); sessionStorage.clear(); window.location.href = '/login.html' }

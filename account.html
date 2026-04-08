@@ -86,8 +86,8 @@
     <a class="nav-item active"><span class="nav-icon">◎</span> Account</a>
     <a class="nav-ext" href="#" onclick="showExtModal();return false;"><span class="nav-icon">⧉</span> Add extension</a>
     <div class="sidebar-bottom">
-      <div class="theme-toggle" onclick="toggleTheme()"><span class="theme-label">dark mode</span><div class="toggle-track on" id="toggle-track"><div class="toggle-thumb"></div></div></div>
-      <div class="user-pill"><div class="user-avatar" id="user-initials">?</div><div class="user-info"><div class="user-name-pill" id="user-name-display">—</div><div class="user-sub-pill">let your money flow</div></div></div>
+      <div class="theme-toggle" onclick="toggleTheme()"><span class="theme-label">Dark mode</span><div class="toggle-track on" id="toggle-track"><div class="toggle-thumb"></div></div></div>
+      <div class="user-pill"><div class="user-avatar" id="user-initials">?</div><div class="user-info"><div class="user-name-pill" id="user-name-display">—</div><div class="user-sub-pill">Let your money flow</div></div></div>
     </div>
   </div>
   <div class="mobile-topbar">
@@ -102,62 +102,62 @@
     <button class="bottom-nav-item active"><span class="bottom-nav-icon">◎</span><span>Account</span></button>
   </div>
   <div class="main">
-    <div style="margin-bottom:24px;"><div class="page-title">account</div><div class="page-sub">manage your profile and data</div></div>
+    <div style="margin-bottom:24px;"><div class="page-title">Account</div><div class="page-sub">Manage your profile and data</div></div>
     <div class="card">
       <div class="card-title">Profile</div>
       <div class="info-row"><span class="info-label">email</span><span class="info-value" id="user-email">—</span></div>
       <div class="info-row">
-        <span class="info-label">display name</span>
+        <span class="info-label">Display name</span>
         <div class="edit-row"><input type="text" class="name-inp" id="name-input" placeholder="your name" /><button class="btn-save-name" onclick="saveName()">save</button></div>
       </div>
       <div id="name-msg"></div>
-      <div class="info-row"><span class="info-label">member since</span><span class="info-value" id="member-since">—</span></div>
-      <div class="info-row"><span class="info-label">transactions logged</span><span class="info-value" id="txn-count">—</span></div>
+      <div class="info-row"><span class="info-label">Member since</span><span class="info-value" id="member-since">—</span></div>
+      <div class="info-row"><span class="info-label">Transactions logged</span><span class="info-value" id="txn-count">—</span></div>
     </div>
     <div class="ext-card">
       <div class="ext-title">⧉ flo browser extension</div>
-      <p class="ext-desc">get real-time purchase advice while you shop on amazon, walmart, target, and more. pops up automatically and checks your budget before you buy.</p>
+      <p class="ext-desc">Get real-time purchase advice while you shop on amazon, walmart, target, and more. pops up automatically and checks your budget before you buy.</p>
       <a href="#" onclick="showExtModal();return false;" class="btn-ext">⧉ add to chrome / edge</a>
     </div>
     <div class="card">
       <div class="card-title">Sign out</div>
       <p style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:14px;">your data stays saved. come back anytime.</p>
-      <button class="btn-signout" onclick="signOut()">sign out of flo</button>
+      <button class="btn-signout" onclick="signOut()">Sign out of Flo</button>
     </div>
     <div class="card">
       <div class="card-title">Legal</div>
-      <div class="info-row"><span class="info-label">terms of service</span><a href="/terms.html" style="font-size:12px;color:var(--accent);">view →</a></div>
-      <div class="info-row"><span class="info-label">privacy policy</span><a href="/privacy.html" style="font-size:12px;color:var(--accent);">view →</a></div>
+      <div class="info-row"><span class="info-label">Terms of Service</span><a href="/terms.html" style="font-size:12px;color:var(--accent);">view →</a></div>
+      <div class="info-row"><span class="info-label">Privacy Policy</span><a href="/privacy.html" style="font-size:12px;color:var(--accent);">view →</a></div>
     </div>
     <div class="danger-card">
-      <div class="danger-title">delete account</div>
-      <p class="danger-desc">permanently deletes your account and all data. this cannot be undone.</p>
-      <button class="btn-danger" onclick="showDeleteModal()">delete my account</button>
+      <div class="danger-title">delete Account</div>
+      <p class="danger-desc">permanently deletes your Account and all data. this cannot be undone.</p>
+      <button class="btn-danger" onclick="showDeleteModal()">delete my Account</button>
     </div>
   </div>
   <div class="modal-overlay" id="delete-modal">
     <div class="modal">
-      <h2>are you sure?</h2>
-      <p>type <strong>DELETE</strong> to permanently delete your account and all data.</p>
+      <h2>Are you sure?</h2>
+      <p>type <strong>DELETE</strong> to permanently delete your Account and all data.</p>
       <input type="text" class="confirm-input" id="confirm-input" placeholder="type DELETE to confirm" />
       <div class="modal-actions">
         <button class="btn-cancel" onclick="hideDeleteModal()">cancel</button>
-        <button class="btn-danger" id="confirm-delete-btn" onclick="deleteAccount()" disabled>delete forever</button>
+        <button class="btn-danger" id="confirm-delete-btn" onclick="deleteAccount()" disabled>Delete forever</button>
       </div>
       <p id="delete-msg"></p>
     </div>
   </div>
   <div id="ext-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:999;align-items:center;justify-content:center;" onclick="if(event.target===this)hideExtModal()">
     <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:380px;width:92%;">
-      <h2 style="font-size:15px;font-weight:800;margin-bottom:6px;color:var(--text);">⧉ install the flo extension</h2>
-      <p style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6;">get real-time advice while you shop.</p>
+      <h2 style="font-size:15px;font-weight:800;margin-bottom:6px;color:var(--text);">⧉ Install the Flo extension</h2>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6;">Get real-time advice while you shop.</p>
       <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;">
         <div style="background:var(--card2);border-radius:8px;padding:9px;font-size:12px;color:var(--muted);">1. find folder at <code style="background:var(--border);padding:1px 4px;border-radius:4px;">finance-assistant/extension</code></div>
-        <div style="background:var(--card2);border-radius:8px;padding:9px;font-size:12px;color:var(--muted);">2. go to <strong style="color:var(--text);">edge://extensions</strong> → developer mode on</div>
+        <div style="background:var(--card2);border-radius:8px;padding:9px;font-size:12px;color:var(--muted);">2. Go to <strong style="color:var(--text);">edge://extensions</strong> → developer mode on</div>
         <div style="background:var(--card2);border-radius:8px;padding:9px;font-size:12px;color:var(--muted);">3. click <strong style="color:var(--text);">load unpacked</strong> → select folder</div>
       </div>
       <div style="display:flex;gap:8px;">
-        <button onclick="window.open('edge://extensions')" style="flex:1;padding:10px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:none;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;">open extensions</button>
+        <button onclick="window.open('edge://extensions')" style="flex:1;padding:10px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:none;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;">Open extensions</button>
         <button onclick="hideExtModal()" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--muted);font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;">close</button>
       </div>
     </div>
@@ -165,12 +165,14 @@
   <script type="module">
     import { supabase } from './Supabase.js'
     const _t=localStorage.getItem('flo_theme')||'dark'; document.documentElement.setAttribute('data-theme',_t)
-    function applyTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('flo_theme',t);document.querySelectorAll('.toggle-track').forEach(el=>el.className='toggle-track'+(t==='dark'?' on':''));document.querySelectorAll('.theme-label').forEach(el=>el.textContent=t==='dark'?'dark mode':'light mode')}
+    function applyTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('flo_theme',t);document.querySelectorAll('.toggle-track').forEach(el=>el.className='toggle-track'+(t==='dark'?' on':''));document.querySelectorAll('.theme-label').forEach(el=>el.textContent=t==='dark'?'Dark mode':'Light mode')}
     applyTheme(_t); window.toggleTheme=()=>applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark')
     window.showExtModal=()=>document.getElementById('ext-modal').style.display='flex'
     window.hideExtModal=()=>document.getElementById('ext-modal').style.display='none'
     const {data:{session}}=await supabase.auth.getSession()
-    if(!session){location.href='/login.html'}
+    if(!session){localStorage.clear();sessionStorage.clear();location.href='/login.html'}
+    const {data:{user:verifiedUser},error:ue}=await supabase.auth.getUser()
+    if(!verifiedUser||ue){await supabase.auth.signOut();localStorage.clear();location.href='/login.html'}
     const user=session.user
     const p=user.user_metadata; const n=p?.full_name||p?.first_name||user.email.split('@')[0]; const i=(p?.first_name?.[0]||user.email[0]).toUpperCase()
     document.getElementById('user-initials').textContent=i; document.getElementById('user-name-display').textContent=n

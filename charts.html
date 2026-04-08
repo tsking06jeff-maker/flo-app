@@ -81,11 +81,11 @@
     <a class="nav-item" onclick="location.href='/reports.html'"><span class="nav-icon">◧</span> Reports</a>
     <a class="nav-item" onclick="location.href='/planner.html'"><span class="nav-icon">✦</span> Planner</a>
     <a class="nav-item" onclick="location.href='/setup.html'"><span class="nav-icon">⊕</span> Edit budget</a>
-    <a class="nav-item" onclick="location.href='/account.html'"><span class="nav-icon">◎</span> Account</a>
+    <a class="nav-item" onclick="location.href='/Account.html'"><span class="nav-icon">◎</span> Account</a>
     <a class="nav-ext" href="#" onclick="showExtModal();return false;"><span class="nav-icon">⧉</span> Add extension</a>
     <div class="sidebar-bottom">
-      <div class="theme-toggle" onclick="toggleTheme()"><span class="theme-label">dark mode</span><div class="toggle-track on" id="toggle-track"><div class="toggle-thumb"></div></div></div>
-      <div class="user-pill"><div class="user-avatar" id="user-initials">?</div><div class="user-info"><div class="user-name-pill" id="user-name-display">—</div><div class="user-sub-pill">let your money flow</div></div><button class="sign-out-btn" onclick="signOut()">⇥</button></div>
+      <div class="theme-toggle" onclick="toggleTheme()"><span class="theme-label">Dark mode</span><div class="toggle-track on" id="toggle-track"><div class="toggle-thumb"></div></div></div>
+      <div class="user-pill"><div class="user-avatar" id="user-initials">?</div><div class="user-info"><div class="user-name-pill" id="user-name-display">—</div><div class="user-sub-pill">Let your money flow</div></div><button class="sign-out-btn" onclick="signOut()">⇥</button></div>
     </div>
   </div>
   <div class="mobile-topbar">
@@ -96,42 +96,42 @@
     <button class="bottom-nav-item" onclick="location.href='/index.html'"><span class="bottom-nav-icon">⬡</span><span>Home</span></button>
     <button class="bottom-nav-item active"><span class="bottom-nav-icon">◈</span><span>Charts</span></button>
     <button class="bottom-nav-item" onclick="location.href='/index.html#ai-section'"><span class="bottom-nav-icon">✦</span><span>Ask</span></button>
-    <button class="bottom-nav-item" onclick="location.href='/account.html'"><span class="bottom-nav-icon">◎</span><span>Account</span></button>
+    <button class="bottom-nav-item" onclick="location.href='/Account.html'"><span class="bottom-nav-icon">◎</span><span>Account</span></button>
   </div>
   <div class="main">
     <div class="page-title">charts</div>
-    <div class="page-sub">visualize where your money goes</div>
+    <div class="page-sub">Visualize where your money goes</div>
     <div class="tab-bar">
-      <button class="tab active" onclick="switchTab('overview')">overview</button>
-      <button class="tab" onclick="switchTab('history')">history</button>
-      <button class="tab" onclick="switchTab('trends')">trends</button>
+      <button class="tab active" onclick="switchTab('Overview')">Overview</button>
+      <button class="tab" onclick="switchTab('History')">History</button>
+      <button class="tab" onclick="switchTab('Trends')">Trends</button>
     </div>
-    <div id="tab-overview">
+    <div id="tab-Overview">
       <div class="summary-row" id="summary-row"></div>
       <div class="grid-2">
-        <div class="card"><div class="card-header"><div><div class="card-title">spending by category</div><div class="card-sub">this month</div></div></div><div class="chart-wrap"><canvas id="donut-chart"></canvas></div><div class="legend" id="donut-legend"></div></div>
-        <div class="card"><div class="card-header"><div><div class="card-title">budget vs spent</div><div class="card-sub">per category</div></div></div><div class="chart-wrap"><canvas id="bar-chart"></canvas></div></div>
+        <div class="card"><div class="card-header"><div><div class="card-title">Spending by category</div><div class="card-sub">this month</div></div></div><div class="chart-wrap"><canvas id="donut-chart"></canvas></div><div class="legend" id="donut-legend"></div></div>
+        <div class="card"><div class="card-header"><div><div class="card-title">Budget vs spent</div><div class="card-sub">per category</div></div></div><div class="chart-wrap"><canvas id="bar-chart"></canvas></div></div>
       </div>
     </div>
-    <div id="tab-history" style="display:none;">
+    <div id="tab-History" style="display:none;">
       <div class="card">
-        <div class="card-header"><div class="card-title">transaction history</div><span class="txn-count-badge" id="txn-count-badge"></span></div>
+        <div class="card-header"><div class="card-title">transaction History</div><span class="txn-count-badge" id="txn-count-badge"></span></div>
         <div class="filter-row" id="cat-filters"></div>
         <div id="txn-full-list"></div>
-        <button class="load-more-btn" id="history-load-more" onclick="loadMoreHistory()" style="display:none;">load more</button>
+        <button class="load-more-btn" id="History-load-more" onclick="loadMoreHistory()" style="display:none;">Load more</button>
       </div>
     </div>
-    <div id="tab-trends" style="display:none;">
-      <div class="card"><div class="card-header"><div><div class="card-title">daily spending</div><div class="card-sub">how much you spent each day</div></div></div><div class="chart-wrap"><canvas id="line-chart"></canvas></div></div>
+    <div id="tab-Trends" style="display:none;">
+      <div class="card"><div class="card-header"><div><div class="card-title">Daily spending</div><div class="card-sub">how much you spent each day</div></div></div><div class="chart-wrap"><canvas id="line-chart"></canvas></div></div>
     </div>
   </div>
   <div id="ext-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:999;align-items:center;justify-content:center;" onclick="if(event.target===this)hideExtModal()">
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:380px;width:92%;"><h2 style="font-size:15px;font-weight:800;margin-bottom:6px;color:var(--text);">⧉ install flo extension</h2><p style="font-size:12px;color:var(--muted);margin-bottom:14px;">get real-time advice while you shop.</p><div style="display:flex;gap:8px;"><button onclick="window.open('edge://extensions')" style="flex:1;padding:10px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:none;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;">open extensions</button><button onclick="hideExtModal()" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--muted);font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;">close</button></div></div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:380px;width:92%;"><h2 style="font-size:15px;font-weight:800;margin-bottom:6px;color:var(--text);">⧉ install flo extension</h2><p style="font-size:12px;color:var(--muted);margin-bottom:14px;">Get real-time advice while you shop.</p><div style="display:flex;gap:8px;"><button onclick="window.open('edge://extensions')" style="flex:1;padding:10px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:none;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;">Open extensions</button><button onclick="hideExtModal()" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--muted);font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;">close</button></div></div>
   </div>
   <script type="module">
     import { supabase } from './Supabase.js'
     const _t=localStorage.getItem('flo_theme')||'dark'; document.documentElement.setAttribute('data-theme',_t)
-    function applyTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('flo_theme',t);document.querySelectorAll('.toggle-track').forEach(el=>el.className='toggle-track'+(t==='dark'?' on':''));document.querySelectorAll('.theme-label').forEach(el=>el.textContent=t==='dark'?'dark mode':'light mode')}
+    function applyTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('flo_theme',t);document.querySelectorAll('.toggle-track').forEach(el=>el.className='toggle-track'+(t==='dark'?' on':''));document.querySelectorAll('.theme-label').forEach(el=>el.textContent=t==='dark'?'Dark mode':'Light mode')}
     applyTheme(_t); window.toggleTheme=()=>applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark')
     window.showExtModal=()=>document.getElementById('ext-modal').style.display='flex'
     window.hideExtModal=()=>document.getElementById('ext-modal').style.display='none'
@@ -162,17 +162,17 @@
       catNames.forEach((n,i)=>{const el=document.createElement('div');el.className='legend-item';el.innerHTML=`<div class="legend-dot" style="background:${catColors[i]}"></div><span>${n}: $${catAmounts[i].toLocaleString()}</span>`;legend.appendChild(el)})
     }else{document.getElementById('donut-chart').parentElement.innerHTML='<div class="empty-state">no transactions yet</div>'}
     new Chart(document.getElementById('bar-chart'),{type:'bar',data:{labels:categories.map(c=>c.name),datasets:[{label:'budget',data:categories.map(c=>c.budget),backgroundColor:isDark()?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.06)',borderRadius:5},{label:'spent',data:categories.map(c=>spentByCat[c.name]||0),backgroundColor:categories.map((c,i)=>(spentByCat[c.name]||0)>c.budget?'#f87171':c.color),borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{family:'Inter',size:10},boxWidth:10,color:isDark()?'#71717a':'#6b6b7b'}}},scales:{x:{grid:{display:false},ticks:{font:{family:'Inter',size:10},color:isDark()?'#52525b':'#9898ab'}},y:{grid:{color:isDark()?'rgba(255,255,255,0.04)':'rgba(0,0,0,0.04)'},ticks:{font:{family:'Inter',size:10},color:isDark()?'#52525b':'#9898ab',callback:v=>'$'+v}}}}})
-    let historyOffset=0,activeFilter='all',historyTxns=[],HISTORY_PAGE=25
+    let HistoryOffset=0,activeFilter='all',HistoryTxns=[],HISTORY_PAGE=25
     const filterRow=document.getElementById('cat-filters')
     const allBtn=document.createElement('button');allBtn.className='filter-btn active';allBtn.textContent='all';allBtn.onclick=()=>setFilter('all',allBtn);filterRow.appendChild(allBtn)
     categories.forEach(cat=>{const btn=document.createElement('button');btn.className='filter-btn';btn.textContent=cat.name;btn.onclick=()=>setFilter(cat.name,btn);filterRow.appendChild(btn)})
-    function setFilter(name,btn){activeFilter=name;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');historyOffset=0;historyTxns=[];document.getElementById('txn-full-list').innerHTML='';loadHistory()}
+    function setFilter(name,btn){activeFilter=name;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');HistoryOffset=0;HistoryTxns=[];document.getElementById('txn-full-list').innerHTML='';loadHistory()}
     async function loadHistory(){
       const filtered=activeFilter==='all'?txns:txns?.filter(t=>t.categories?.name===activeFilter)
-      const page=filtered?.slice(historyOffset,historyOffset+HISTORY_PAGE)||[]
-      if(!filtered||!filtered.length){document.getElementById('txn-full-list').innerHTML='<div class="empty-state">no transactions found</div>';document.getElementById('history-load-more').style.display='none';document.getElementById('txn-count-badge').textContent='';return}
+      const page=filtered?.slice(HistoryOffset,HistoryOffset+HISTORY_PAGE)||[]
+      if(!filtered||!filtered.length){document.getElementById('txn-full-list').innerHTML='<div class="empty-state">No transactions found</div>';document.getElementById('History-load-more').style.display='none';document.getElementById('txn-count-badge').textContent='';return}
       document.getElementById('txn-count-badge').textContent=filtered.length+' total'
-      historyTxns=[...historyTxns,...page]
+      HistoryTxns=[...HistoryTxns,...page]
       const list=document.getElementById('txn-full-list')
       page.forEach(t=>{
         const row=document.createElement('div');row.className='txn-row'
@@ -181,19 +181,19 @@
         row.innerHTML=`<div class="txn-left"><div class="txn-dot" style="background:${color}"></div><div><div class="txn-note">${t.note||'no note'}</div><div class="txn-meta">${t.categories?.name||'uncategorized'}${date?' · '+date:''}</div></div></div><div class="txn-amt">$${Number(t.amount).toLocaleString()}</div>`
         list.appendChild(row)
       })
-      historyOffset+=page.length
-      document.getElementById('history-load-more').style.display=historyOffset<filtered.length?'block':'none'
+      HistoryOffset+=page.length
+      document.getElementById('History-load-more').style.display=HistoryOffset<filtered.length?'block':'none'
     }
     window.loadMoreHistory=loadHistory
     const dailySpend={}; txns?.forEach(t=>{if(t.date){dailySpend[t.date]=(dailySpend[t.date]||0)+Number(t.amount)}})
     const sortedDays=Object.keys(dailySpend).sort()
     if(sortedDays.length>0){
-      new Chart(document.getElementById('line-chart'),{type:'line',data:{labels:sortedDays.map(d=>new Date(d+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})),datasets:[{label:'daily spending',data:sortedDays.map(d=>dailySpend[d]),borderColor:isDark()?'#a78bfa':'#7c3aed',backgroundColor:isDark()?'rgba(167,139,250,0.08)':'rgba(124,58,237,0.06)',borderWidth:2,pointBackgroundColor:isDark()?'#a78bfa':'#7c3aed',pointRadius:4,fill:true,tension:0.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{family:'Inter',size:10},color:isDark()?'#52525b':'#9898ab'}},y:{grid:{color:isDark()?'rgba(255,255,255,0.04)':'rgba(0,0,0,0.04)'},ticks:{font:{family:'Inter',size:10},color:isDark()?'#52525b':'#9898ab',callback:v=>'$'+v}}}}})
-    }else{document.getElementById('line-chart').parentElement.innerHTML='<div class="empty-state">log some transactions to see trends</div>'}
+      new Chart(document.getElementById('line-chart'),{type:'line',data:{labels:sortedDays.map(d=>new Date(d+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})),datasets:[{label:'Daily spending',data:sortedDays.map(d=>dailySpend[d]),borderColor:isDark()?'#a78bfa':'#7c3aed',backgroundColor:isDark()?'rgba(167,139,250,0.08)':'rgba(124,58,237,0.06)',borderWidth:2,pointBackgroundColor:isDark()?'#a78bfa':'#7c3aed',pointRadius:4,fill:true,tension:0.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{family:'Inter',size:10},color:isDark()?'#52525b':'#9898ab'}},y:{grid:{color:isDark()?'rgba(255,255,255,0.04)':'rgba(0,0,0,0.04)'},ticks:{font:{family:'Inter',size:10},color:isDark()?'#52525b':'#9898ab',callback:v=>'$'+v}}}}})
+    }else{document.getElementById('line-chart').parentElement.innerHTML='<div class="empty-state">log some transactions to see Trends</div>'}
     window.switchTab=function(tab){
-      ;['overview','history','trends'].forEach(t=>document.getElementById('tab-'+t).style.display=t===tab?'block':'none')
-      document.querySelectorAll('.tab').forEach((btn,i)=>btn.classList.toggle('active',['overview','history','trends'][i]===tab))
-      if(tab==='history'&&historyTxns.length===0)loadHistory()
+      ;['Overview','History','Trends'].forEach(t=>document.getElementById('tab-'+t).style.display=t===tab?'block':'none')
+      document.querySelectorAll('.tab').forEach((btn,i)=>btn.classList.toggle('active',['Overview','History','Trends'][i]===tab))
+      if(tab==='History'&&HistoryTxns.length===0)loadHistory()
     }
   </script>
 </body>

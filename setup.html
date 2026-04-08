@@ -123,11 +123,11 @@
     <a class="nav-item" onclick="location.href='/reports.html'"><span class="nav-icon">◧</span> Reports</a>
     <a class="nav-item" onclick="location.href='/planner.html'"><span class="nav-icon">✦</span> Planner</a>
     <a class="nav-item active"><span class="nav-icon">⊕</span> Edit budget</a>
-    <a class="nav-item" onclick="location.href='/account.html'"><span class="nav-icon">◎</span> Account</a>
+    <a class="nav-item" onclick="location.href='/Account.html'"><span class="nav-icon">◎</span> Account</a>
     <a class="nav-ext" href="#" onclick="return false;"><span class="nav-icon">⧉</span> Add extension</a>
     <div class="sidebar-bottom">
-      <div class="theme-toggle" onclick="toggleTheme()"><span class="theme-label">dark mode</span><div class="toggle-track on" id="toggle-track-sb"><div class="toggle-thumb"></div></div></div>
-      <div class="user-pill"><div class="user-avatar" id="user-initials-sb">?</div><div style="flex:1;overflow:hidden;"><div class="user-name-pill" id="user-name-sb">—</div><div class="user-sub-pill">let your money flow</div></div><button class="sign-out-btn" onclick="signOut()">⇥</button></div>
+      <div class="theme-toggle" onclick="toggleTheme()"><span class="theme-label">Dark mode</span><div class="toggle-track on" id="toggle-track-sb"><div class="toggle-thumb"></div></div></div>
+      <div class="user-pill"><div class="user-avatar" id="user-initials-sb">?</div><div style="flex:1;overflow:hidden;"><div class="user-name-pill" id="user-name-sb">—</div><div class="user-sub-pill">Let your money flow</div></div><button class="sign-out-btn" onclick="signOut()">⇥</button></div>
     </div>
   </div>
 
@@ -148,7 +148,7 @@
     <button class="bottom-nav-item" onclick="location.href='/index.html'"><span class="bottom-nav-icon">⬡</span><span>Home</span></button>
     <button class="bottom-nav-item" onclick="location.href='/charts.html'"><span class="bottom-nav-icon">◈</span><span>Charts</span></button>
     <button class="bottom-nav-item active"><span class="bottom-nav-icon">⊕</span><span>Budget</span></button>
-    <button class="bottom-nav-item" onclick="location.href='/account.html'"><span class="bottom-nav-icon">◎</span><span>Account</span></button>
+    <button class="bottom-nav-item" onclick="location.href='/Account.html'"><span class="bottom-nav-icon">◎</span><span>Account</span></button>
   </div>
 
   <!-- Mobile topbar (edit mode) -->
@@ -162,7 +162,7 @@
 
     <!-- Step 1 -->
     <div id="step1">
-      <div class="page-title">set up your finances</div>
+      <div class="page-title">Set up your finances</div>
       <div class="page-sub">create a budget profile — give it a name and set your monthly income and savings target.</div>
 
       <div class="budget-switcher" id="budget-switcher" style="display:none;">
@@ -184,14 +184,14 @@
         </div>
         <div class="field" id="monthly-target-field" style="display:none;"><label>Monthly needed to hit goal <span class="optional">auto</span></label><input class="std-input" id="monthly-target" type="number" placeholder="—" readonly /></div>
       </div>
-      <button class="btn-primary" onclick="goToStep2()">next: set up categories →</button>
+      <button class="btn-primary" onclick="goToStep2()">Next: Set up categories →</button>
       <p class="msg" id="msg1"></p>
     </div>
 
     <!-- Step 2 -->
     <div id="step2" style="display:none;">
-      <div class="page-title">spending categories</div>
-      <div class="page-sub">edit names and amounts directly, or add your own below.</div>
+      <div class="page-title">Spending categories</div>
+      <div class="page-sub">Edit names and amounts directly, or add your own below.</div>
       <div class="card">
         <div class="card-label">Your categories</div>
         <div class="cat-list" id="cat-list"></div>
@@ -203,23 +203,23 @@
         </div>
       </div>
       <div class="action-row">
-        <button class="btn-ghost" onclick="goToStep1()">← back</button>
-        <button class="btn-primary" onclick="goToStep3()">next: review →</button>
+        <button class="btn-ghost" onclick="goToStep1()">← Back</button>
+        <button class="btn-primary" onclick="goToStep3()">Next: Review →</button>
       </div>
       <p class="msg" id="msg2"></p>
     </div>
 
     <!-- Step 3 -->
     <div id="step3" style="display:none;">
-      <div class="page-title">looking good!</div>
-      <div class="page-sub">review your plan before we get you started.</div>
+      <div class="page-title">Looking good!</div>
+      <div class="page-sub">Review Your plan before we get you started.</div>
       <div class="card">
         <div class="card-label">Your plan</div>
         <div id="review-content"></div>
       </div>
       <div class="action-row">
-        <button class="btn-ghost" onclick="goToStep2()">← back</button>
-        <button class="btn-primary" id="save-btn" onclick="saveSetup()">save &amp; go to dashboard →</button>
+        <button class="btn-ghost" onclick="goToStep2()">← Back</button>
+        <button class="btn-primary" id="save-btn" onclick="saveSetup()">save &amp; Go to dashboard →</button>
       </div>
       <p class="msg" id="msg3"></p>
     </div>
@@ -235,14 +235,16 @@
     function applyTheme(t) {
       document.documentElement.setAttribute('data-theme', t); localStorage.setItem('flo_theme', t)
       document.querySelectorAll('.toggle-track').forEach(el => el.className = 'toggle-track' + (t === 'dark' ? ' on' : ''))
-      document.querySelectorAll('.theme-label').forEach(el => el.textContent = t === 'dark' ? 'dark mode' : 'light mode')
+      document.querySelectorAll('.theme-label').forEach(el => el.textContent = t === 'dark' ? 'Dark mode' : 'Light mode')
     }
     applyTheme(_t)
     window.toggleTheme = () => applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark')
     window.signOut = async () => { await supabase.auth.signOut(); location.href = '/login.html' }
 
     const { data: { session } } = await supabase.auth.getSession()
-    if (!session) { location.href = '/login.html' }
+    if (!session) { localStorage.clear(); sessionStorage.clear(); location.href = '/login.html' }
+    const {data:{user:verifiedUser},error:ue} = await supabase.auth.getUser()
+    if (!verifiedUser || ue) { await supabase.auth.signOut(); localStorage.clear(); location.href = '/login.html' }
     const user = session.user
     const p = user.user_metadata
     const name = p?.full_name || p?.first_name || user.email.split('@')[0]

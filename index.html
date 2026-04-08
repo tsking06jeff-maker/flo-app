@@ -190,18 +190,18 @@
     <a class="nav-item" onclick="location.href='/reports.html'"><span class="nav-icon">◧</span> Reports</a>
     <a class="nav-item" onclick="location.href='/planner.html'"><span class="nav-icon">✦</span> Planner</a>
     <a class="nav-item" onclick="location.href='/setup.html'"><span class="nav-icon">⊕</span> Edit budget</a>
-    <a class="nav-item" onclick="location.href='/account.html'"><span class="nav-icon">◎</span> Account</a>
+    <a class="nav-item" onclick="location.href='/Account.html'"><span class="nav-icon">◎</span> Account</a>
     <a class="nav-ext" href="#" onclick="showExtModal();return false;"><span class="nav-icon">⧉</span> Add extension</a>
     <div class="sidebar-bottom">
       <div class="theme-toggle" onclick="toggleTheme()">
-        <span id="theme-label">dark mode</span>
+        <span id="theme-label">Dark mode</span>
         <div class="toggle-track on" id="toggle-track"><div class="toggle-thumb"></div></div>
       </div>
       <div class="user-pill">
         <div class="user-avatar" id="user-initials-desktop">?</div>
         <div class="user-info">
           <div class="user-name-pill" id="user-name-desktop">—</div>
-          <div class="user-sub-pill">let your money flow</div>
+          <div class="user-sub-pill">Let your money flow</div>
         </div>
         <button class="sign-out-btn" onclick="signOut()" title="Sign out">⇥</button>
       </div>
@@ -224,14 +224,14 @@
     <button class="bottom-nav-item" onclick="location.href='/charts.html'"><span class="bottom-nav-icon">◈</span><span>Charts</span></button>
     <button class="bottom-nav-item" onclick="scrollToSection('log-section')"><span class="bottom-nav-icon">＋</span><span>Log</span></button>
     <button class="bottom-nav-item" onclick="scrollToSection('ai-section')"><span class="bottom-nav-icon">✦</span><span>Ask Flo</span></button>
-    <button class="bottom-nav-item" onclick="location.href='/account.html'"><span class="bottom-nav-icon">◎</span><span>Account</span></button>
+    <button class="bottom-nav-item" onclick="location.href='/Account.html'"><span class="bottom-nav-icon">◎</span><span>Account</span></button>
   </div>
 
   <div class="main">
     <div class="page-header">
       <div>
-        <div class="greeting">good morning, <span class="name" id="greeting-name">there</span> 👋</div>
-        <div class="header-sub" id="header-sub">here's your financial overview for this month</div>
+        <div class="greeting">Good morning, <span class="name" id="greeting-name">there</span> 👋</div>
+        <div class="header-sub" id="header-sub">Here's your financial Overview for this month</div>
       </div>
       <div class="date-badge" id="date-badge"></div>
     </div>
@@ -247,7 +247,7 @@
 
     <div class="yearly-goal-bar" id="yearly-goal-bar">
       <div class="yearly-goal-header">
-        <span class="yearly-goal-title">🎯 yearly savings goal</span>
+        <span class="yearly-goal-title">🎯 Yearly savings goal</span>
         <span class="yearly-goal-pct" id="yearly-pct">0%</span>
       </div>
       <div class="progress-track"><div class="progress-fill" id="yearly-fill" style="width:0%"></div></div>
@@ -276,7 +276,7 @@
           <div class="field"><label>Category</label><select id="category" class="inp"><option value="">select...</option></select></div>
         </div>
         <div class="field" style="margin-bottom:0;"><label>Note (optional)</label><input id="note" type="text" class="inp" placeholder="e.g. lunch at chipotle" /></div>
-        <button class="btn-save" onclick="saveTransaction()">save transaction</button>
+        <button class="btn-save" onclick="saveTransaction()">Save transaction</button>
         <p id="form-msg"></p>
       </div>
     </div>
@@ -285,25 +285,25 @@
       <div class="card">
         <div class="card-header">
           <div class="card-title">Recent transactions</div>
-          <button class="card-link" onclick="location.href='/charts.html'">view all →</button>
+          <button class="card-link" onclick="location.href='/charts.html'">View all →</button>
         </div>
         <div class="txn-list" id="transactions-list"></div>
-        <button class="load-more-btn" id="load-more-btn" onclick="loadMoreTransactions()" style="display:none;">load more</button>
+        <button class="load-more-btn" id="load-more-btn" onclick="loadMoreTransactions()" style="display:none;">Load more</button>
       </div>
       <div class="card" id="ai-section">
         <div class="card-header"><div class="card-title">Ask Flo AI</div></div>
         <div class="chat-msgs" id="chat-messages">
-          <div class="msg-ai">hey! i can see your full budget. ask me anything — purchases, tips, or a quick summary.</div>
+          <div class="msg-ai">hey! i can see your full budget. ask me anything — purchases, tips, or a quick Summary.</div>
         </div>
         <div class="chat-row">
-          <input id="ai-input" type="text" class="inp" placeholder="ask about your finances..." onkeydown="if(event.key==='Enter') askAI()" />
-          <button class="btn-ask" onclick="askAI()">ask ↗</button>
+          <input id="ai-input" type="text" class="inp" placeholder="Ask about your finances..." onkeydown="if(event.key==='Enter') askAI()" />
+          <button class="btn-ask" onclick="askAI()">Ask ↗</button>
         </div>
         <div class="quick-pills">
-          <button class="qp" onclick="quickAsk('where am i overspending?')">overspending?</button>
-          <button class="qp" onclick="quickAsk('how can i save more?')">save more?</button>
-          <button class="qp" onclick="quickAsk('give me a financial summary')">summary</button>
-          <button class="qp" onclick="quickAsk('am i on track for my savings goal?')">on track?</button>
+          <button class="qp" onclick="quickAsk('where am i Overspending?')">Overspending?</button>
+          <button class="qp" onclick="quickAsk('how can i Save more?')">Save more?</button>
+          <button class="qp" onclick="quickAsk('give me a financial Summary')">Summary</button>
+          <button class="qp" onclick="quickAsk('am i on track for my savings goal?')">On track?</button>
         </div>
       </div>
     </div>
@@ -313,8 +313,8 @@
   <div id="ext-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:999;align-items:center;justify-content:center;" onclick="if(event.target===this)hideExtModal()">
     <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;max-width:420px;width:92%;">
       <div style="font-size:28px;margin-bottom:12px;">⧉</div>
-      <h2 style="font-size:16px;font-weight:800;margin-bottom:6px;color:var(--text);">install the flo extension</h2>
-      <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:20px;">get real-time purchase advice while you shop. pops up automatically on amazon, walmart, target + more.</p>
+      <h2 style="font-size:16px;font-weight:800;margin-bottom:6px;color:var(--text);">Install the Flo extension</h2>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:20px;">Get real-time purchase advice while you shop. pops up automatically on amazon, walmart, target + more.</p>
       <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;">
         <div style="display:flex;gap:12px;align-items:flex-start;background:var(--card2);border-radius:9px;padding:11px;">
           <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
@@ -322,7 +322,7 @@
         </div>
         <div style="display:flex;gap:12px;align-items:flex-start;background:var(--card2);border-radius:9px;padding:11px;">
           <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
-          <div style="font-size:12px;color:var(--muted);line-height:1.5;">go to <strong style="color:var(--text);">edge://extensions</strong> and turn on <strong style="color:var(--text);">developer mode</strong></div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.5;">Go to <strong style="color:var(--text);">edge://extensions</strong> and turn on <strong style="color:var(--text);">developer mode</strong></div>
         </div>
         <div style="display:flex;gap:12px;align-items:flex-start;background:var(--card2);border-radius:9px;padding:11px;">
           <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
@@ -330,7 +330,7 @@
         </div>
       </div>
       <div style="display:flex;gap:8px;">
-        <button onclick="window.open('edge://extensions','_blank')" style="flex:1;padding:11px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:none;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;">open extensions page</button>
+        <button onclick="window.open('edge://extensions','_blank')" style="flex:1;padding:11px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:none;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;">Open extensions page</button>
         <button onclick="hideExtModal()" style="padding:11px 16px;border-radius:9px;border:1px solid var(--border);background:none;color:var(--muted);font-size:13px;font-family:'Inter',sans-serif;cursor:pointer;">close</button>
       </div>
     </div>
@@ -352,7 +352,7 @@
       const isDark = t === 'dark'
       if (track) { track.className = 'toggle-track' + (isDark ? ' on' : '') }
       if (trackM) { trackM.className = 'toggle-track' + (isDark ? ' on' : '') }
-      if (label) label.textContent = isDark ? 'dark mode' : 'light mode'
+      if (label) label.textContent = isDark ? 'Dark mode' : 'Light mode'
     }
 
     window.toggleTheme = function() {
@@ -384,7 +384,10 @@
     const displayName = profile?.full_name || firstName
     const initials = (profile?.first_name?.[0] || user.email[0]).toUpperCase()
 
-    document.getElementById('greeting-name').textContent = firstName.toLowerCase()
+    const hour = new Date().getHours()
+    const greetWord = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
+    document.getElementById('greeting-text').textContent = greetWord
+    document.getElementById('greeting-name').textContent = firstName.charAt(0).toUpperCase() + firstName.slice(1)
     document.getElementById('user-initials-desktop').textContent = initials
     document.getElementById('user-initials-mobile').textContent = initials
     document.getElementById('user-name-desktop').textContent = displayName
@@ -466,11 +469,11 @@
       const budget = parseFloat(document.getElementById('new-cat-budget').value)
       const color = document.getElementById('new-cat-color').value
       const msg = document.getElementById('cat-msg')
-      if (!name || !budget) { msg.textContent = 'enter a name and budget.'; return }
+      if (!name || !budget) { msg.textContent = 'Enter a name and budget.'; return }
       const { error } = await supabase.from('categories').insert({ user_id: user.id, name, budget, color })
       if (error) { msg.textContent = 'error: ' + error.message; return }
       document.getElementById('new-cat-name').value = ''; document.getElementById('new-cat-budget').value = ''
-      msg.textContent = '✓ added!'; setTimeout(() => msg.textContent = '', 2000)
+      msg.textContent = '✓ Added!'; setTimeout(() => msg.textContent = '', 2000)
       await loadCategories(); loadTransactions(true)
     }
 
@@ -491,13 +494,13 @@
       const { data: txns } = await supabase.from('transactions').select('*, categories(name,color)').eq('user_id', user.id).order('created_at', { ascending: false }).range(txnOffset, txnOffset + TXN_PAGE - 1)
       const list = document.getElementById('transactions-list')
       if (reset && (!txns || !txns.length)) {
-        list.innerHTML = '<p style="color:var(--muted2);font-size:12px;padding:8px 0;">no transactions yet. log your first one!</p>'
+        list.innerHTML = '<p style="color:var(--muted2);font-size:12px;padding:8px 0;">No transactions yet. Log your first one!</p>'
       }
       if (txns && txns.length) {
         allTxnsLoaded = [...allTxnsLoaded, ...txns]
         txns.forEach(t => {
           const row = document.createElement('div'); row.className = 'txn-row'; row.id = 'txn-' + t.id
-          const info = document.createElement('div'); info.innerHTML = '<div class="txn-note">' + (t.note || 'no note') + '</div><div class="txn-cat">' + (t.categories?.name || 'uncategorized') + '</div>'
+          const info = document.createElement('div'); info.innerHTML = '<div class="txn-note">' + (t.note || 'No note') + '</div><div class="txn-cat">' + (t.categories?.name || 'Uncategorized') + '</div>'
           const amt = document.createElement('div'); amt.className = 'txn-amt'; amt.textContent = '$' + Number(t.amount).toLocaleString()
           const del = document.createElement('button'); del.className = 'txn-delete'; del.textContent = '×'; del.title = 'delete'; del.onclick = () => deleteTransaction(t)
           row.append(info, amt, del); list.appendChild(row)
@@ -516,8 +519,8 @@
       remEl.textContent = '$' + Math.abs(remaining).toLocaleString() + (remaining < 0 ? ' over' : '')
       remEl.className = 'stat-value ' + (remaining < 0 ? 'red' : 'green')
       document.getElementById('header-sub').textContent = remaining < 0
-        ? "⚠ you've exceeded your spending budget this month"
-        : "here's your financial overview for this month"
+        ? "⚠ You've exceeded your spending budget this month"
+        : "Here's your financial Overview for this month"
 
       const spentByCatId = {}
       allTxns?.forEach(t => { if (t.category_id) spentByCatId[t.category_id] = (spentByCatId[t.category_id] || 0) + Number(t.amount) })
@@ -558,10 +561,10 @@
       const category_id = document.getElementById('category').value
       const note = document.getElementById('note').value
       const msg = document.getElementById('form-msg')
-      if (!amount || !category_id) { msg.textContent = 'fill in amount and category.'; return }
+      if (!amount || !category_id) { msg.textContent = 'Fill in amount and category.'; return }
       const { error } = await supabase.from('transactions').insert({ amount: parseFloat(amount), category_id, note, user_id: user.id })
       if (error) { msg.textContent = 'error: ' + error.message; return }
-      msg.textContent = '✓ saved!'
+      msg.textContent = '✓ Saved!'
       document.getElementById('amount').value = ''; document.getElementById('note').value = ''; document.getElementById('category').value = ''
       setTimeout(() => msg.textContent = '', 2000); loadTransactions(true)
     }
@@ -586,7 +589,7 @@
       msgs.innerHTML += '<div class="msg-user">' + question + '</div>'
       input.value = ''
       const lid = 'l' + Date.now()
-      msgs.innerHTML += '<div id="' + lid + '" class="msg-ai" style="color:var(--muted2)">thinking...</div>'
+      msgs.innerHTML += '<div id="' + lid + '" class="msg-ai" style="color:var(--muted2)">Thinking...</div>'
       msgs.scrollTop = msgs.scrollHeight
       const { data: fb } = await supabase.from('budgets').select('*').eq('user_id', user.id).limit(1).single()
       const { data: fc } = await supabase.from('categories').select('*').eq('user_id', user.id)
@@ -599,7 +602,7 @@
         const data = await res.json()
         const reply = data.content?.[0]?.text || 'sorry, could not get a response.'
         document.getElementById(lid).textContent = reply; document.getElementById(lid).style.color = 'var(--text)'
-      } catch { document.getElementById(lid).textContent = 'error reaching ai. try again.' }
+      } catch { document.getElementById(lid).textContent = 'Error reaching AI. Try again.' }
       msgs.scrollTop = msgs.scrollHeight
     }
   </script>

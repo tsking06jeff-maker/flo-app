@@ -46,20 +46,20 @@
     <div class="logo-area">
       <div class="logo-mark"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M4 12 Q8 5 12 12 Q16 19 20 12" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></div>
       <div class="logo-text">FLO</div>
-      <div class="tagline">let your money flow</div>
+      <div class="tagline">Let your money flow</div>
     </div>
-    <div class="deleted-banner" id="deleted-banner">account deleted. thanks for using flo.</div>
+    <div class="deleted-banner" id="deleted-banner">Account deleted. thanks for using flo.</div>
     <div class="card">
       <div class="tab-switch">
-        <button class="tab-btn active" id="tab-signin" onclick="switchMode('signin')">sign in</button>
-        <button class="tab-btn" id="tab-signup" onclick="switchMode('signup')">create account</button>
-        <button class="tab-btn" id="tab-magic" onclick="switchMode('magic')">magic link</button>
+        <button class="tab-btn active" id="tab-signin" onclick="switchMode('signin')">Sign in</button>
+        <button class="tab-btn" id="tab-signup" onclick="switchMode('signup')">Create Account</button>
+        <button class="tab-btn" id="tab-magic" onclick="switchMode('magic')">Magic link</button>
       </div>
       <div id="mode-signin">
         <div class="field"><label>Email</label><input class="inp" id="signin-email" type="email" placeholder="you@example.com" /></div>
         <div class="field"><label>Password</label><input class="inp" id="signin-password" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')signIn()" /></div>
-        <button class="forgot-link" onclick="forgotPassword()">forgot password?</button>
-        <button class="btn-primary" id="signin-btn" onclick="signIn()">sign in</button>
+        <button class="forgot-link" onclick="forgotPassword()">Forgot password?</button>
+        <button class="btn-primary" id="signin-btn" onclick="signIn()">Sign in</button>
       </div>
       <div id="mode-signup" style="display:none;">
         <div class="name-row">
@@ -68,13 +68,13 @@
         </div>
         <div class="field"><label>Email</label><input class="inp" id="signup-email" type="email" placeholder="you@example.com" /></div>
         <div class="field"><label>Password</label><input class="inp" id="signup-password" type="password" placeholder="at least 6 characters" onkeydown="if(event.key==='Enter')signUp()" /></div>
-        <button class="btn-primary" id="signup-btn" onclick="signUp()">create account</button>
-        <div class="terms-note">by signing up you agree to our <a href="/terms.html">terms</a> and <a href="/privacy.html">privacy policy</a>.</div>
+        <button class="btn-primary" id="signup-btn" onclick="signUp()">Create Account</button>
+        <div class="terms-note">By signing up you agree to our <a href="/terms.html">terms</a> and <a href="/privacy.html">Privacy Policy</a>.</div>
       </div>
       <div id="mode-magic" style="display:none;">
         <div class="field"><label>Email</label><input class="inp" id="magic-email" type="email" placeholder="you@example.com" onkeydown="if(event.key==='Enter')sendMagicLink()" /></div>
-        <button class="btn-primary" id="magic-btn" onclick="sendMagicLink()">send magic link ✨</button>
-        <p class="magic-note">we'll send a one-click sign in link — no password needed.</p>
+        <button class="btn-primary" id="magic-btn" onclick="sendMagicLink()">send Magic link ✨</button>
+        <p class="magic-note">we'll send a one-click Sign in link — no password needed.</p>
       </div>
       <p id="msg"></p>
     </div>
@@ -105,7 +105,7 @@
       if (!email||!password){msg.textContent='fill in both fields.';msg.className='error';return}
       btn.disabled=true;btn.textContent='signing in...'
       const {error}=await supabase.auth.signInWithPassword({email,password})
-      if(error){msg.textContent=error.message;msg.className='error';btn.disabled=false;btn.textContent='sign in';return}
+      if(error){msg.textContent=error.message;msg.className='error';btn.disabled=false;btn.textContent='Sign in';return}
       location.href='/index.html'
     }
     window.signUp = async () => {
@@ -114,20 +114,20 @@
       const msg=document.getElementById('msg'), btn=document.getElementById('signup-btn')
       if(!email||!password){msg.textContent='fill in email and password.';msg.className='error';return}
       if(password.length<6){msg.textContent='password must be at least 6 characters.';msg.className='error';return}
-      btn.disabled=true;btn.textContent='creating account...'
+      btn.disabled=true;btn.textContent='creating Account...'
       const fullName=[first,last].filter(Boolean).join(' ')||email
       const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name:fullName,first_name:first,last_name:last},emailRedirectTo:location.origin+'/auth-confirm.html'}})
-      if(error){msg.textContent=error.message;msg.className='error';btn.disabled=false;btn.textContent='create account';return}
+      if(error){msg.textContent=error.message;msg.className='error';btn.disabled=false;btn.textContent='Create Account';return}
       if(data.user) await supabase.from('profiles').upsert({id:data.user.id,full_name:fullName,first_name:first,last_name:last,email})
-      if(data.session){location.href='/setup.html'}else{msg.textContent='✓ check your email for a confirmation link!';msg.className='success';btn.disabled=false;btn.textContent='create account'}
+      if(data.session){location.href='/setup.html'}else{msg.textContent='✓ check your email for a confirmation link!';msg.className='success';btn.disabled=false;btn.textContent='Create Account'}
     }
     window.sendMagicLink = async () => {
       const email=document.getElementById('magic-email').value.trim(), msg=document.getElementById('msg'), btn=document.getElementById('magic-btn')
       if(!email){msg.textContent='enter your email.';msg.className='error';return}
       btn.disabled=true;btn.textContent='sending...'
       const {error}=await supabase.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+'/auth-confirm.html'}})
-      if(error){msg.textContent=error.message;msg.className='error';btn.disabled=false;btn.textContent='send magic link ✨';return}
-      msg.textContent='✓ magic link sent! check your email.';msg.className='success';btn.disabled=false;btn.textContent='resend link'
+      if(error){msg.textContent=error.message;msg.className='error';btn.disabled=false;btn.textContent='send Magic link ✨';return}
+      msg.textContent='✓ Magic link sent! check your email.';msg.className='success';btn.disabled=false;btn.textContent='Resend link'
     }
     window.forgotPassword = async () => {
       const email=document.getElementById('signin-email').value.trim(), msg=document.getElementById('msg')
