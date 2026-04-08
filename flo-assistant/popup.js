@@ -1,7 +1,7 @@
 // ── Config ── UPDATE THESE WITH YOUR VALUES
 const SUPABASE_URL = 'https://vtcsqcvjjlnbkqsdhrer.supabase.co'
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ0Y3NxY3ZqamxuYmtxc2RocmVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1NzY5NjksImV4cCI6MjA5MTE1Mjk2OX0.j6DUpG__NLmNNqXXJp54ogA0-PsQBx4NUj3YDBWqWqU'
-const FLO_API_URL = 'https://flo-app-rosy.vercel.app/index.html' // e.g. https://flo-app.vercel.app
+const FLO_API_URL = 'https://flo-app-rosy.vercel.app' // e.g. https://flo-app.vercel.app
 
 // ── Supabase helpers ──
 async function supabaseRequest(path, options = {}) {
@@ -118,11 +118,13 @@ async function loadBudgetSummary() {
   const budgetArea = document.getElementById('budget-area')
 
   try {
+    const userId = currentSession?.user?.id
+    if (!userId) { await clearSession(); currentSession = null; showScreen('login'); return }
     const budgets = await supabaseRequest(
-      `/rest/v1/budgets?user_id=eq.${currentSession.user.id}&limit=1&select=income,savings_goal`
+      `/rest/v1/budgets?user_id=eq.${userId}&limit=1&select=income,savings_goal`
     )
     const txns = await supabaseRequest(
-      `/rest/v1/transactions?user_id=eq.${currentSession.user.id}&select=amount`
+      `/rest/v1/transactions?user_id=eq.${userId}&select=amount`
     )
 
     const budget = budgets?.[0]
@@ -164,10 +166,12 @@ async function analyzeProduct() {
 
   try {
     // Get full financial context
+    const userId = currentSession?.user?.id
+    if (!userId) { aiArea.innerHTML = '<div class="ai-result neutral">Session expired. Please sign out and sign back in.</div>'; return }
     const [budgets, categories, txns] = await Promise.all([
-      supabaseRequest(`/rest/v1/budgets?user_id=eq.${currentSession.user.id}&limit=1`),
-      supabaseRequest(`/rest/v1/categories?user_id=eq.${currentSession.user.id}`),
-      supabaseRequest(`/rest/v1/transactions?user_id=eq.${currentSession.user.id}&select=amount,categories(name)&order=created_at.desc&limit=20`)
+      supabaseRequest(`/rest/v1/budgets?user_id=eq.${userId}&limit=1`),
+      supabaseRequest(`/rest/v1/categories?user_id=eq.${userId}`),
+      supabaseRequest(`/rest/v1/transactions?user_id=eq.${userId}&select=amount,categories(name)&order=created_at.desc&limit=20`)
     ])
 
     const budget = budgets?.[0]
@@ -247,14 +251,28 @@ async function doLogin() {
   msg.textContent = ''
 
   try {
+    // Step 1: get token
     const data = await signIn(email, password)
-    if (data.error) { msg.textContent = data.error.message || 'Sign in failed.'; btn.disabled = false; btn.textContent = 'Sign in'; return }
+    if (data.error || !data.access_token) {
+      msg.textContent = data.error_description || data.msg || data.error?.message || 'Sign in failed.'
+      btn.disabled = false; btn.textContent = 'Sign in'; return
+    }
 
-    currentSession = data
-    await saveSession(data)
+    // Step 2: fetch user separately — token response doesn't always include user
+    const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+      headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${data.access_token}` }
+    })
+    const userData = await userRes.json()
+    if (!userData?.id) {
+      msg.textContent = 'Could not load profile. Try again.'
+      btn.disabled = false; btn.textContent = 'Sign in'; return
+    }
+
+    currentSession = { ...data, user: userData }
+    await saveSession(currentSession)
 
     document.getElementById('toggle-wrap').style.display = 'flex'
-    document.getElementById('settings-email').textContent = email
+    document.getElementById('settings-email').textContent = userData.email || email
     showScreen('main')
     await loadMainScreen()
   } catch (e) {
@@ -310,7 +328,7 @@ document.getElementById('settings-btn').addEventListener('click', () => {
 })
 
 function openDashboard() {
-  chrome.tabs.create({ url: FLO_API_URL })
+  chrome.tabs.create({ url: FLO_API_URL + '/index.html' })
 }
 
 // ── Screen helper ──
