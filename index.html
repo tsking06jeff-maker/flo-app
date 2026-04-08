@@ -104,6 +104,11 @@
     .quick-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
     .qp { font-size: 0.73rem; padding: 5px 11px; border-radius: 99px; border: 1px solid var(--border); background: white; color: var(--muted); cursor: pointer; font-family: 'Sora', sans-serif; transition: all 0.15s; }
     .qp:hover { border-color: var(--sky); color: var(--sky-dark); background: var(--sky-pale); }
+    .cat-edit-row { display: flex; align-items: center; gap: 8px; background: var(--sky-pale); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; margin-bottom: 6px; transition: border-color 0.15s; }
+    .cat-edit-row:focus-within { border-color: var(--sky); background: white; }
+    .cat-edit-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .cat-edit-name { flex: 1; font-size: 0.85rem; font-weight: 500; background: none; border: none; outline: none; font-family: 'Sora', sans-serif; color: var(--text); min-width: 0; }
+    .cat-edit-amt { font-size: 0.85rem; font-weight: 600; color: var(--sky-dark); background: none; border: none; outline: none; font-family: 'Sora', sans-serif; width: 70px; text-align: right; }
     @media (max-width: 768px) {
       .sidebar { display: none; }
       .bottom-nav { display: flex; }
@@ -144,7 +149,7 @@
     <a class="nav-item" onclick="window.location.href='/planner.html'"><span class="nav-icon">✈️</span> Planner</a>
     <a class="nav-item" onclick="window.location.href='/setup.html'"><span class="nav-icon">⚙</span> Edit budget</a>
     <a class="nav-item" onclick="window.location.href='/account.html'"><span class="nav-icon">👤</span> Account</a>
-    <a class="nav-ext" href="https://chrome.google.com/webstore" target="_blank"><span class="nav-icon">🧩</span> Add extension</a>
+    <a class="nav-ext" onclick="showExtModal()" style="cursor:pointer;"><span class="nav-icon">🧩</span> Add extension</a>
     <div class="sidebar-bottom">
       <div class="user-pill">
         <div class="user-avatar" id="user-initials-desktop">?</div>
@@ -210,9 +215,14 @@
       <div class="card">
         <div class="card-header">
           <div class="card-title">Budget categories</div>
-          <button class="card-link" onclick="window.location.href='/setup.html'">Edit →</button>
+          <button class="card-link" id="cat-edit-btn" onclick="toggleCatEdit()">Edit →</button>
         </div>
         <div class="cat-grid" id="categories"></div>
+        <div id="cat-edit-area" style="display:none;margin-top:12px;"></div>
+        <div id="cat-save-row" style="display:none;margin-top:10px;gap:8px;display:none;flex-direction:column;">
+          <button class="btn-save" id="cat-save-btn" onclick="saveCategories()">Save changes</button>
+          <p id="cat-save-msg" style="font-size:0.78rem;color:var(--muted);text-align:center;min-height:14px;"></p>
+        </div>
       </div>
       <div class="card" id="log-section">
         <div class="card-header"><div class="card-title">Log a transaction</div></div>
@@ -447,6 +457,77 @@
       loadTransactions(true)
     }
 
+    let catEditMode = false
+    let editableCats = []
+
+    window.toggleCatEdit = function() {
+      catEditMode = !catEditMode
+      const editArea = document.getElementById('cat-edit-area')
+      const saveRow = document.getElementById('cat-save-row')
+      const btn = document.getElementById('cat-edit-btn')
+
+      if (catEditMode) {
+        btn.textContent = 'Cancel'
+        editArea.style.display = 'block'
+        saveRow.style.display = 'flex'
+        editArea.innerHTML = ''
+        editableCats = categories ? [...categories] : []
+        editableCats.forEach((cat, i) => {
+          const row = document.createElement('div')
+          row.className = 'cat-edit-row'
+
+          const dot = document.createElement('div')
+          dot.className = 'cat-edit-dot'
+          dot.style.background = cat.color
+
+          const nameInp = document.createElement('input')
+          nameInp.className = 'cat-edit-name'
+          nameInp.type = 'text'
+          nameInp.value = cat.name
+          nameInp.addEventListener('input', () => { editableCats[i].name = nameInp.value })
+
+          const dollar = document.createElement('span')
+          dollar.textContent = '$'
+          dollar.style.cssText = 'font-size:0.8rem;color:var(--muted);'
+
+          const amtInp = document.createElement('input')
+          amtInp.className = 'cat-edit-amt'
+          amtInp.type = 'number'
+          amtInp.value = cat.budget
+          amtInp.addEventListener('input', () => { editableCats[i].budget = parseFloat(amtInp.value) || 0 })
+
+          const mo = document.createElement('span')
+          mo.textContent = '/mo'
+          mo.style.cssText = 'font-size:0.75rem;color:var(--muted);'
+
+          row.append(dot, nameInp, dollar, amtInp, mo)
+          editArea.appendChild(row)
+        })
+      } else {
+        btn.textContent = 'Edit →'
+        editArea.style.display = 'none'
+        saveRow.style.display = 'none'
+        document.getElementById('cat-save-msg').textContent = ''
+      }
+    }
+
+    window.saveCategories = async function() {
+      const btn = document.getElementById('cat-save-btn')
+      const msg = document.getElementById('cat-save-msg')
+      btn.disabled = true; btn.textContent = 'Saving...'
+      // Update each category budget in Supabase
+      const updates = editableCats.map(cat =>
+        supabase.from('categories').update({ name: cat.name, budget: cat.budget }).eq('id', cat.id)
+      )
+      const results = await Promise.all(updates)
+      const err = results.find(r => r.error)
+      if (err) { msg.textContent = 'Error: ' + err.error.message; btn.disabled = false; btn.textContent = 'Save changes'; return }
+      msg.textContent = '✓ Saved!'
+      btn.disabled = false; btn.textContent = 'Save changes'
+      // Refresh page data
+      setTimeout(() => { catEditMode = false; window.location.reload() }, 800)
+    }
+
     window.quickAsk = function(q) { document.getElementById('ai-input').value = q; askAI() }
 
     window.askAI = async function() {
@@ -491,6 +572,27 @@ Be direct. Under 3 sentences. For purchases, give a clear yes/no recommendation.
       }
       msgs.scrollTop = msgs.scrollHeight
     }
+  </script>
+
+  <!-- Extension install modal -->
+  <div class="modal-overlay" id="ext-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;" onclick="if(event.target===this)hideExtModal()">
+    <div style="background:white;border-radius:20px;padding:2rem;max-width:440px;width:92%;box-shadow:0 8px 40px rgba(0,0,0,0.15);">
+      <div style="font-size:2rem;margin-bottom:12px;">🧩</div>
+      <h2 style="font-size:1.1rem;font-weight:600;margin-bottom:8px;">Install the Flo extension</h2>
+      <p style="font-size:0.87rem;color:#64748b;line-height:1.7;margin-bottom:1.25rem;">The Flo extension pops up on Amazon, Walmart, Target and more — asking "Should I buy this?" before you checkout.</p>
+      <div style="background:#f0faff;border:1px solid #bae6fd;border-radius:12px;padding:1rem;font-size:0.83rem;color:#0c4a6e;line-height:1.8;margin-bottom:1.25rem;">
+        <strong>How to install:</strong><br>
+        1. Open <strong>edge://extensions</strong> or <strong>chrome://extensions</strong><br>
+        2. Enable <strong>Developer mode</strong> (top right toggle)<br>
+        3. Click <strong>Load unpacked</strong><br>
+        4. Select your <code style="background:#e0f2fe;padding:1px 5px;border-radius:4px;">finance-assistant/extension</code> folder
+      </div>
+      <button onclick="hideExtModal()" style="width:100%;padding:12px;border-radius:10px;border:none;background:#0ea5e9;color:white;font-size:0.9rem;font-weight:600;font-family:'Sora',sans-serif;cursor:pointer;">Got it</button>
+    </div>
+  </div>
+  <script>
+    function showExtModal() { const m = document.getElementById('ext-modal'); m.style.display='flex'; }
+    function hideExtModal() { const m = document.getElementById('ext-modal'); m.style.display='none'; }
   </script>
 </body>
 </html>

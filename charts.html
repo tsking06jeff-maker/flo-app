@@ -100,7 +100,7 @@
     <a class="nav-item" onclick="window.location.href='/planner.html'"><span class="nav-icon">✈️</span> Planner</a>
     <a class="nav-item" onclick="window.location.href='/setup.html'"><span class="nav-icon">⚙</span> Edit budget</a>
     <a class="nav-item" onclick="window.location.href='/account.html'"><span class="nav-icon">👤</span> Account</a>
-    <a class="nav-ext" href="https://chrome.google.com/webstore" target="_blank"><span class="nav-icon">🧩</span> Add extension</a>
+    <a class="nav-ext" onclick="showExtModal()" style="cursor:pointer;"><span class="nav-icon">🧩</span> Add extension</a>
     <div class="sidebar-bottom">
       <div class="user-pill">
         <div class="user-avatar" id="user-initials">?</div>
@@ -362,6 +362,27 @@
       })
       if (tab === 'history' && historyTxns.length === 0) loadHistory()
     }
+  </script>
+
+  <!-- Extension install modal -->
+  <div class="modal-overlay" id="ext-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;" onclick="if(event.target===this)hideExtModal()">
+    <div style="background:white;border-radius:20px;padding:2rem;max-width:440px;width:92%;box-shadow:0 8px 40px rgba(0,0,0,0.15);">
+      <div style="font-size:2rem;margin-bottom:12px;">🧩</div>
+      <h2 style="font-size:1.1rem;font-weight:600;margin-bottom:8px;">Install the Flo extension</h2>
+      <p style="font-size:0.87rem;color:#64748b;line-height:1.7;margin-bottom:1.25rem;">The Flo extension pops up on Amazon, Walmart, Target and more — asking "Should I buy this?" before you checkout.</p>
+      <div style="background:#f0faff;border:1px solid #bae6fd;border-radius:12px;padding:1rem;font-size:0.83rem;color:#0c4a6e;line-height:1.8;margin-bottom:1.25rem;">
+        <strong>How to install:</strong><br>
+        1. Open <strong>edge://extensions</strong> or <strong>chrome://extensions</strong><br>
+        2. Enable <strong>Developer mode</strong> (top right toggle)<br>
+        3. Click <strong>Load unpacked</strong><br>
+        4. Select your <code style="background:#e0f2fe;padding:1px 5px;border-radius:4px;">finance-assistant/extension</code> folder
+      </div>
+      <button onclick="hideExtModal()" style="width:100%;padding:12px;border-radius:10px;border:none;background:#0ea5e9;color:white;font-size:0.9rem;font-weight:600;font-family:'Sora',sans-serif;cursor:pointer;">Got it</button>
+    </div>
+  </div>
+  <script>
+    function showExtModal() { const m = document.getElementById('ext-modal'); m.style.display='flex'; }
+    function hideExtModal() { const m = document.getElementById('ext-modal'); m.style.display='none'; }
   </script>
 </body>
 </html>

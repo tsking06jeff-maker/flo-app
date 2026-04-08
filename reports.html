@@ -95,7 +95,7 @@
     <a class="nav-item" onclick="window.location.href='/planner.html'"><span class="nav-icon">✈️</span> Planner</a>
     <a class="nav-item" onclick="window.location.href='/setup.html'"><span class="nav-icon">⚙</span> Edit budget</a>
     <a class="nav-item" onclick="window.location.href='/account.html'"><span class="nav-icon">👤</span> Account</a>
-    <a class="nav-ext" href="https://chrome.google.com/webstore" target="_blank"><span class="nav-icon">🧩</span> Add extension</a>
+    <a class="nav-ext" onclick="showExtModal()" style="cursor:pointer;"><span class="nav-icon">🧩</span> Add extension</a>
     <div class="sidebar-bottom">
       <div class="user-pill">
         <div class="user-avatar" id="user-initials">?</div>
@@ -221,28 +221,58 @@
         spentByCat[name] = (spentByCat[name] || 0) + Number(t.amount)
       })
 
-      // Insights
+      // Insights — built carefully to avoid contradictions
       const insights = []
-      if (remaining >= 0) {
-        insights.push({ type: 'good', icon: '✅', text: `You stayed within budget — $${Math.round(remaining).toLocaleString()} to spare!` })
-      } else {
-        insights.push({ type: 'bad', icon: '🚨', text: `You went over budget by $${Math.abs(Math.round(remaining)).toLocaleString()} this month.` })
-      }
+
       if (totalSpent === 0) {
         insights.push({ type: 'good', icon: '📊', text: 'No transactions logged yet for this month.' })
       } else {
-        const topCat = Object.entries(spentByCat).sort(([,a],[,b]) => b - a)[0]
-        if (topCat) insights.push({ type: 'warn', icon: '📌', text: `Biggest spending category: ${topCat[0]} ($${Math.round(topCat[1]).toLocaleString()})` })
-      }
-      if (biggestTxn) {
-        insights.push({ type: 'warn', icon: '💸', text: `Largest single transaction: $${Number(biggestTxn.amount).toLocaleString()}${biggestTxn.note ? ' — ' + biggestTxn.note : ''}` })
-      }
-      categories.forEach(cat => {
-        const spent = spentByCat[cat.name] || 0
-        if (spent > cat.budget) {
-          insights.push({ type: 'bad', icon: '⚠️', text: `${cat.name} went over budget by $${Math.round(spent - cat.budget).toLocaleString()}` })
+        // Check category overruns first — used to qualify the overall budget insight
+        const overBudgetCats = categories.filter(cat => (spentByCat[cat.name] || 0) > cat.budget)
+        const nearBudgetCats = categories.filter(cat => {
+          const spent = spentByCat[cat.name] || 0
+          const pct = cat.budget > 0 ? spent / cat.budget : 0
+          return pct >= 0.8 && pct < 1
+        })
+
+        // Overall budget insight — only show "within budget" if NO categories went over
+        if (remaining >= 0 && overBudgetCats.length === 0) {
+          insights.push({ type: 'good', icon: '✅', text: `You stayed within budget — $${Math.round(remaining).toLocaleString()} to spare this month!` })
+        } else if (remaining < 0) {
+          insights.push({ type: 'bad', icon: '🚨', text: `You went over your total budget by $${Math.abs(Math.round(remaining)).toLocaleString()} this month.` })
+        } else if (overBudgetCats.length > 0 && remaining >= 0) {
+          insights.push({ type: 'warn', icon: '⚠️', text: `Overall budget is okay, but ${overBudgetCats.length} ${overBudgetCats.length === 1 ? 'category' : 'categories'} went over their limit.` })
         }
-      })
+
+        // Category overruns
+        overBudgetCats.forEach(cat => {
+          const spent = spentByCat[cat.name] || 0
+          insights.push({ type: 'bad', icon: '🔴', text: `${cat.name} went over budget by $${Math.round(spent - cat.budget).toLocaleString()} ($${Math.round(spent).toLocaleString()} spent of $${cat.budget.toLocaleString()} limit)` })
+        })
+
+        // Near-limit warnings (only if not already over)
+        nearBudgetCats.forEach(cat => {
+          const spent = spentByCat[cat.name] || 0
+          const pct = Math.round((spent / cat.budget) * 100)
+          insights.push({ type: 'warn', icon: '⚠️', text: `${cat.name} is at ${pct}% of its budget — $${Math.round(cat.budget - spent).toLocaleString()} left` })
+        })
+
+        // Biggest spending category (only if no overruns to avoid noise)
+        if (overBudgetCats.length === 0) {
+          const topCat = Object.entries(spentByCat).sort(([,a],[,b]) => b - a)[0]
+          if (topCat) insights.push({ type: 'warn', icon: '📌', text: `Biggest spending category: ${topCat[0]} ($${Math.round(topCat[1]).toLocaleString()})` })
+        }
+
+        // Largest single transaction
+        if (biggestTxn) {
+          insights.push({ type: 'warn', icon: '💸', text: `Largest single transaction: $${Number(biggestTxn.amount).toLocaleString()}${biggestTxn.note ? ' — ' + biggestTxn.note : ''}` })
+        }
+
+        // Savings insight
+        if (remaining >= 0 && budget.savings_goal > 0) {
+          insights.push({ type: 'good', icon: '💰', text: `On track for your $${budget.savings_goal.toLocaleString()}/mo savings goal.` })
+        }
+      }
 
       // Destroy old chart if exists
       if (barChart) { barChart.destroy(); barChart = null }
@@ -335,6 +365,27 @@
     }
 
     renderReport()
+  </script>
+
+  <!-- Extension install modal -->
+  <div class="modal-overlay" id="ext-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;" onclick="if(event.target===this)hideExtModal()">
+    <div style="background:white;border-radius:20px;padding:2rem;max-width:440px;width:92%;box-shadow:0 8px 40px rgba(0,0,0,0.15);">
+      <div style="font-size:2rem;margin-bottom:12px;">🧩</div>
+      <h2 style="font-size:1.1rem;font-weight:600;margin-bottom:8px;">Install the Flo extension</h2>
+      <p style="font-size:0.87rem;color:#64748b;line-height:1.7;margin-bottom:1.25rem;">The Flo extension pops up on Amazon, Walmart, Target and more — asking "Should I buy this?" before you checkout.</p>
+      <div style="background:#f0faff;border:1px solid #bae6fd;border-radius:12px;padding:1rem;font-size:0.83rem;color:#0c4a6e;line-height:1.8;margin-bottom:1.25rem;">
+        <strong>How to install:</strong><br>
+        1. Open <strong>edge://extensions</strong> or <strong>chrome://extensions</strong><br>
+        2. Enable <strong>Developer mode</strong> (top right toggle)<br>
+        3. Click <strong>Load unpacked</strong><br>
+        4. Select your <code style="background:#e0f2fe;padding:1px 5px;border-radius:4px;">finance-assistant/extension</code> folder
+      </div>
+      <button onclick="hideExtModal()" style="width:100%;padding:12px;border-radius:10px;border:none;background:#0ea5e9;color:white;font-size:0.9rem;font-weight:600;font-family:'Sora',sans-serif;cursor:pointer;">Got it</button>
+    </div>
+  </div>
+  <script>
+    function showExtModal() { const m = document.getElementById('ext-modal'); m.style.display='flex'; }
+    function hideExtModal() { const m = document.getElementById('ext-modal'); m.style.display='none'; }
   </script>
 </body>
 </html>

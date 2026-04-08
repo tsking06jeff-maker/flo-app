@@ -264,15 +264,39 @@
       categories.forEach((cat, i) => {
         const el = document.createElement('div')
         el.className = 'cat-item'
-        el.innerHTML = `
-          <div class="cat-dot" style="background:${cat.color}"></div>
-          <input class="cat-name-inp" type="text" value="${cat.name}" placeholder="Category name"
-            onchange="categories[${i}].name = this.value" />
-          <span style="font-size:0.82rem;color:var(--muted);margin-right:2px;">$</span>
-          <input class="cat-amt-inp" type="number" value="${cat.budget}" placeholder="0"
-            onchange="categories[${i}].budget = parseFloat(this.value) || 0" />
-          <span style="font-size:0.78rem;color:var(--muted);white-space:nowrap;">/mo</span>
-          <button class="cat-remove" onclick="removeCategory(${i})">×</button>`
+
+        const dot = document.createElement('div')
+        dot.className = 'cat-dot'
+        dot.style.background = cat.color
+
+        const nameInp = document.createElement('input')
+        nameInp.className = 'cat-name-inp'
+        nameInp.type = 'text'
+        nameInp.value = cat.name
+        nameInp.placeholder = 'Category name'
+        nameInp.addEventListener('change', () => { categories[i].name = nameInp.value })
+
+        const dollar = document.createElement('span')
+        dollar.textContent = '$'
+        dollar.style.cssText = 'font-size:0.82rem;color:var(--muted);margin-right:2px;'
+
+        const amtInp = document.createElement('input')
+        amtInp.className = 'cat-amt-inp'
+        amtInp.type = 'number'
+        amtInp.value = cat.budget
+        amtInp.placeholder = '0'
+        amtInp.addEventListener('change', () => { categories[i].budget = parseFloat(amtInp.value) || 0 })
+
+        const mo = document.createElement('span')
+        mo.textContent = '/mo'
+        mo.style.cssText = 'font-size:0.78rem;color:var(--muted);white-space:nowrap;'
+
+        const removeBtn = document.createElement('button')
+        removeBtn.className = 'cat-remove'
+        removeBtn.textContent = '×'
+        removeBtn.addEventListener('click', () => { categories.splice(i, 1); renderCategories() })
+
+        el.append(dot, nameInp, dollar, amtInp, mo, removeBtn)
         list.appendChild(el)
       })
     }
