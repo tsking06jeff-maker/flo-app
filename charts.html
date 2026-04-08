@@ -136,7 +136,9 @@
     window.showExtModal=()=>document.getElementById('ext-modal').style.display='flex'
     window.hideExtModal=()=>document.getElementById('ext-modal').style.display='none'
     const {data:{session}}=await supabase.auth.getSession()
-    if(!session){location.href='/login.html'}
+    if(!session){localStorage.clear();sessionStorage.clear();location.href='/login.html'}
+    const {data:{user:verifiedUser},error:ue}=await supabase.auth.getUser()
+    if(!verifiedUser||ue){await supabase.auth.signOut();localStorage.clear();location.href='/login.html'}
     const user=session.user
     const p=user.user_metadata; document.getElementById('user-name-display').textContent=p?.full_name||p?.first_name||user.email.split('@')[0]; document.getElementById('user-initials').textContent=(p?.first_name?.[0]||user.email[0]).toUpperCase()
     window.signOut=async()=>{await supabase.auth.signOut();location.href='/login.html'}

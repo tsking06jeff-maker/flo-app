@@ -190,7 +190,9 @@
     import { supabase } from './Supabase.js'
 
     const { data: { session } } = await supabase.auth.getSession()
-    if (!session) { window.location.href = '/login.html' }
+    if (!session) { localStorage.clear(); sessionStorage.clear(); window.location.href = '/login.html' }
+    const {data:{user:verifiedUser},error:ue} = await supabase.auth.getUser()
+    if (!verifiedUser || ue) { await supabase.auth.signOut(); localStorage.clear(); window.location.href = '/login.html' }
     const user = session.user
 
     const profile = user.user_metadata
