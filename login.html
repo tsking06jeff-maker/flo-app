@@ -36,6 +36,7 @@
       font-family: 'Sora', sans-serif; outline: none; transition: border-color 0.2s, background 0.2s;
     }
     input:focus { border-color: var(--sky); background: white; }
+    .name-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .btn-primary {
       width: 100%; padding: 13px; border-radius: 10px; border: none;
       background: var(--sky-dark); color: white; font-size: 0.92rem; font-weight: 600;
@@ -44,32 +45,34 @@
     }
     .btn-primary:hover { background: #0284c7; }
     .btn-primary:active { transform: scale(0.98); }
+    .btn-primary:disabled { background: #7dd3fc; cursor: not-allowed; }
     .divider { text-align: center; color: var(--border); font-size: 0.78rem; margin: 1rem 0; display: flex; align-items: center; gap: 10px; }
     .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
     .btn-secondary {
       width: 100%; padding: 13px; border-radius: 10px; border: 1.5px solid var(--border);
       background: white; color: var(--muted); font-size: 0.92rem; font-weight: 500;
       font-family: 'Sora', sans-serif; cursor: pointer; transition: border-color 0.2s, color 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
     }
     .btn-secondary:hover { border-color: var(--sky); color: var(--sky-dark); }
+    .tab-switch { display: flex; background: var(--sky-pale); border-radius: 12px; padding: 4px; margin-bottom: 1.5rem; gap: 4px; }
+    .tab-btn { flex: 1; padding: 8px; border: none; background: none; border-radius: 9px; font-size: 0.82rem; font-weight: 500; font-family: 'Sora', sans-serif; color: var(--muted); cursor: pointer; transition: all 0.15s; }
+    .tab-btn.active { background: white; color: var(--sky-dark); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    .magic-note { font-size: 0.78rem; color: var(--muted); text-align: center; margin-top: 8px; line-height: 1.6; }
     #msg { font-size: 0.82rem; color: var(--muted); text-align: center; margin-top: 1rem; min-height: 20px; }
     #msg.success { color: #16a34a; }
     #msg.error { color: #dc2626; }
-    .terms-note {
-      font-size: 0.75rem; color: var(--muted); text-align: center;
-      margin-top: 1.25rem; line-height: 1.6;
-    }
+    .terms-note { font-size: 0.75rem; color: var(--muted); text-align: center; margin-top: 1.25rem; line-height: 1.6; }
     .terms-note a { color: var(--sky-dark); text-decoration: none; }
     .terms-note a:hover { text-decoration: underline; }
     .footer { text-align: center; font-size: 0.75rem; color: #cbd5e1; margin-top: 1.5rem; display: flex; justify-content: center; gap: 1.25rem; }
     .footer a { color: #94a3b8; text-decoration: none; }
     .footer a:hover { color: var(--muted); }
-    .deleted-banner {
-      display: none; background: #f0fdf4; border: 1px solid #bbf7d0;
-      border-radius: 10px; padding: 12px 16px; font-size: 0.85rem;
-      color: #166534; text-align: center; margin-bottom: 1.25rem;
-    }
+    .deleted-banner { display: none; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 12px 16px; font-size: 0.85rem; color: #166534; text-align: center; margin-bottom: 1.25rem; }
     .deleted-banner.show { display: block; }
+    .forgot-link { font-size: 0.78rem; color: var(--sky-dark); background: none; border: none; font-family: 'Sora', sans-serif; cursor: pointer; display: block; text-align: right; margin-top: -4px; margin-bottom: 8px; }
+    .forgot-link:hover { text-decoration: underline; }
+    @media (max-width: 480px) { .name-row { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -88,27 +91,65 @@
     </div>
 
     <div class="card">
-      <div class="card-title" id="card-title">Welcome back</div>
-      <div class="card-sub" id="card-sub">Sign in to your account to continue</div>
+      <div class="tab-switch">
+        <button class="tab-btn active" id="tab-signin" onclick="switchMode('signin')">Sign in</button>
+        <button class="tab-btn" id="tab-signup" onclick="switchMode('signup')">Create account</button>
+        <button class="tab-btn" id="tab-magic" onclick="switchMode('magic')">Magic link</button>
+      </div>
 
-      <div class="field">
-        <label>Email address</label>
-        <input id="email" type="email" placeholder="you@example.com" />
+      <!-- Sign In -->
+      <div id="mode-signin">
+        <div class="field">
+          <label>Email address</label>
+          <input id="signin-email" type="email" placeholder="you@example.com" />
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input id="signin-password" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter') signIn()" />
+          <button class="forgot-link" onclick="forgotPassword()">Forgot password?</button>
+        </div>
+        <button class="btn-primary" id="signin-btn" onclick="signIn()">Sign in</button>
       </div>
-      <div class="field">
-        <label>Password</label>
-        <input id="password" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter') signIn()" />
+
+      <!-- Sign Up -->
+      <div id="mode-signup" style="display:none;">
+        <div class="name-row">
+          <div class="field">
+            <label>First name</label>
+            <input id="signup-first" type="text" placeholder="Alex" />
+          </div>
+          <div class="field">
+            <label>Last name</label>
+            <input id="signup-last" type="text" placeholder="Smith" />
+          </div>
+        </div>
+        <div class="field">
+          <label>Email address</label>
+          <input id="signup-email" type="email" placeholder="you@example.com" />
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input id="signup-password" type="password" placeholder="At least 6 characters" onkeydown="if(event.key==='Enter') signUp()" />
+        </div>
+        <button class="btn-primary" id="signup-btn" onclick="signUp()">Create account</button>
+        <div class="terms-note">
+          By creating an account you agree to our
+          <a href="/terms.html">Terms of Service</a> and
+          <a href="/privacy.html">Privacy Policy</a>.
+        </div>
       </div>
-      <button class="btn-primary" onclick="signIn()">Sign in</button>
-      <div class="divider">or</div>
-      <button class="btn-secondary" onclick="signUp()">Create a free account</button>
+
+      <!-- Magic Link -->
+      <div id="mode-magic" style="display:none;">
+        <div class="field">
+          <label>Email address</label>
+          <input id="magic-email" type="email" placeholder="you@example.com" onkeydown="if(event.key==='Enter') sendMagicLink()" />
+        </div>
+        <button class="btn-primary" id="magic-btn" onclick="sendMagicLink()">Send magic link ✨</button>
+        <p class="magic-note">We'll send you a one-click sign in link — no password needed.</p>
+      </div>
+
       <p id="msg"></p>
-
-      <div class="terms-note">
-        By creating an account you agree to our
-        <a href="/terms.html">Terms of Service</a> and
-        <a href="/privacy.html">Privacy Policy</a>.
-      </div>
     </div>
 
     <div class="footer">
@@ -122,41 +163,103 @@
   <script type="module">
     import { supabase } from './Supabase.js'
 
+    // If already logged in, go to dashboard
     const { data: { session } } = await supabase.auth.getSession()
     if (session) window.location.href = '/index.html'
 
-    // Show deleted account banner if redirected from account deletion
+    // Handle Supabase auth redirects (magic link, email confirmation)
+    supabase.auth.onAuthStateChange((event, session) => {
+      if ((event === 'SIGNED_IN' || event === 'USER_UPDATED') && session) {
+        window.location.href = '/index.html'
+      }
+    })
+
     const params = new URLSearchParams(window.location.search)
     if (params.get('deleted') === 'true') {
       document.getElementById('deleted-banner').classList.add('show')
-      document.getElementById('card-title').textContent = 'Account deleted'
-      document.getElementById('card-sub').textContent = 'Create a new account or sign in with a different email.'
+    }
+
+    window.switchMode = function(mode) {
+      ;['signin','signup','magic'].forEach(m => {
+        document.getElementById('mode-' + m).style.display = m === mode ? 'block' : 'none'
+        document.getElementById('tab-' + m).classList.toggle('active', m === mode)
+      })
+      document.getElementById('msg').textContent = ''
+      document.getElementById('msg').className = ''
     }
 
     window.signIn = async function() {
-      const email = document.getElementById('email').value
-      const password = document.getElementById('password').value
+      const email = document.getElementById('signin-email').value.trim()
+      const password = document.getElementById('signin-password').value
       const msg = document.getElementById('msg')
+      const btn = document.getElementById('signin-btn')
       if (!email || !password) { msg.textContent = 'Please fill in both fields.'; msg.className = 'error'; return }
-      msg.textContent = 'Signing in...'
-      msg.className = ''
+      btn.disabled = true; btn.textContent = 'Signing in...'
+      msg.textContent = ''; msg.className = ''
       const { error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) { msg.textContent = error.message; msg.className = 'error'; return }
+      if (error) { msg.textContent = error.message; msg.className = 'error'; btn.disabled = false; btn.textContent = 'Sign in'; return }
       window.location.href = '/index.html'
     }
 
     window.signUp = async function() {
-      const email = document.getElementById('email').value
-      const password = document.getElementById('password').value
+      const firstName = document.getElementById('signup-first').value.trim()
+      const lastName = document.getElementById('signup-last').value.trim()
+      const email = document.getElementById('signup-email').value.trim()
+      const password = document.getElementById('signup-password').value
       const msg = document.getElementById('msg')
-      if (!email || !password) { msg.textContent = 'Please fill in both fields.'; msg.className = 'error'; return }
+      const btn = document.getElementById('signup-btn')
+      if (!email || !password) { msg.textContent = 'Please fill in email and password.'; msg.className = 'error'; return }
       if (password.length < 6) { msg.textContent = 'Password must be at least 6 characters.'; msg.className = 'error'; return }
-      msg.textContent = 'Creating account...'
-      msg.className = ''
-      const { data, error } = await supabase.auth.signUp({ email, password })
+      btn.disabled = true; btn.textContent = 'Creating account...'
+      msg.textContent = ''; msg.className = ''
+      const fullName = [firstName, lastName].filter(Boolean).join(' ') || email
+      const { data, error } = await supabase.auth.signUp({
+        email, password,
+        options: {
+          data: { full_name: fullName, first_name: firstName, last_name: lastName },
+          emailRedirectTo: window.location.origin + '/auth-confirm.html'
+        }
+      })
+      if (error) { msg.textContent = error.message; msg.className = 'error'; btn.disabled = false; btn.textContent = 'Create account'; return }
+      if (data.user) {
+        await supabase.from('profiles').upsert({ id: data.user.id, full_name: fullName, first_name: firstName, last_name: lastName, email })
+      }
+      // If email confirmation is disabled in Supabase, go straight to setup
+      if (data.session) {
+        window.location.href = '/setup.html'
+      } else {
+        msg.textContent = '✓ Check your email for a confirmation link!'
+        msg.className = 'success'
+        btn.disabled = false; btn.textContent = 'Create account'
+      }
+    }
+
+    window.sendMagicLink = async function() {
+      const email = document.getElementById('magic-email').value.trim()
+      const msg = document.getElementById('msg')
+      const btn = document.getElementById('magic-btn')
+      if (!email) { msg.textContent = 'Please enter your email.'; msg.className = 'error'; return }
+      btn.disabled = true; btn.textContent = 'Sending...'
+      msg.textContent = ''; msg.className = ''
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: window.location.origin + '/auth-confirm.html' }
+      })
+      if (error) { msg.textContent = error.message; msg.className = 'error'; btn.disabled = false; btn.textContent = 'Send magic link ✨'; return }
+      msg.textContent = '✓ Magic link sent! Check your email.'
+      msg.className = 'success'
+      btn.disabled = false; btn.textContent = 'Resend link'
+    }
+
+    window.forgotPassword = async function() {
+      const email = document.getElementById('signin-email').value.trim()
+      const msg = document.getElementById('msg')
+      if (!email) { msg.textContent = 'Enter your email above first.'; msg.className = 'error'; return }
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + '/auth-confirm.html?type=recovery'
+      })
       if (error) { msg.textContent = error.message; msg.className = 'error'; return }
-      if (data.user) await supabase.from('profiles').insert({ id: data.user.id, full_name: email })
-      msg.textContent = '✓ Account created! You can now sign in.'
+      msg.textContent = '✓ Password reset email sent! Check your inbox.'
       msg.className = 'success'
     }
   </script>

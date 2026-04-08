@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flo — Expense Planner</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --sky: #38bdf8; --sky-dark: #0ea5e9; --sky-pale: #f0faff; --text: #0f172a; --muted: #64748b; --border: #e2e8f0; --bg: #f8fafc; --success: #16a34a; --danger: #dc2626; }
+    body { background: var(--bg); color: var(--text); font-family: 'Sora', sans-serif; min-height: 100vh; }
+    .sidebar { position: fixed; top: 0; left: 0; width: 224px; height: 100vh; background: white; border-right: 1px solid var(--border); padding: 1.5rem 1rem; display: flex; flex-direction: column; z-index: 10; }
+    .sidebar-logo { padding: 0.25rem 0.5rem 1.75rem; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; font-size: 0.85rem; font-weight: 500; color: var(--muted); cursor: pointer; transition: all 0.15s; text-decoration: none; margin-bottom: 2px; }
+    .nav-item:hover, .nav-item.active { background: var(--sky-pale); color: var(--sky-dark); }
+    .nav-icon { font-size: 0.95rem; width: 18px; text-align: center; }
+    .nav-ext { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; font-size: 0.82rem; font-weight: 500; color: #7c3aed; cursor: pointer; transition: all 0.15s; text-decoration: none; margin-bottom: 2px; background: #faf5ff; border: 1px solid #ede9fe; }
+    .nav-ext:hover { background: #ede9fe; }
+    .sidebar-bottom { margin-top: auto; }
+    .user-pill { display: flex; align-items: center; gap: 9px; padding: 10px 12px; border-radius: 10px; background: var(--sky-pale); }
+    .user-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--sky-dark); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.72rem; font-weight: 600; flex-shrink: 0; }
+    .user-info { flex: 1; overflow: hidden; }
+    .user-name { font-size: 0.73rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .user-label { font-size: 0.68rem; color: #94a3b8; }
+    .sign-out-btn { background: none; border: none; color: #cbd5e1; cursor: pointer; font-size: 0.9rem; padding: 2px 4px; }
+    .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid var(--border); padding: 8px 0 max(8px, env(safe-area-inset-bottom)); z-index: 100; justify-content: space-around; }
+    .bottom-nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 12px; cursor: pointer; color: var(--muted); font-size: 0.65rem; font-weight: 500; border: none; background: none; font-family: 'Sora', sans-serif; }
+    .bottom-nav-item.active { color: var(--sky-dark); }
+    .bottom-nav-icon { font-size: 1.2rem; }
+    .mobile-topbar { display: none; position: fixed; top: 0; left: 0; right: 0; background: white; border-bottom: 1px solid var(--border); padding: 12px 1.25rem; z-index: 10; align-items: center; justify-content: space-between; }
+    .main { margin-left: 224px; padding: 2rem 2.5rem 3rem; max-width: 900px; }
+    .page-header { margin-bottom: 2rem; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .page-header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; }
+    .page-header p { color: var(--muted); font-size: 0.85rem; margin-top: 3px; }
+    .btn-new { display: flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 10px; background: var(--sky-dark); color: white; border: none; font-size: 0.85rem; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; transition: background 0.15s; }
+    .btn-new:hover { background: #0284c7; }
+    .goals-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.25rem; margin-bottom: 2rem; }
+    .goal-card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; position: relative; }
+    .goal-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 6px; }
+    .goal-emoji { font-size: 1.6rem; margin-right: 6px; }
+    .goal-name { font-size: 1rem; font-weight: 600; letter-spacing: -0.01em; }
+    .goal-target { font-size: 0.8rem; color: var(--muted); margin-bottom: 12px; }
+    .goal-actions { display: flex; gap: 6px; }
+    .goal-btn { background: none; border: none; font-size: 0.85rem; cursor: pointer; color: var(--muted); padding: 2px 6px; border-radius: 6px; font-family: 'Sora', sans-serif; transition: all 0.15s; }
+    .goal-btn:hover { background: var(--sky-pale); color: var(--sky-dark); }
+    .goal-btn.danger:hover { background: #fef2f2; color: var(--danger); }
+    .progress-track { background: var(--border); border-radius: 99px; height: 10px; overflow: hidden; margin-bottom: 10px; }
+    .progress-fill { height: 100%; border-radius: 99px; transition: width 0.6s ease; }
+    .goal-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .goal-stat { background: var(--sky-pale); border-radius: 10px; padding: 8px 10px; }
+    .goal-stat-label { font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 4px; }
+    .goal-stat-value { font-size: 0.95rem; font-weight: 600; }
+    .goal-stat-value.green { color: var(--success); }
+    .goal-stat-value.sky { color: var(--sky-dark); }
+    .goal-stat-value.orange { color: #d97706; }
+    .deadline-badge { display: inline-flex; align-items: center; gap: 5px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 99px; padding: 3px 10px; font-size: 0.73rem; color: var(--success); margin-bottom: 10px; }
+    .deadline-badge.urgent { background: #fff7ed; border-color: #fed7aa; color: #d97706; }
+    .deadline-badge.overdue { background: #fef2f2; border-color: #fecaca; color: var(--danger); }
+    .add-savings-row { display: flex; gap: 8px; margin-top: 12px; }
+    .savings-inp { flex: 1; background: var(--sky-pale); border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 0.85rem; font-family: 'Sora', sans-serif; color: var(--text); outline: none; }
+    .savings-inp:focus { border-color: var(--sky); background: white; }
+    .btn-add-savings { padding: 8px 14px; border-radius: 8px; background: var(--sky-dark); color: white; border: none; font-size: 0.82rem; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; white-space: nowrap; }
+    .btn-add-savings:hover { background: #0284c7; }
+    .empty-goals { text-align: center; padding: 4rem 2rem; color: var(--muted); }
+    .empty-goals .icon { font-size: 3rem; margin-bottom: 1rem; }
+    .empty-goals h3 { font-size: 1.1rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .empty-goals p { font-size: 0.88rem; line-height: 1.6; margin-bottom: 1.5rem; }
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
+    .modal-overlay.show { display: flex; }
+    .modal { background: white; border-radius: 16px; padding: 2rem; max-width: 460px; width: 92%; }
+    .modal h2 { font-size: 1.1rem; font-weight: 600; margin-bottom: 1.25rem; }
+    .field { margin-bottom: 1rem; }
+    label { font-size: 0.78rem; font-weight: 500; color: var(--muted); display: block; margin-bottom: 5px; }
+    input[type="text"], input[type="number"], input[type="date"], select.modal-select {
+      width: 100%; background: var(--sky-pale); border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 14px; color: var(--text); font-size: 0.9rem; font-family: 'Sora', sans-serif; outline: none; transition: border-color 0.2s;
+    }
+    input:focus, select.modal-select:focus { border-color: var(--sky); background: white; }
+    .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .modal-actions { display: flex; gap: 10px; margin-top: 1.25rem; }
+    .btn-primary { flex: 1; padding: 12px; border-radius: 10px; border: none; background: var(--sky-dark); color: white; font-size: 0.9rem; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; }
+    .btn-primary:hover { background: #0284c7; }
+    .btn-cancel { padding: 12px 20px; border-radius: 10px; border: 1.5px solid var(--border); background: white; color: var(--muted); font-size: 0.9rem; font-family: 'Sora', sans-serif; cursor: pointer; }
+    .btn-cancel:hover { border-color: var(--sky); color: var(--sky-dark); }
+    .emoji-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+    .emoji-opt { font-size: 1.4rem; cursor: pointer; padding: 4px 6px; border-radius: 8px; border: 2px solid transparent; transition: all 0.15s; }
+    .emoji-opt.selected { border-color: var(--sky-dark); background: var(--sky-pale); }
+    #form-msg-modal { font-size: 0.8rem; color: var(--muted); margin-top: 8px; min-height: 16px; }
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .bottom-nav { display: flex; }
+      .mobile-topbar { display: flex; }
+      .main { margin-left: 0; padding: 5rem 1rem 6rem; }
+      .goals-grid { grid-template-columns: 1fr; }
+      .modal-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <svg width="96" height="34" viewBox="0 0 96 34">
+        <rect x="0" y="0" width="34" height="34" rx="17" fill="#0ea5e9"/>
+        <path d="M7 17 Q11 11 16 17 Q21 23 25 17" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <text x="42" y="23" font-family="'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="300" fill="#0f172a" letter-spacing="2.5">FLO</text>
+      </svg>
+    </div>
+    <a class="nav-item" onclick="window.location.href='/index.html'"><span class="nav-icon">◉</span> Dashboard</a>
+    <a class="nav-item" onclick="window.location.href='/charts.html'"><span class="nav-icon">📊</span> Charts</a>
+    <a class="nav-item" onclick="window.location.href='/reports.html'"><span class="nav-icon">📋</span> Reports</a>
+    <a class="nav-item active"><span class="nav-icon">✈️</span> Planner</a>
+    <a class="nav-item" onclick="window.location.href='/setup.html'"><span class="nav-icon">⚙</span> Edit budget</a>
+    <a class="nav-item" onclick="window.location.href='/account.html'"><span class="nav-icon">👤</span> Account</a>
+    <a class="nav-ext" href="https://chrome.google.com/webstore" target="_blank"><span class="nav-icon">🧩</span> Add extension</a>
+    <div class="sidebar-bottom">
+      <div class="user-pill">
+        <div class="user-avatar" id="user-initials">?</div>
+        <div class="user-info">
+          <div class="user-name" id="user-name">—</div>
+          <div class="user-label">let your money flow</div>
+        </div>
+        <button class="sign-out-btn" onclick="signOut()">⇥</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="mobile-topbar">
+    <svg width="52" height="20" viewBox="0 0 52 20">
+      <rect x="0" y="0" width="20" height="20" rx="10" fill="#0ea5e9"/>
+      <path d="M4 10 Q7 6 10 10 Q13 14 16 10" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <text x="24" y="14" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="300" fill="#0f172a" letter-spacing="1.5">FLO</text>
+    </svg>
+    <span style="font-size:0.9rem;font-weight:600;">Planner</span>
+    <button onclick="signOut()" style="background:none;border:none;color:var(--muted);font-size:0.8rem;font-family:'Sora',sans-serif;cursor:pointer;">Sign out</button>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="bottom-nav-item" onclick="window.location.href='/index.html'"><span class="bottom-nav-icon">◉</span><span>Home</span></button>
+    <button class="bottom-nav-item" onclick="window.location.href='/charts.html'"><span class="bottom-nav-icon">📊</span><span>Charts</span></button>
+    <button class="bottom-nav-item active"><span class="bottom-nav-icon">✈️</span><span>Planner</span></button>
+    <button class="bottom-nav-item" onclick="window.location.href='/account.html'"><span class="bottom-nav-icon">👤</span><span>Account</span></button>
+  </div>
+
+  <div class="main">
+    <div class="page-header">
+      <div>
+        <h1>Expense planner</h1>
+        <p>Plan and save for vacations and big purchases</p>
+      </div>
+      <button class="btn-new" onclick="openNewGoal()">+ New goal</button>
+    </div>
+
+    <div class="goals-grid" id="goals-grid">
+      <div style="grid-column:1/-1;" class="empty-goals">
+        <div class="icon">✈️</div>
+        <h3>No goals yet</h3>
+        <p>Create a saving goal for your next vacation, big purchase, or life event. Track your progress and see how much you need to save each month.</p>
+        <button class="btn-new" onclick="openNewGoal()">+ Create your first goal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- New Goal Modal -->
+  <div class="modal-overlay" id="goal-modal">
+    <div class="modal">
+      <h2 id="modal-title">New saving goal</h2>
+      <div class="field">
+        <label>Pick an emoji</label>
+        <div class="emoji-row" id="emoji-row">
+          ✈️ 🏖️ 🚗 🏠 💍 🎓 💻 📱 🎸 🐕 🌍 🎉 🏋️ 🛋️ 🎁 💰
+        </div>
+      </div>
+      <div class="field"><label>Goal name</label><input type="text" id="goal-name" placeholder="e.g. Summer vacation, New MacBook" /></div>
+      <div class="modal-row">
+        <div class="field"><label>Target amount ($)</label><input type="number" id="goal-target" placeholder="e.g. 2000" oninput="calcMonthly()" /></div>
+        <div class="field"><label>Already saved ($)</label><input type="number" id="goal-saved" placeholder="0" oninput="calcMonthly()" value="0" /></div>
+      </div>
+      <div class="modal-row">
+        <div class="field"><label>Target date <span style="color:#94a3b8;font-weight:400;">(optional)</span></label><input type="date" id="goal-date" oninput="calcMonthly()" /></div>
+        <div class="field"><label>Monthly contribution ($)</label><input type="number" id="goal-monthly" placeholder="auto-calculated" style="color:var(--sky-dark);font-weight:500;" readonly /></div>
+      </div>
+      <p id="form-msg-modal"></p>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn-primary" id="modal-save-btn" onclick="saveGoal()">Save goal</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase } from './Supabase.js'
+
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) { window.location.href = '/login.html' }
+    const user = session.user
+
+    const profile = user.user_metadata
+    document.getElementById('user-name').textContent = profile?.full_name || user.email
+    document.getElementById('user-initials').textContent = (profile?.first_name?.[0] || user.email[0]).toUpperCase()
+
+    window.signOut = async function() { await supabase.auth.signOut(); window.location.href = '/login.html' }
+
+    // Store goals in localStorage (no schema change needed, or use a goals table if available)
+    const GOALS_KEY = `flo_goals_${user.id}`
+    let goals = JSON.parse(localStorage.getItem(GOALS_KEY) || '[]')
+    let editingIndex = null
+    let selectedEmoji = '✈️'
+
+    // Setup emoji picker
+    const emojis = ['✈️','🏖️','🚗','🏠','💍','🎓','💻','📱','🎸','🐕','🌍','🎉','🏋️','🛋️','🎁','💰']
+    const emojiRow = document.getElementById('emoji-row')
+    emojiRow.innerHTML = ''
+    emojis.forEach(e => {
+      const span = document.createElement('span')
+      span.className = 'emoji-opt' + (e === selectedEmoji ? ' selected' : '')
+      span.textContent = e
+      span.onclick = () => {
+        selectedEmoji = e
+        document.querySelectorAll('.emoji-opt').forEach(el => el.classList.remove('selected'))
+        span.classList.add('selected')
+      }
+      emojiRow.appendChild(span)
+    })
+
+    function saveGoals() { localStorage.setItem(GOALS_KEY, JSON.stringify(goals)) }
+
+    function monthsUntil(dateStr) {
+      if (!dateStr) return null
+      const target = new Date(dateStr)
+      const now = new Date()
+      return Math.max(1, Math.round((target - now) / (1000 * 60 * 60 * 24 * 30)))
+    }
+
+    window.calcMonthly = function() {
+      const target = parseFloat(document.getElementById('goal-target').value) || 0
+      const saved = parseFloat(document.getElementById('goal-saved').value) || 0
+      const dateVal = document.getElementById('goal-date').value
+      const remaining = Math.max(0, target - saved)
+      if (dateVal && remaining > 0) {
+        const months = monthsUntil(dateVal)
+        document.getElementById('goal-monthly').value = Math.ceil(remaining / months)
+      } else {
+        document.getElementById('goal-monthly').value = ''
+      }
+    }
+
+    window.openNewGoal = function() {
+      editingIndex = null
+      selectedEmoji = '✈️'
+      document.getElementById('modal-title').textContent = 'New saving goal'
+      document.getElementById('goal-name').value = ''
+      document.getElementById('goal-target').value = ''
+      document.getElementById('goal-saved').value = '0'
+      document.getElementById('goal-date').value = ''
+      document.getElementById('goal-monthly').value = ''
+      document.getElementById('form-msg-modal').textContent = ''
+      document.querySelectorAll('.emoji-opt').forEach((el, i) => el.classList.toggle('selected', emojis[i] === '✈️'))
+      document.getElementById('goal-modal').classList.add('show')
+    }
+
+    window.closeModal = function() {
+      document.getElementById('goal-modal').classList.remove('show')
+    }
+
+    window.saveGoal = function() {
+      const name = document.getElementById('goal-name').value.trim()
+      const target = parseFloat(document.getElementById('goal-target').value)
+      const saved = parseFloat(document.getElementById('goal-saved').value) || 0
+      const date = document.getElementById('goal-date').value
+      const monthly = parseFloat(document.getElementById('goal-monthly').value) || 0
+      const msg = document.getElementById('form-msg-modal')
+
+      if (!name) { msg.textContent = 'Please enter a goal name.'; return }
+      if (!target || target <= 0) { msg.textContent = 'Please enter a valid target amount.'; return }
+
+      const goal = { id: Date.now(), emoji: selectedEmoji, name, target, saved, date: date || null, monthly: monthly || null, createdAt: new Date().toISOString() }
+
+      if (editingIndex !== null) {
+        goals[editingIndex] = { ...goals[editingIndex], ...goal, id: goals[editingIndex].id }
+      } else {
+        goals.push(goal)
+      }
+      saveGoals()
+      closeModal()
+      renderGoals()
+    }
+
+    window.editGoal = function(idx) {
+      editingIndex = idx
+      const g = goals[idx]
+      selectedEmoji = g.emoji || '✈️'
+      document.getElementById('modal-title').textContent = 'Edit goal'
+      document.getElementById('goal-name').value = g.name
+      document.getElementById('goal-target').value = g.target
+      document.getElementById('goal-saved').value = g.saved || 0
+      document.getElementById('goal-date').value = g.date || ''
+      document.getElementById('goal-monthly').value = g.monthly || ''
+      document.getElementById('form-msg-modal').textContent = ''
+      document.querySelectorAll('.emoji-opt').forEach((el, i) => el.classList.toggle('selected', emojis[i] === selectedEmoji))
+      document.getElementById('goal-modal').classList.add('show')
+    }
+
+    window.deleteGoal = function(idx) {
+      if (!confirm('Delete this goal?')) return
+      goals.splice(idx, 1)
+      saveGoals()
+      renderGoals()
+    }
+
+    window.addSavings = function(idx) {
+      const inp = document.getElementById(`savings-inp-${idx}`)
+      const amount = parseFloat(inp.value)
+      if (!amount || amount <= 0) return
+      goals[idx].saved = Math.min((goals[idx].saved || 0) + amount, goals[idx].target)
+      saveGoals()
+      inp.value = ''
+      renderGoals()
+    }
+
+    function renderGoals() {
+      const grid = document.getElementById('goals-grid')
+      if (!goals.length) {
+        grid.innerHTML = `<div style="grid-column:1/-1;" class="empty-goals"><div class="icon">✈️</div><h3>No goals yet</h3><p>Create a saving goal for your next vacation, big purchase, or life event.</p><button class="btn-new" onclick="openNewGoal()">+ Create your first goal</button></div>`
+        return
+      }
+      grid.innerHTML = ''
+      goals.forEach((g, idx) => {
+        const pct = g.target > 0 ? Math.min((g.saved / g.target) * 100, 100) : 0
+        const remaining = Math.max(0, g.target - g.saved)
+        const months = g.date ? monthsUntil(g.date) : null
+        const complete = g.saved >= g.target
+
+        let deadlineBadge = ''
+        if (g.date) {
+          const daysLeft = Math.round((new Date(g.date) - new Date()) / (1000 * 60 * 60 * 24))
+          const label = new Date(g.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+          if (daysLeft < 0) deadlineBadge = `<div class="deadline-badge overdue">⚠ Deadline passed · ${label}</div>`
+          else if (daysLeft < 60) deadlineBadge = `<div class="deadline-badge urgent">⏰ ${daysLeft} days left · ${label}</div>`
+          else deadlineBadge = `<div class="deadline-badge">📅 ${label}</div>`
+        }
+
+        const color = complete ? '#16a34a' : pct >= 80 ? '#0ea5e9' : '#38bdf8'
+
+        const card = document.createElement('div')
+        card.className = 'goal-card'
+        card.innerHTML = `
+          <div class="goal-card-header">
+            <div style="display:flex;align-items:center;gap:2px;">
+              <span class="goal-emoji">${g.emoji || '🎯'}</span>
+              <div>
+                <div class="goal-name">${g.name}</div>
+                <div class="goal-target">$${Math.round(g.saved).toLocaleString()} saved of $${g.target.toLocaleString()}</div>
+              </div>
+            </div>
+            <div class="goal-actions">
+              <button class="goal-btn" onclick="editGoal(${idx})">Edit</button>
+              <button class="goal-btn danger" onclick="deleteGoal(${idx})">Delete</button>
+            </div>
+          </div>
+          ${deadlineBadge}
+          <div class="progress-track"><div class="progress-fill" style="width:${pct}%;background:${color}"></div></div>
+          <div class="goal-stats">
+            <div class="goal-stat"><div class="goal-stat-label">Progress</div><div class="goal-stat-value ${complete ? 'green' : 'sky'}">${Math.round(pct)}%</div></div>
+            <div class="goal-stat"><div class="goal-stat-label">Remaining</div><div class="goal-stat-value orange">$${Math.round(remaining).toLocaleString()}</div></div>
+            <div class="goal-stat"><div class="goal-stat-label">${months ? 'Need/mo' : 'Monthly'}</div><div class="goal-stat-value sky">${g.monthly ? '$' + Math.round(g.monthly).toLocaleString() : months ? '$' + Math.ceil(remaining / months).toLocaleString() : '—'}</div></div>
+          </div>
+          ${!complete ? `
+          <div class="add-savings-row">
+            <input type="number" class="savings-inp" id="savings-inp-${idx}" placeholder="Add savings ($)" />
+            <button class="btn-add-savings" onclick="addSavings(${idx})">+ Add</button>
+          </div>` : `<div style="text-align:center;padding:10px;font-size:0.88rem;color:#16a34a;font-weight:600;">🎉 Goal reached!</div>`}
+        `
+        grid.appendChild(card)
+      })
+    }
+
+    renderGoals()
+  </script>
+</body>
+</html>

@@ -1,7 +1,6 @@
-// ── CONFIG — update these ──
 const SUPABASE_URL = 'https://vtcsqcvjjlnbkqsdhrer.supabase.co'
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ0Y3NxY3ZqamxuYmtxc2RocmVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1NzY5NjksImV4cCI6MjA5MTE1Mjk2OX0.j6DUpG__NLmNNqXXJp54ogA0-PsQBx4NUj3YDBWqWqU'
-const FLO_API_URL = 'https://flo-app-rosy.vercel.app/index.html' // e.g. https://flo-app.vercel.app
+const FLO_API_URL = 'https://flo-app-rosy.vercel.app' // ✅ Fixed: removed /index.html
 
 const SHOPPING_SITES = ['amazon', 'walmart', 'target', 'ebay', 'bestbuy', 'etsy']
 const host = window.location.hostname
@@ -55,6 +54,12 @@ function detectProduct() {
     if (t) result.title = t.textContent.trim().slice(0, 100)
     const el = document.querySelector('.priceView-customer-price span')
     if (el) { const m = el.textContent.match(/\$[\d,]+\.?\d{0,2}/); if (m) result.price = m[0] }
+  } else if (h.includes('etsy')) {
+    result.site = 'Etsy'
+    const t = document.querySelector('h1[data-buy-box-listing-title]') || document.querySelector('h1')
+    if (t) result.title = t.textContent.trim().slice(0, 100)
+    const el = document.querySelector('[data-selector="price-only"] .currency-value') || document.querySelector('.wt-text-title-largest')
+    if (el) { const m = el.textContent.match(/[\d,]+\.?\d{0,2}/); if (m) result.price = '$' + m[0] }
   } else {
     result.site = h.replace('www.', '')
     const t = document.querySelector('h1')
@@ -79,6 +84,17 @@ async function initFloWidget() {
 
   const product = detectProduct()
   if (!product.price) return
+
+  // ✅ Validate session has a usable user.id before proceeding
+  const session = stored.flo_session
+  const userId = session?.user?.id
+
+  if (session && !userId) {
+    // Session is corrupted/incomplete — clear it and show login
+    await setStorage({ flo_session: null })
+  }
+
+  const validSession = session && userId ? session : null
 
   // Inject font
   const font = document.createElement('link')
@@ -129,12 +145,10 @@ async function initFloWidget() {
   `
   document.head.appendChild(style)
 
-  const session = stored.flo_session
-
   const widget = document.createElement('div')
   widget.id = 'flo-widget'
 
-  if (!session) {
+  if (!validSession) {
     widget.innerHTML = `
       <div id="flo-card">
         <div id="flo-hdr"><div id="flo-hdr-l"><div id="flo-mark"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 Q5 3 7 7 Q9 11 12 7" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div><span id="flo-ttl">FLO</span></div><button id="flo-x">×</button></div>
@@ -185,7 +199,7 @@ async function initFloWidget() {
     minBtn.style.display = 'none'
   })
 
-  if (!session) {
+  if (!validSession) {
     // Login handler
     document.getElementById('flo-login-btn').addEventListener('click', async () => {
       const email = document.getElementById('flo-email').value.trim()
@@ -195,14 +209,33 @@ async function initFloWidget() {
       if (!email || !pass) { msg.textContent = 'Fill in both fields.'; return }
       btn.disabled = true; btn.textContent = 'Signing in...'
       try {
+        // Step 1: Get the access token
         const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY },
           body: JSON.stringify({ email, password: pass })
         })
         const data = await res.json()
-        if (data.error) { msg.textContent = data.error.message || 'Failed.'; btn.disabled = false; btn.textContent = 'Sign in'; return }
-        await setStorage({ flo_session: data })
+        console.log('Flo auth response:', JSON.stringify(data))
+        if (!data.access_token) {
+          const errMsg = data.error_description || data.msg || data.message || (typeof data.error === 'string' ? data.error : data.error?.message) || 'Login failed.'
+          msg.textContent = errMsg
+          btn.disabled = false; btn.textContent = 'Sign in'; return
+        }
+
+        // Step 2: Fetch the user separately using the access token
+        const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+          headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${data.access_token}` }
+        })
+        const userData = await userRes.json()
+        if (!userData?.id) {
+          msg.textContent = 'Could not load user profile. Try again.'
+          btn.disabled = false; btn.textContent = 'Sign in'; return
+        }
+
+        // Step 3: Store session with user guaranteed to be present
+        const session = { ...data, user: userData }
+        await setStorage({ flo_session: session })
         widget.remove(); minBtn.remove()
         await initFloWidget()
       } catch (e) { msg.textContent = 'Error. Try again.'; btn.disabled = false; btn.textContent = 'Sign in' }
@@ -212,8 +245,8 @@ async function initFloWidget() {
       if (e.key === 'Enter') document.getElementById('flo-login-btn').click()
     })
   } else {
-    // Load budget
-    loadBudget(session)
+    // Load budget stats into the footer bar
+    loadBudget(validSession)
 
     // Analyze button
     document.getElementById('flo-analyze').addEventListener('click', async () => {
@@ -222,11 +255,27 @@ async function initFloWidget() {
       btn.disabled = true; btn.textContent = 'Asking Flo...'
       res.style.display = 'none'
 
+      // ✅ Re-check userId safely before making API calls
+      const uid = validSession?.user?.id
+      if (!uid) {
+        document.getElementById('flo-verdict').textContent = 'Not signed in'
+        document.getElementById('flo-reason').textContent = 'Please reload the page and sign in again.'
+        res.className = 'neutral'; res.style.display = 'block'
+        btn.textContent = 'Should I buy this? →'; btn.disabled = false
+        return
+      }
+
       try {
         const [budgets, categories, txns] = await Promise.all([
-          fetch(`${SUPABASE_URL}/rest/v1/budgets?user_id=eq.${session.user.id}&limit=1`, { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${session.access_token}` } }).then(r => r.json()),
-          fetch(`${SUPABASE_URL}/rest/v1/categories?user_id=eq.${session.user.id}`, { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${session.access_token}` } }).then(r => r.json()),
-          fetch(`${SUPABASE_URL}/rest/v1/transactions?user_id=eq.${session.user.id}&select=amount,categories(name)&order=created_at.desc&limit=20`, { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${session.access_token}` } }).then(r => r.json())
+          fetch(`${SUPABASE_URL}/rest/v1/budgets?user_id=eq.${uid}&limit=1`, {
+            headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${validSession.access_token}` }
+          }).then(r => r.json()),
+          fetch(`${SUPABASE_URL}/rest/v1/categories?user_id=eq.${uid}`, {
+            headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${validSession.access_token}` }
+          }).then(r => r.json()),
+          fetch(`${SUPABASE_URL}/rest/v1/transactions?user_id=eq.${uid}&select=amount,categories(name)&order=created_at.desc&limit=20`, {
+            headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${validSession.access_token}` }
+          }).then(r => r.json())
         ])
 
         const budget = budgets?.[0]
@@ -241,11 +290,16 @@ Categories: ${categories?.map(c => c.name + ' $' + c.budget).join(', ') || 'none
 Spending: ${Object.entries(bycat).map(([k,v]) => k + ' $' + v.toFixed(2)).join(', ') || 'none'}
 Start with YES or NO. Then 1-2 short sentences. Be direct.`
 
+        // ✅ Fixed: FLO_API_URL no longer has /index.html so this resolves correctly
         const aiRes = await fetch(`${FLO_API_URL}/api/chat`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${validSession.access_token}` },
           body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 150, system: sys, messages: [{ role: 'user', content: `Should I buy this ${product.price} item?` }] })
         })
+
+        if (!aiRes.ok) {
+          throw new Error(`API returned ${aiRes.status}`)
+        }
 
         const aiData = await aiRes.json()
         const reply = aiData.content?.[0]?.text || 'Could not get a response.'
@@ -260,6 +314,7 @@ Start with YES or NO. Then 1-2 short sentences. Be direct.`
         res.className = cls; res.style.display = 'block'
         btn.textContent = 'Ask again'; btn.disabled = false
       } catch (e) {
+        console.error('Flo analyze error:', e)
         document.getElementById('flo-verdict').textContent = 'Error'
         document.getElementById('flo-reason').textContent = 'Could not reach Flo. Try again.'
         res.className = 'neutral'; res.style.display = 'block'
@@ -271,17 +326,33 @@ Start with YES or NO. Then 1-2 short sentences. Be direct.`
 
 async function loadBudget(session) {
   try {
+    // ✅ Guard: safely get userId — this was the crash point
+    const userId = session?.user?.id
+    if (!userId) {
+      console.warn('Flo: loadBudget called with no user.id — clearing session')
+      await setStorage({ flo_session: null })
+      return
+    }
+
     const [budgets, txns] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/budgets?user_id=eq.${session.user.id}&limit=1`, { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${session.access_token}` } }).then(r => r.json()),
-      fetch(`${SUPABASE_URL}/rest/v1/transactions?user_id=eq.${session.user.id}&select=amount`, { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${session.access_token}` } }).then(r => r.json())
+      fetch(`${SUPABASE_URL}/rest/v1/budgets?user_id=eq.${userId}&limit=1`, {
+        headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${session.access_token}` }
+      }).then(r => r.json()),
+      fetch(`${SUPABASE_URL}/rest/v1/transactions?user_id=eq.${userId}&select=amount`, {
+        headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${session.access_token}` }
+      }).then(r => r.json())
     ])
+
     const budget = budgets?.[0]
     const spent = txns?.reduce((s, t) => s + Number(t.amount), 0) || 0
     const remaining = budget ? budget.income - budget.savings_goal - spent : 0
+
     document.getElementById('fb-spent').textContent = '$' + Math.round(spent).toLocaleString()
     document.getElementById('fb-income').textContent = '$' + (budget?.income || 0).toLocaleString()
     const leftEl = document.getElementById('fb-left')
     leftEl.textContent = '$' + Math.abs(Math.round(remaining)).toLocaleString() + (remaining < 0 ? ' over' : '')
     leftEl.className = 'fb-val ' + (remaining >= 0 ? 'green' : 'red')
-  } catch (e) { console.error('Flo budget error:', e) }
+  } catch (e) {
+    console.error('Flo budget error:', e)
+  }
 }

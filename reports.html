@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flo — Monthly Reports</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --sky: #38bdf8; --sky-dark: #0ea5e9; --sky-pale: #f0faff; --text: #0f172a; --muted: #64748b; --border: #e2e8f0; --bg: #f8fafc; }
+    body { background: var(--bg); color: var(--text); font-family: 'Sora', sans-serif; min-height: 100vh; }
+    .sidebar { position: fixed; top: 0; left: 0; width: 224px; height: 100vh; background: white; border-right: 1px solid var(--border); padding: 1.5rem 1rem; display: flex; flex-direction: column; z-index: 10; }
+    .sidebar-logo { padding: 0.25rem 0.5rem 1.75rem; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; font-size: 0.85rem; font-weight: 500; color: var(--muted); cursor: pointer; transition: all 0.15s; text-decoration: none; margin-bottom: 2px; }
+    .nav-item:hover, .nav-item.active { background: var(--sky-pale); color: var(--sky-dark); }
+    .nav-icon { font-size: 0.95rem; width: 18px; text-align: center; }
+    .nav-ext { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; font-size: 0.82rem; font-weight: 500; color: #7c3aed; cursor: pointer; transition: all 0.15s; text-decoration: none; margin-bottom: 2px; background: #faf5ff; border: 1px solid #ede9fe; }
+    .nav-ext:hover { background: #ede9fe; }
+    .sidebar-bottom { margin-top: auto; }
+    .user-pill { display: flex; align-items: center; gap: 9px; padding: 10px 12px; border-radius: 10px; background: var(--sky-pale); }
+    .user-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--sky-dark); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.72rem; font-weight: 600; flex-shrink: 0; }
+    .user-info { flex: 1; overflow: hidden; }
+    .user-name { font-size: 0.73rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .user-label { font-size: 0.68rem; color: #94a3b8; }
+    .sign-out-btn { background: none; border: none; color: #cbd5e1; cursor: pointer; font-size: 0.9rem; padding: 2px 4px; }
+    .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid var(--border); padding: 8px 0 max(8px, env(safe-area-inset-bottom)); z-index: 100; justify-content: space-around; }
+    .bottom-nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 12px; cursor: pointer; color: var(--muted); font-size: 0.65rem; font-weight: 500; border: none; background: none; font-family: 'Sora', sans-serif; }
+    .bottom-nav-item.active { color: var(--sky-dark); }
+    .bottom-nav-icon { font-size: 1.2rem; }
+    .mobile-topbar { display: none; position: fixed; top: 0; left: 0; right: 0; background: white; border-bottom: 1px solid var(--border); padding: 12px 1.25rem; z-index: 10; align-items: center; justify-content: space-between; }
+    .main { margin-left: 224px; padding: 2rem 2.5rem 3rem; }
+    .page-header { margin-bottom: 2rem; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .page-header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; }
+    .page-header p { color: var(--muted); font-size: 0.85rem; margin-top: 3px; }
+    .month-nav { display: flex; align-items: center; gap: 8px; }
+    .month-btn { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 7px 12px; font-size: 0.82rem; font-family: 'Sora', sans-serif; cursor: pointer; color: var(--muted); transition: all 0.15s; }
+    .month-btn:hover { border-color: var(--sky); color: var(--sky-dark); }
+    .month-label { font-size: 0.92rem; font-weight: 600; min-width: 120px; text-align: center; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+    .stat { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; }
+    .stat-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 8px; }
+    .stat-value { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.03em; }
+    .stat-value.sky { color: var(--sky-dark); }
+    .stat-value.green { color: #16a34a; }
+    .stat-value.red { color: #dc2626; }
+    .stat-sub { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+    .card { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.25rem; }
+    .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+    .card-title { font-size: 0.85rem; font-weight: 600; }
+    .card-sub { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+    .chart-wrap { position: relative; height: 240px; }
+    .cat-breakdown { display: flex; flex-direction: column; gap: 10px; }
+    .cat-row { display: flex; flex-direction: column; gap: 4px; }
+    .cat-row-header { display: flex; justify-content: space-between; align-items: center; font-size: 0.83rem; }
+    .cat-row-name { font-weight: 500; display: flex; align-items: center; gap: 7px; }
+    .cat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .cat-row-amts { font-size: 0.78rem; color: var(--muted); }
+    .cat-row-amts .over { color: #dc2626; font-weight: 600; }
+    .progress-track { background: var(--border); border-radius: 99px; height: 6px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 99px; transition: width 0.5s ease; }
+    .insight-list { display: flex; flex-direction: column; gap: 10px; }
+    .insight { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; background: var(--sky-pale); border: 1px solid var(--border); border-radius: 10px; font-size: 0.85rem; line-height: 1.5; }
+    .insight-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+    .insight.good { background: #f0fdf4; border-color: #bbf7d0; }
+    .insight.warn { background: #fff7ed; border-color: #fed7aa; }
+    .insight.bad { background: #fef2f2; border-color: #fecaca; }
+    .empty-state { text-align: center; padding: 3rem 1rem; color: var(--muted); font-size: 0.88rem; }
+    .month-history { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .month-chip { padding: 6px 14px; border-radius: 99px; border: 1px solid var(--border); background: white; font-size: 0.8rem; color: var(--muted); cursor: pointer; font-family: 'Sora', sans-serif; transition: all 0.15s; }
+    .month-chip.active { background: var(--sky-dark); color: white; border-color: var(--sky-dark); }
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .bottom-nav { display: flex; }
+      .mobile-topbar { display: flex; }
+      .main { margin-left: 0; padding: 5rem 1rem 6rem; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <svg width="96" height="34" viewBox="0 0 96 34">
+        <rect x="0" y="0" width="34" height="34" rx="17" fill="#0ea5e9"/>
+        <path d="M7 17 Q11 11 16 17 Q21 23 25 17" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <text x="42" y="23" font-family="'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="300" fill="#0f172a" letter-spacing="2.5">FLO</text>
+      </svg>
+    </div>
+    <a class="nav-item" onclick="window.location.href='/index.html'"><span class="nav-icon">◉</span> Dashboard</a>
+    <a class="nav-item" onclick="window.location.href='/charts.html'"><span class="nav-icon">📊</span> Charts</a>
+    <a class="nav-item active"><span class="nav-icon">📋</span> Reports</a>
+    <a class="nav-item" onclick="window.location.href='/planner.html'"><span class="nav-icon">✈️</span> Planner</a>
+    <a class="nav-item" onclick="window.location.href='/setup.html'"><span class="nav-icon">⚙</span> Edit budget</a>
+    <a class="nav-item" onclick="window.location.href='/account.html'"><span class="nav-icon">👤</span> Account</a>
+    <a class="nav-ext" href="https://chrome.google.com/webstore" target="_blank"><span class="nav-icon">🧩</span> Add extension</a>
+    <div class="sidebar-bottom">
+      <div class="user-pill">
+        <div class="user-avatar" id="user-initials">?</div>
+        <div class="user-info">
+          <div class="user-name" id="user-name">—</div>
+          <div class="user-label">let your money flow</div>
+        </div>
+        <button class="sign-out-btn" onclick="signOut()">⇥</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="mobile-topbar">
+    <svg width="52" height="20" viewBox="0 0 52 20">
+      <rect x="0" y="0" width="20" height="20" rx="10" fill="#0ea5e9"/>
+      <path d="M4 10 Q7 6 10 10 Q13 14 16 10" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <text x="24" y="14" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="300" fill="#0f172a" letter-spacing="1.5">FLO</text>
+    </svg>
+    <span style="font-size:0.9rem;font-weight:600;">Reports</span>
+    <button onclick="signOut()" style="background:none;border:none;color:var(--muted);font-size:0.8rem;font-family:'Sora',sans-serif;cursor:pointer;">Sign out</button>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="bottom-nav-item" onclick="window.location.href='/index.html'"><span class="bottom-nav-icon">◉</span><span>Home</span></button>
+    <button class="bottom-nav-item" onclick="window.location.href='/charts.html'"><span class="bottom-nav-icon">📊</span><span>Charts</span></button>
+    <button class="bottom-nav-item active"><span class="bottom-nav-icon">📋</span><span>Reports</span></button>
+    <button class="bottom-nav-item" onclick="window.location.href='/account.html'"><span class="bottom-nav-icon">👤</span><span>Account</span></button>
+  </div>
+
+  <div class="main">
+    <div class="page-header">
+      <div>
+        <h1>Monthly reports</h1>
+        <p>Review your finances month by month</p>
+      </div>
+      <div class="month-nav">
+        <button class="month-btn" onclick="changeMonth(-1)">← Prev</button>
+        <div class="month-label" id="month-label">—</div>
+        <button class="month-btn" onclick="changeMonth(1)">Next →</button>
+      </div>
+    </div>
+
+    <div class="month-history" id="month-chips"></div>
+
+    <div id="report-content">
+      <div class="empty-state">Loading report...</div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase } from './Supabase.js'
+
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) { window.location.href = '/login.html' }
+    const user = session.user
+
+    const profile = user.user_metadata
+    document.getElementById('user-name').textContent = profile?.full_name || user.email
+    document.getElementById('user-initials').textContent = (profile?.first_name?.[0] || user.email[0]).toUpperCase()
+
+    window.signOut = async function() {
+      await supabase.auth.signOut()
+      window.location.href = '/login.html'
+    }
+
+    const now = new Date()
+    let currentYear = now.getFullYear()
+    let currentMonth = now.getMonth() // 0-indexed
+
+    const { data: budget } = await supabase.from('budgets').select('*').eq('user_id', user.id).limit(1).single()
+    const { data: categories } = await supabase.from('categories').select('*').eq('user_id', user.id)
+    const { data: allTxns } = await supabase.from('transactions').select('*, categories(name, color)').eq('user_id', user.id)
+
+    if (!budget || !categories) { window.location.href = '/setup.html' }
+
+    // Build month chips from available transaction data
+    const monthsWithData = new Set()
+    allTxns?.forEach(t => {
+      if (t.date) monthsWithData.add(t.date.slice(0, 7))
+    })
+    // Always include current month
+    monthsWithData.add(`${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`)
+    const sortedMonths = Array.from(monthsWithData).sort().reverse()
+
+    function renderMonthChips(activeKey) {
+      const container = document.getElementById('month-chips')
+      container.innerHTML = ''
+      sortedMonths.forEach(key => {
+        const [y, m] = key.split('-').map(Number)
+        const label = new Date(y, m - 1, 1).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+        const chip = document.createElement('button')
+        chip.className = 'month-chip' + (key === activeKey ? ' active' : '')
+        chip.textContent = label
+        chip.onclick = () => { currentYear = y; currentMonth = m - 1; renderReport() }
+        container.appendChild(chip)
+      })
+    }
+
+    let barChart = null
+
+    async function renderReport() {
+      const monthKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`
+      const monthLabel = new Date(currentYear, currentMonth, 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+      document.getElementById('month-label').textContent = monthLabel
+      renderMonthChips(monthKey)
+
+      // Filter transactions for this month
+      const monthTxns = allTxns?.filter(t => t.date && t.date.startsWith(monthKey)) || []
+      const totalSpent = monthTxns.reduce((s, t) => s + Number(t.amount), 0)
+      const remaining = budget.income - budget.savings_goal - totalSpent
+      const savedThisMonth = remaining > 0 ? budget.savings_goal + remaining : budget.savings_goal
+      const txnCount = monthTxns.length
+
+      // Biggest expense
+      const biggestTxn = monthTxns.reduce((max, t) => Number(t.amount) > Number(max?.amount || 0) ? t : max, null)
+
+      const isCurrentMonth = monthKey === `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+
+      // Category breakdown
+      const spentByCat = {}
+      monthTxns.forEach(t => {
+        const name = t.categories?.name || 'Uncategorized'
+        spentByCat[name] = (spentByCat[name] || 0) + Number(t.amount)
+      })
+
+      // Insights
+      const insights = []
+      if (remaining >= 0) {
+        insights.push({ type: 'good', icon: '✅', text: `You stayed within budget — $${Math.round(remaining).toLocaleString()} to spare!` })
+      } else {
+        insights.push({ type: 'bad', icon: '🚨', text: `You went over budget by $${Math.abs(Math.round(remaining)).toLocaleString()} this month.` })
+      }
+      if (totalSpent === 0) {
+        insights.push({ type: 'good', icon: '📊', text: 'No transactions logged yet for this month.' })
+      } else {
+        const topCat = Object.entries(spentByCat).sort(([,a],[,b]) => b - a)[0]
+        if (topCat) insights.push({ type: 'warn', icon: '📌', text: `Biggest spending category: ${topCat[0]} ($${Math.round(topCat[1]).toLocaleString()})` })
+      }
+      if (biggestTxn) {
+        insights.push({ type: 'warn', icon: '💸', text: `Largest single transaction: $${Number(biggestTxn.amount).toLocaleString()}${biggestTxn.note ? ' — ' + biggestTxn.note : ''}` })
+      }
+      categories.forEach(cat => {
+        const spent = spentByCat[cat.name] || 0
+        if (spent > cat.budget) {
+          insights.push({ type: 'bad', icon: '⚠️', text: `${cat.name} went over budget by $${Math.round(spent - cat.budget).toLocaleString()}` })
+        }
+      })
+
+      // Destroy old chart if exists
+      if (barChart) { barChart.destroy(); barChart = null }
+
+      document.getElementById('report-content').innerHTML = `
+        <div class="stats-grid">
+          <div class="stat"><div class="stat-label">Total Spent</div><div class="stat-value ${totalSpent > 0 ? 'red' : ''}">$${Math.round(totalSpent).toLocaleString()}</div></div>
+          <div class="stat"><div class="stat-label">Remaining</div><div class="stat-value ${remaining >= 0 ? 'green' : 'red'}">$${Math.abs(Math.round(remaining)).toLocaleString()}${remaining < 0 ? ' over' : ''}</div></div>
+          <div class="stat"><div class="stat-label">Saved</div><div class="stat-value sky">$${Math.max(0, Math.round(savedThisMonth)).toLocaleString()}</div></div>
+          <div class="stat"><div class="stat-label">Transactions</div><div class="stat-value">${txnCount}</div><div class="stat-sub">${txnCount === 0 ? 'none logged' : 'logged'}</div></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Category breakdown</div><div class="card-sub">Spent vs budget per category</div></div></div>
+            <div class="cat-breakdown" id="cat-breakdown"></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Budget vs spent</div></div></div>
+            <div class="chart-wrap"><canvas id="month-bar-chart"></canvas></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Monthly insights</div></div>
+          <div class="insight-list" id="insight-list"></div>
+        </div>
+      `
+
+      // Cat breakdown bars
+      const catBreakdown = document.getElementById('cat-breakdown')
+      categories.forEach(cat => {
+        const spent = spentByCat[cat.name] || 0
+        const pct = cat.budget > 0 ? Math.min((spent / cat.budget) * 100, 100) : 0
+        const over = spent > cat.budget
+        const div = document.createElement('div')
+        div.className = 'cat-row'
+        div.innerHTML = `
+          <div class="cat-row-header">
+            <div class="cat-row-name"><div class="cat-dot" style="background:${cat.color}"></div>${cat.name}</div>
+            <div class="cat-row-amts">
+              <span class="${over ? 'over' : ''}">$${Math.round(spent).toLocaleString()}</span> / $${cat.budget.toLocaleString()}
+            </div>
+          </div>
+          <div class="progress-track"><div class="progress-fill" style="width:${pct}%;background:${over ? '#ef4444' : cat.color}"></div></div>`
+        catBreakdown.appendChild(div)
+      })
+
+      // Bar chart
+      const labels = categories.map(c => c.name)
+      const budgetAmts = categories.map(c => c.budget)
+      const spentAmts = categories.map(c => spentByCat[c.name] || 0)
+      const barColors = categories.map((c, i) => spentAmts[i] > budgetAmts[i] ? '#ef4444' : c.color)
+
+      barChart = new Chart(document.getElementById('month-bar-chart'), {
+        type: 'bar',
+        data: { labels, datasets: [
+          { label: 'Budget', data: budgetAmts, backgroundColor: '#e2e8f0', borderRadius: 5 },
+          { label: 'Spent', data: spentAmts, backgroundColor: barColors, borderRadius: 5 }
+        ]},
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { font: { family: 'Sora', size: 10 }, boxWidth: 10 } } },
+          scales: {
+            x: { grid: { display: false }, ticks: { font: { family: 'Sora', size: 10 } } },
+            y: { grid: { color: '#f1f5f9' }, ticks: { font: { family: 'Sora', size: 10 }, callback: v => '$' + v } }
+          }
+        }
+      })
+
+      // Insights
+      const insightList = document.getElementById('insight-list')
+      if (insights.length === 0) {
+        insightList.innerHTML = '<div class="empty-state">No data to analyze yet.</div>'
+      } else {
+        insights.forEach(ins => {
+          const el = document.createElement('div')
+          el.className = `insight ${ins.type}`
+          el.innerHTML = `<span class="insight-icon">${ins.icon}</span><span>${ins.text}</span>`
+          insightList.appendChild(el)
+        })
+      }
+    }
+
+    window.changeMonth = function(dir) {
+      currentMonth += dir
+      if (currentMonth < 0) { currentMonth = 11; currentYear-- }
+      if (currentMonth > 11) { currentMonth = 0; currentYear++ }
+      renderReport()
+    }
+
+    renderReport()
+  </script>
+</body>
+</html>

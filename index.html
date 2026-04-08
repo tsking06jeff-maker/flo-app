@@ -18,6 +18,8 @@
     .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; font-size: 0.85rem; font-weight: 500; color: var(--muted); cursor: pointer; transition: all 0.15s; text-decoration: none; margin-bottom: 2px; }
     .nav-item:hover, .nav-item.active { background: var(--sky-pale); color: var(--sky-dark); }
     .nav-icon { font-size: 0.95rem; width: 18px; text-align: center; }
+    .nav-ext { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; font-size: 0.82rem; font-weight: 500; color: #7c3aed; cursor: pointer; transition: all 0.15s; text-decoration: none; margin-bottom: 2px; background: #faf5ff; border: 1px solid #ede9fe; }
+    .nav-ext:hover { background: #ede9fe; }
     .sidebar-bottom { margin-top: auto; }
     .user-pill { display: flex; align-items: center; gap: 9px; padding: 10px 12px; border-radius: 10px; background: var(--sky-pale); }
     .user-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--sky-dark); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.72rem; font-weight: 600; flex-shrink: 0; }
@@ -34,10 +36,19 @@
     .mobile-user { display: flex; align-items: center; gap: 8px; }
     .mobile-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--sky-dark); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.68rem; font-weight: 600; }
     .main { margin-left: 224px; padding: 2rem 2.5rem 3rem; }
-    .page-header { margin-bottom: 2rem; display: flex; align-items: flex-start; justify-content: space-between; }
+    .page-header { margin-bottom: 1.25rem; display: flex; align-items: flex-start; justify-content: space-between; }
     .page-header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; }
     .page-header p { color: var(--muted); font-size: 0.85rem; margin-top: 3px; }
     .date-badge { font-size: 0.78rem; color: var(--muted); background: white; border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; white-space: nowrap; }
+
+    /* Budget alerts */
+    .alerts-area { margin-bottom: 1.25rem; display: flex; flex-direction: column; gap: 8px; }
+    .alert-banner { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 10px; font-size: 0.83rem; font-weight: 500; }
+    .alert-banner.warning { background: #fff7ed; border: 1px solid #fed7aa; color: #c2410c; }
+    .alert-banner.danger { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+    .alert-dismiss { background: none; border: none; cursor: pointer; font-size: 1rem; color: inherit; opacity: 0.6; margin-left: auto; padding: 0 2px; }
+    .alert-dismiss:hover { opacity: 1; }
+
     .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.75rem; }
     .stat { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; }
     .stat-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 8px; }
@@ -46,6 +57,17 @@
     .stat-value.green { color: #16a34a; }
     .stat-value.red { color: #dc2626; }
     .stat-sub { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
+
+    /* Yearly goal bar */
+    .yearly-goal-bar { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 1.1rem 1.25rem; margin-bottom: 1.25rem; display: none; }
+    .yearly-goal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.82rem; }
+    .yearly-goal-title { font-weight: 600; color: var(--text); }
+    .yearly-goal-pct { color: var(--sky-dark); font-weight: 600; }
+    .progress-track { background: var(--border); border-radius: 99px; height: 8px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 99px; background: var(--sky-dark); transition: width 0.6s ease; }
+    .progress-fill.over { background: #dc2626; }
+    .yearly-goal-sub { font-size: 0.75rem; color: var(--muted); margin-top: 6px; }
+
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
     .card { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
     .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
@@ -70,6 +92,8 @@
     .txn-note { font-size: 0.85rem; font-weight: 500; }
     .txn-cat { font-size: 0.73rem; color: var(--muted); margin-top: 2px; }
     .txn-amt { font-size: 0.98rem; font-weight: 600; color: var(--sky-dark); white-space: nowrap; }
+    .load-more-btn { width: 100%; padding: 9px; border-radius: 8px; border: 1.5px solid var(--border); background: white; color: var(--muted); font-size: 0.82rem; font-family: 'Sora', sans-serif; cursor: pointer; margin-top: 8px; transition: all 0.15s; }
+    .load-more-btn:hover { border-color: var(--sky); color: var(--sky-dark); }
     .chat-msgs { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1rem; max-height: 260px; overflow-y: auto; }
     .msg-ai { background: var(--sky-pale); border: 1px solid var(--sky-light); border-radius: 12px 12px 12px 4px; padding: 11px 13px; font-size: 0.85rem; line-height: 1.6; max-width: 90%; }
     .msg-user { background: var(--sky-dark); color: white; border-radius: 12px 12px 4px 12px; padding: 11px 13px; font-size: 0.85rem; max-width: 90%; align-self: flex-end; margin-left: auto; }
@@ -116,8 +140,11 @@
     </div>
     <a class="nav-item active"><span class="nav-icon">◉</span> Dashboard</a>
     <a class="nav-item" onclick="window.location.href='/charts.html'"><span class="nav-icon">📊</span> Charts</a>
+    <a class="nav-item" onclick="window.location.href='/reports.html'"><span class="nav-icon">📋</span> Reports</a>
+    <a class="nav-item" onclick="window.location.href='/planner.html'"><span class="nav-icon">✈️</span> Planner</a>
     <a class="nav-item" onclick="window.location.href='/setup.html'"><span class="nav-icon">⚙</span> Edit budget</a>
     <a class="nav-item" onclick="window.location.href='/account.html'"><span class="nav-icon">👤</span> Account</a>
+    <a class="nav-ext" href="https://chrome.google.com/webstore" target="_blank"><span class="nav-icon">🧩</span> Add extension</a>
     <div class="sidebar-bottom">
       <div class="user-pill">
         <div class="user-avatar" id="user-initials-desktop">?</div>
@@ -143,26 +170,11 @@
   </div>
 
   <div class="bottom-nav">
-    <button class="bottom-nav-item active" onclick="scrollToTop()">
-      <span class="bottom-nav-icon">◉</span>
-      <span>Home</span>
-    </button>
-    <button class="bottom-nav-item" onclick="window.location.href='/charts.html'">
-      <span class="bottom-nav-icon">📊</span>
-      <span>Charts</span>
-    </button>
-    <button class="bottom-nav-item" onclick="scrollToSection('log-section')">
-      <span class="bottom-nav-icon">＋</span>
-      <span>Log</span>
-    </button>
-    <button class="bottom-nav-item" onclick="scrollToSection('ai-section')">
-      <span class="bottom-nav-icon">✦</span>
-      <span>Ask Flo</span>
-    </button>
-    <button class="bottom-nav-item" onclick="window.location.href='/account.html'">
-      <span class="bottom-nav-icon">👤</span>
-      <span>Account</span>
-    </button>
+    <button class="bottom-nav-item active" onclick="scrollToTop()"><span class="bottom-nav-icon">◉</span><span>Home</span></button>
+    <button class="bottom-nav-item" onclick="window.location.href='/charts.html'"><span class="bottom-nav-icon">📊</span><span>Charts</span></button>
+    <button class="bottom-nav-item" onclick="scrollToSection('log-section')"><span class="bottom-nav-icon">＋</span><span>Log</span></button>
+    <button class="bottom-nav-item" onclick="scrollToSection('ai-section')"><span class="bottom-nav-icon">✦</span><span>Ask Flo</span></button>
+    <button class="bottom-nav-item" onclick="window.location.href='/account.html'"><span class="bottom-nav-icon">👤</span><span>Account</span></button>
   </div>
 
   <div class="main">
@@ -174,11 +186,24 @@
       <div class="date-badge" id="date-badge"></div>
     </div>
 
+    <!-- Budget alerts area -->
+    <div class="alerts-area" id="alerts-area"></div>
+
     <div class="stats">
       <div class="stat"><div class="stat-label">Income</div><div class="stat-value sky" id="income">—</div></div>
       <div class="stat"><div class="stat-label">Budget</div><div class="stat-value" id="total-budget">—</div></div>
       <div class="stat"><div class="stat-label">Spent</div><div class="stat-value" id="total-spent">—</div></div>
       <div class="stat"><div class="stat-label">Remaining</div><div class="stat-value" id="remaining">—</div><div class="stat-sub" id="savings-sub"></div></div>
+    </div>
+
+    <!-- Yearly goal progress bar (shown only if set) -->
+    <div class="yearly-goal-bar" id="yearly-goal-bar">
+      <div class="yearly-goal-header">
+        <span class="yearly-goal-title">🎯 Yearly savings goal</span>
+        <span class="yearly-goal-pct" id="yearly-pct">0%</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="yearly-fill" style="width:0%"></div></div>
+      <div class="yearly-goal-sub" id="yearly-sub"></div>
     </div>
 
     <div class="grid-2">
@@ -208,6 +233,7 @@
           <button class="card-link" onclick="window.location.href='/charts.html'">View all →</button>
         </div>
         <div class="txn-list" id="transactions-list"></div>
+        <button class="load-more-btn" id="load-more-btn" onclick="loadMoreTransactions()" style="display:none;">Load more transactions</button>
       </div>
       <div class="card" id="ai-section">
         <div class="card-header"><div class="card-title">Ask Flo AI</div></div>
@@ -236,14 +262,18 @@
     const user = session.user
     const accessToken = session.access_token
 
-    const initials = user.email[0].toUpperCase()
+    // Show name if available, fallback to email
+    const profile = user.user_metadata
+    const displayName = profile?.first_name || profile?.full_name?.split(' ')[0] || user.email
+    const initials = (profile?.first_name?.[0] || user.email[0]).toUpperCase()
+
     document.getElementById('user-initials-desktop').textContent = initials
     document.getElementById('user-initials-mobile').textContent = initials
-    document.getElementById('user-email-desktop').textContent = user.email
+    document.getElementById('user-email-desktop').textContent = profile?.full_name || user.email
 
     const now = new Date()
     const hour = now.getHours()
-    document.getElementById('greeting').textContent = (hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening') + ' 👋'
+    document.getElementById('greeting').textContent = (hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening') + ', ' + displayName + ' 👋'
     document.getElementById('date-badge').textContent = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
 
     window.signOut = async function() {
@@ -259,6 +289,21 @@
 
     document.getElementById('income').textContent = '$' + budget.income.toLocaleString()
     document.getElementById('savings-sub').textContent = '$' + budget.savings_goal.toLocaleString() + ' saved/mo'
+
+    // Yearly goal display
+    if (budget.yearly_goal) {
+      const yearlyGoalBar = document.getElementById('yearly-goal-bar')
+      yearlyGoalBar.style.display = 'block'
+      const monthsLeft = 12 - now.getMonth()
+      const savedSoFar = budget.savings_goal * now.getMonth()
+      const pct = Math.min(Math.round((savedSoFar / budget.yearly_goal) * 100), 100)
+      document.getElementById('yearly-pct').textContent = pct + '%'
+      const fill = document.getElementById('yearly-fill')
+      fill.style.width = pct + '%'
+      if (pct >= 100) fill.classList.add('over')
+      document.getElementById('yearly-sub').textContent =
+        `$${savedSoFar.toLocaleString()} saved of $${budget.yearly_goal.toLocaleString()} goal · ~$${Math.round((budget.yearly_goal - savedSoFar) / Math.max(monthsLeft, 1)).toLocaleString()}/mo needed`
+    }
 
     const { data: categories } = await supabase.from('categories').select('*').eq('user_id', user.id)
     if (categories) {
@@ -277,37 +322,111 @@
       })
     }
 
-    async function loadTransactions() {
+    // Transaction pagination
+    let txnOffset = 0
+    const TXN_PAGE = 10
+    let allTxnsLoaded = []
+
+    async function loadTransactions(reset = false) {
+      if (reset) { txnOffset = 0; allTxnsLoaded = []; document.getElementById('transactions-list').innerHTML = '' }
       const { data: txns } = await supabase
         .from('transactions').select('*, categories(name, color)')
-        .eq('user_id', user.id).order('created_at', { ascending: false }).limit(8)
+        .eq('user_id', user.id).order('created_at', { ascending: false })
+        .range(txnOffset, txnOffset + TXN_PAGE - 1)
+
       const list = document.getElementById('transactions-list')
-      list.innerHTML = ''
-      if (!txns || !txns.length) {
+
+      if (reset && (!txns || !txns.length)) {
         list.innerHTML = '<p style="color:var(--muted);font-size:0.83rem;">No transactions yet. Log your first one!</p>'
         document.getElementById('total-spent').textContent = '$0'
         document.getElementById('remaining').textContent = '$' + (budget.income - budget.savings_goal).toLocaleString()
         document.getElementById('remaining').className = 'stat-value green'
         return
       }
-      const totalSpent = txns.reduce((s, t) => s + Number(t.amount), 0)
+
+      if (txns && txns.length) {
+        allTxnsLoaded = [...allTxnsLoaded, ...txns]
+        txns.forEach(t => {
+          const row = document.createElement('div')
+          row.className = 'txn-row'
+          row.innerHTML = `<div><div class="txn-note">${t.note || 'No note'}</div><div class="txn-cat">${t.categories?.name || 'Uncategorized'}</div></div><div class="txn-amt">$${Number(t.amount).toLocaleString()}</div>`
+          list.appendChild(row)
+        })
+        txnOffset += txns.length
+        document.getElementById('load-more-btn').style.display = txns.length < TXN_PAGE ? 'none' : 'block'
+      } else {
+        document.getElementById('load-more-btn').style.display = 'none'
+      }
+
+      // Recalculate totals from ALL transactions (not just displayed)
+      const { data: allTxns } = await supabase.from('transactions').select('amount').eq('user_id', user.id)
+      const totalSpent = allTxns?.reduce((s, t) => s + Number(t.amount), 0) || 0
       const remaining = budget.income - budget.savings_goal - totalSpent
       document.getElementById('total-spent').textContent = '$' + totalSpent.toLocaleString()
       const remEl = document.getElementById('remaining')
       remEl.textContent = '$' + Math.abs(remaining).toLocaleString() + (remaining < 0 ? ' over' : '')
       remEl.className = 'stat-value ' + (remaining < 0 ? 'red' : 'green')
       document.getElementById('header-sub').textContent = remaining < 0
-        ? '⚠ You\'ve exceeded your spending budget this month'
-        : 'Here\'s your financial overview for this month'
-      txns.forEach(t => {
-        const row = document.createElement('div')
-        row.className = 'txn-row'
-        row.innerHTML = `<div><div class="txn-note">${t.note || 'No note'}</div><div class="txn-cat">${t.categories?.name || 'Uncategorized'}</div></div><div class="txn-amt">$${Number(t.amount).toLocaleString()}</div>`
-        list.appendChild(row)
+        ? "⚠ You've exceeded your spending budget this month"
+        : "Here's your financial overview for this month"
+
+      // Budget alerts — check per category
+      if (reset && categories) {
+        const spentByCat = {}
+        allTxns?.forEach(t => {
+          // Need category name lookup - use a separate query
+        })
+        checkBudgetAlerts(allTxns)
+      }
+    }
+
+    async function checkBudgetAlerts(allTxns) {
+      if (!categories || !allTxns) return
+      const { data: txnsWithCat } = await supabase
+        .from('transactions').select('amount, categories(id, name)')
+        .eq('user_id', user.id)
+
+      const spentByCatId = {}
+      txnsWithCat?.forEach(t => {
+        if (t.categories?.id) {
+          spentByCatId[t.categories.id] = (spentByCatId[t.categories.id] || 0) + Number(t.amount)
+        }
+      })
+
+      const alertsArea = document.getElementById('alerts-area')
+      alertsArea.innerHTML = ''
+      const dismissed = JSON.parse(sessionStorage.getItem('flo_dismissed_alerts') || '[]')
+
+      categories.forEach(cat => {
+        const spent = spentByCatId[cat.id] || 0
+        const pct = cat.budget > 0 ? spent / cat.budget : 0
+        const alertId = `${cat.id}_${new Date().toISOString().slice(0,7)}`
+        if (dismissed.includes(alertId)) return
+
+        if (pct >= 1) {
+          const el = document.createElement('div')
+          el.className = 'alert-banner danger'
+          el.innerHTML = `🚨 <strong>${cat.name}</strong> is over budget — spent $${Math.round(spent).toLocaleString()} of $${cat.budget.toLocaleString()} <button class="alert-dismiss" onclick="dismissAlert('${alertId}', this.parentElement)">×</button>`
+          alertsArea.appendChild(el)
+        } else if (pct >= 0.8) {
+          const el = document.createElement('div')
+          el.className = 'alert-banner warning'
+          el.innerHTML = `⚠️ <strong>${cat.name}</strong> is at ${Math.round(pct*100)}% of budget — $${Math.round(cat.budget - spent).toLocaleString()} left <button class="alert-dismiss" onclick="dismissAlert('${alertId}', this.parentElement)">×</button>`
+          alertsArea.appendChild(el)
+        }
       })
     }
 
-    loadTransactions()
+    window.dismissAlert = function(id, el) {
+      const dismissed = JSON.parse(sessionStorage.getItem('flo_dismissed_alerts') || '[]')
+      dismissed.push(id)
+      sessionStorage.setItem('flo_dismissed_alerts', JSON.stringify(dismissed))
+      el.remove()
+    }
+
+    window.loadMoreTransactions = () => loadTransactions(false)
+
+    loadTransactions(true)
 
     window.saveTransaction = async function() {
       const amount = document.getElementById('amount').value
@@ -322,7 +441,7 @@
       document.getElementById('note').value = ''
       document.getElementById('category').value = ''
       setTimeout(() => msg.textContent = '', 2000)
-      loadTransactions()
+      loadTransactions(true)
     }
 
     window.quickAsk = function(q) { document.getElementById('ai-input').value = q; askAI() }
@@ -347,6 +466,7 @@
 
       const sys = `You are Flo, a concise and friendly AI financial advisor. User's data:
 Income: $${fb?.income || 0}/mo | Savings goal: $${fb?.savings_goal || 0}/mo | Spent: $${totalSpent.toFixed(2)} | Remaining: $${((fb?.income || 0) - totalSpent - (fb?.savings_goal || 0)).toFixed(2)}
+${fb?.yearly_goal ? `Yearly savings goal: $${fb.yearly_goal}` : ''}
 Categories: ${fc?.map(c => c.name + ' $' + c.budget).join(', ') || 'none'}
 Spending by category: ${Object.entries(bycat).map(([k, v]) => k + ' $' + v.toFixed(2)).join(', ') || 'none yet'}
 Recent: ${ft?.slice(0, 8).map(t => '$' + Number(t.amount).toFixed(2) + ' ' + (t.categories?.name || 'misc') + (t.note ? ' (' + t.note + ')' : '')).join(', ') || 'none'}

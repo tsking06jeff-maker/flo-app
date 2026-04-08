@@ -9,47 +9,52 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root { --sky: #38bdf8; --sky-dark: #0ea5e9; --sky-pale: #f0faff; --text: #0f172a; --muted: #64748b; --border: #e2e8f0; --danger: #ef4444; --danger-pale: #fef2f2; --bg: #f8fafc; }
     body { background: var(--bg); color: var(--text); font-family: 'Sora', sans-serif; min-height: 100vh; }
-
     .sidebar { position: fixed; top: 0; left: 0; width: 224px; height: 100vh; background: white; border-right: 1px solid var(--border); padding: 1.5rem 1rem; display: flex; flex-direction: column; z-index: 10; }
     .sidebar-logo { padding: 0.25rem 0.5rem 1.75rem; }
     .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; font-size: 0.85rem; font-weight: 500; color: var(--muted); cursor: pointer; transition: all 0.15s; text-decoration: none; margin-bottom: 2px; }
     .nav-item:hover, .nav-item.active { background: var(--sky-pale); color: var(--sky-dark); }
     .nav-icon { font-size: 0.95rem; width: 18px; text-align: center; }
+    .nav-ext { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; font-size: 0.82rem; font-weight: 500; color: #7c3aed; cursor: pointer; transition: all 0.15s; text-decoration: none; margin-bottom: 2px; background: #faf5ff; border: 1px solid #ede9fe; }
+    .nav-ext:hover { background: #ede9fe; }
     .sidebar-bottom { margin-top: auto; }
     .user-pill { display: flex; align-items: center; gap: 9px; padding: 10px 12px; border-radius: 10px; background: var(--sky-pale); }
     .user-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--sky-dark); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.72rem; font-weight: 600; flex-shrink: 0; }
     .user-info { flex: 1; overflow: hidden; }
     .user-email-pill { font-size: 0.73rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .user-label { font-size: 0.68rem; color: #94a3b8; }
-
     .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid var(--border); padding: 8px 0 max(8px, env(safe-area-inset-bottom)); z-index: 100; justify-content: space-around; }
     .bottom-nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 12px; cursor: pointer; color: var(--muted); font-size: 0.65rem; font-weight: 500; border: none; background: none; font-family: 'Sora', sans-serif; transition: color 0.15s; }
     .bottom-nav-item.active { color: var(--sky-dark); }
     .bottom-nav-icon { font-size: 1.2rem; }
     .mobile-topbar { display: none; position: fixed; top: 0; left: 0; right: 0; background: white; border-bottom: 1px solid var(--border); padding: 12px 1.25rem; z-index: 10; align-items: center; justify-content: space-between; }
-
     .main { margin-left: 224px; padding: 2rem 2.5rem 3rem; max-width: 760px; }
     .page-header { margin-bottom: 2rem; }
     .page-header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; }
     .page-header p { color: var(--muted); font-size: 0.85rem; margin-top: 3px; }
-
     .card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem; margin-bottom: 1.25rem; }
     .card-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 1rem; }
     .info-row { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
     .info-row:last-child { border-bottom: none; }
     .info-label { color: var(--muted); }
     .info-value { font-weight: 500; }
-
+    .edit-name-row { display: flex; gap: 8px; align-items: center; }
+    .name-inp { background: var(--sky-pale); border: 1.5px solid var(--border); border-radius: 8px; padding: 7px 10px; font-size: 0.85rem; font-family: 'Sora', sans-serif; color: var(--text); outline: none; width: 160px; }
+    .name-inp:focus { border-color: var(--sky); background: white; }
+    .btn-save-name { padding: 7px 14px; border-radius: 8px; background: var(--sky-dark); color: white; border: none; font-size: 0.82rem; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; }
+    .btn-save-name:hover { background: #0284c7; }
     .btn-signout { width: 100%; padding: 13px; border-radius: 10px; border: none; background: var(--sky-dark); color: white; font-size: 0.92rem; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; transition: background 0.15s; }
     .btn-signout:hover { background: #0284c7; }
-
+    .ext-card { background: #faf5ff; border: 1px solid #ede9fe; border-radius: 16px; padding: 1.75rem; margin-bottom: 1.25rem; }
+    .ext-card-title { font-size: 0.85rem; font-weight: 600; color: #7c3aed; margin-bottom: 8px; }
+    .ext-card-desc { font-size: 0.85rem; color: #6d28d9; line-height: 1.6; margin-bottom: 1.25rem; }
+    .btn-ext { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 10px; background: #7c3aed; color: white; border: none; font-size: 0.88rem; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; text-decoration: none; transition: background 0.15s; }
+    .btn-ext:hover { background: #6d28d9; }
     .danger-card { background: var(--danger-pale); border: 1px solid #fecaca; border-radius: 16px; padding: 1.75rem; margin-bottom: 1.25rem; }
     .danger-title { font-size: 0.85rem; font-weight: 600; color: var(--danger); margin-bottom: 8px; }
     .danger-desc { font-size: 0.85rem; color: #7f1d1d; line-height: 1.6; margin-bottom: 1.25rem; }
     .btn-danger { background: var(--danger); color: white; border: none; border-radius: 10px; padding: 12px 20px; font-size: 0.88rem; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; transition: background 0.15s; }
     .btn-danger:hover { background: #dc2626; }
     .btn-danger:disabled { background: #fca5a5; cursor: not-allowed; }
-
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
     .modal-overlay.show { display: flex; }
     .modal { background: white; border-radius: 16px; padding: 2rem; max-width: 400px; width: 90%; }
@@ -61,11 +66,7 @@
     .confirm-input { width: 100%; background: #fef2f2; border: 1.5px solid #fecaca; border-radius: 8px; padding: 10px 12px; color: var(--text); font-size: 0.88rem; font-family: 'Sora', sans-serif; outline: none; margin-bottom: 1rem; }
     .confirm-input:focus { border-color: var(--danger); }
     #delete-msg { font-size: 0.82rem; color: var(--muted); margin-top: 8px; min-height: 16px; }
-
-    .policy-links { display: flex; gap: 1.5rem; font-size: 0.8rem; margin-top: 0.5rem; }
-    .policy-links a { color: var(--muted); text-decoration: none; }
-    .policy-links a:hover { color: var(--sky-dark); }
-
+    #name-msg { font-size: 0.78rem; color: #16a34a; margin-top: 6px; min-height: 14px; }
     @media (max-width: 768px) {
       .sidebar { display: none; }
       .bottom-nav { display: flex; }
@@ -87,8 +88,11 @@
     </div>
     <a class="nav-item" onclick="window.location.href='/index.html'"><span class="nav-icon">◉</span> Dashboard</a>
     <a class="nav-item" onclick="window.location.href='/charts.html'"><span class="nav-icon">📊</span> Charts</a>
+    <a class="nav-item" onclick="window.location.href='/reports.html'"><span class="nav-icon">📋</span> Reports</a>
+    <a class="nav-item" onclick="window.location.href='/planner.html'"><span class="nav-icon">✈️</span> Planner</a>
     <a class="nav-item" onclick="window.location.href='/setup.html'"><span class="nav-icon">⚙</span> Edit budget</a>
     <a class="nav-item active"><span class="nav-icon">👤</span> Account</a>
+    <a class="nav-ext" href="https://chrome.google.com/webstore" target="_blank"><span class="nav-icon">🧩</span> Add extension</a>
     <div class="sidebar-bottom">
       <div class="user-pill">
         <div class="user-avatar" id="user-initials">?</div>
@@ -127,8 +131,23 @@
     <div class="card">
       <div class="card-title">Account info</div>
       <div class="info-row"><span class="info-label">Email</span><span class="info-value" id="user-email">—</span></div>
+      <div class="info-row">
+        <span class="info-label">Display name</span>
+        <div class="edit-name-row">
+          <input type="text" class="name-inp" id="name-input" placeholder="Your name" />
+          <button class="btn-save-name" onclick="saveName()">Save</button>
+        </div>
+      </div>
+      <div id="name-msg"></div>
       <div class="info-row"><span class="info-label">Member since</span><span class="info-value" id="member-since">—</span></div>
       <div class="info-row"><span class="info-label">Transactions logged</span><span class="info-value" id="txn-count">—</span></div>
+    </div>
+
+    <!-- Extension card -->
+    <div class="ext-card">
+      <div class="ext-card-title">🧩 Flo Browser Extension</div>
+      <p class="ext-card-desc">Get real-time purchase advice while you shop on Amazon, Walmart, Target, and more. The extension pops up automatically and checks your budget before you buy.</p>
+      <a href="https://chrome.google.com/webstore" target="_blank" class="btn-ext">🧩 Add to Chrome / Edge</a>
     </div>
 
     <div class="card">
@@ -176,13 +195,32 @@
     if (!session) { window.location.href = '/login.html' }
     const user = session.user
 
+    const profile = user.user_metadata
+    const displayName = profile?.full_name || profile?.first_name || ''
+
     document.getElementById('user-email').textContent = user.email
-    document.getElementById('user-email-pill').textContent = user.email
-    document.getElementById('user-initials').textContent = user.email[0].toUpperCase()
+    document.getElementById('user-email-pill').textContent = displayName || user.email
+    document.getElementById('user-initials').textContent = (displayName?.[0] || user.email[0]).toUpperCase()
+    document.getElementById('name-input').value = displayName
     document.getElementById('member-since').textContent = new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
 
     const { count } = await supabase.from('transactions').select('*', { count: 'exact', head: true }).eq('user_id', user.id)
     document.getElementById('txn-count').textContent = count || 0
+
+    window.saveName = async function() {
+      const name = document.getElementById('name-input').value.trim()
+      const msg = document.getElementById('name-msg')
+      if (!name) { msg.textContent = 'Please enter a name.'; msg.style.color = '#dc2626'; return }
+      const firstName = name.split(' ')[0]
+      const { error } = await supabase.auth.updateUser({ data: { full_name: name, first_name: firstName } })
+      if (error) { msg.textContent = error.message; msg.style.color = '#dc2626'; return }
+      await supabase.from('profiles').upsert({ id: user.id, full_name: name, first_name: firstName, email: user.email })
+      msg.textContent = '✓ Name updated!'
+      msg.style.color = '#16a34a'
+      document.getElementById('user-email-pill').textContent = name
+      document.getElementById('user-initials').textContent = name[0].toUpperCase()
+      setTimeout(() => msg.textContent = '', 3000)
+    }
 
     window.signOut = async function() {
       await supabase.auth.signOut()

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flo — Confirming...</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --sky: #38bdf8; --sky-dark: #0ea5e9; --sky-pale: #f0faff; --text: #0f172a; --muted: #64748b; --border: #e2e8f0; }
+    body { background: var(--sky-pale); color: var(--text); font-family: 'Sora', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+    .card { background: white; border: 1px solid var(--border); border-radius: 20px; padding: 2.5rem 2rem; text-align: center; max-width: 380px; width: 100%; box-shadow: 0 4px 24px rgba(56,189,248,0.07); }
+    .icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    h2 { font-size: 1.2rem; font-weight: 600; margin-bottom: 6px; }
+    p { font-size: 0.88rem; color: var(--muted); line-height: 1.6; margin-bottom: 1.5rem; }
+    .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--sky-dark); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1.25rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .btn { display: inline-block; padding: 12px 24px; border-radius: 10px; background: var(--sky-dark); color: white; font-size: 0.9rem; font-weight: 600; font-family: 'Sora', sans-serif; border: none; cursor: pointer; text-decoration: none; }
+    .btn:hover { background: #0284c7; }
+    .new-password-field { width: 100%; background: var(--sky-pale); border: 1.5px solid var(--border); border-radius: 10px; padding: 11px 14px; color: var(--text); font-size: 0.92rem; font-family: 'Sora', sans-serif; outline: none; margin-bottom: 12px; }
+    .new-password-field:focus { border-color: var(--sky); background: white; }
+  </style>
+</head>
+<body>
+  <div class="card" id="card">
+    <div class="spinner"></div>
+    <h2>Confirming your account...</h2>
+    <p>Just a moment while we verify your link.</p>
+  </div>
+
+  <script type="module">
+    import { supabase } from './Supabase.js'
+
+    const card = document.getElementById('card')
+    const params = new URLSearchParams(window.location.search)
+    const hashParams = new URLSearchParams(window.location.hash.replace('#', ''))
+    const type = params.get('type') || hashParams.get('type')
+
+    // Handle Supabase auth state from redirect
+    supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        // Check if user has a budget set up
+        const { data: budget } = await supabase.from('budgets').select('id').eq('user_id', session.user.id).limit(1).single()
+        if (budget) {
+          window.location.href = '/index.html'
+        } else {
+          window.location.href = '/setup.html'
+        }
+      } else if (event === 'PASSWORD_RECOVERY') {
+        // Show password reset form
+        card.innerHTML = `
+          <div class="icon">🔑</div>
+          <h2>Set new password</h2>
+          <p>Enter a new password for your Flo account.</p>
+          <input type="password" class="new-password-field" id="new-pass" placeholder="New password (min 6 chars)" />
+          <input type="password" class="new-password-field" id="new-pass2" placeholder="Confirm new password" />
+          <button class="btn" onclick="updatePassword()">Update password</button>
+          <p id="pw-msg" style="margin-top:12px;font-size:0.82rem;color:var(--muted);"></p>
+        `
+        window.updatePassword = async function() {
+          const p1 = document.getElementById('new-pass').value
+          const p2 = document.getElementById('new-pass2').value
+          const msg = document.getElementById('pw-msg')
+          if (p1.length < 6) { msg.textContent = 'Password must be at least 6 characters.'; msg.style.color='#dc2626'; return }
+          if (p1 !== p2) { msg.textContent = 'Passwords do not match.'; msg.style.color='#dc2626'; return }
+          const { error } = await supabase.auth.updateUser({ password: p1 })
+          if (error) { msg.textContent = error.message; msg.style.color='#dc2626'; return }
+          msg.textContent = '✓ Password updated! Redirecting...'
+          msg.style.color = '#16a34a'
+          setTimeout(() => window.location.href = '/index.html', 1500)
+        }
+      } else if (event === 'USER_UPDATED') {
+        window.location.href = '/index.html'
+      }
+    })
+
+    // Fallback: if no auth event fires after 4s, show error
+    setTimeout(() => {
+      const s = document.querySelector('.spinner')
+      if (s) {
+        card.innerHTML = `
+          <div class="icon">⚠️</div>
+          <h2>Link expired or invalid</h2>
+          <p>This confirmation link may have already been used or has expired. Please try signing in or request a new link.</p>
+          <a href="/login.html" class="btn">Go to login</a>
+        `
+      }
+    }, 4000)
+  </script>
+</body>
+</html>

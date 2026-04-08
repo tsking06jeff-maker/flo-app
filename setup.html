@@ -33,6 +33,8 @@
     input:focus { border-color: var(--sky); background: white; }
     .field { margin-bottom: 1rem; }
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+    .optional-badge { font-size: 0.7rem; color: #94a3b8; font-weight: 400; margin-left: 4px; }
     .cat-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1rem; }
     .cat-item { display: flex; align-items: center; gap: 10px; background: var(--sky-pale); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; }
     .cat-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
@@ -57,10 +59,20 @@
     .warn-box { background: #fff7ed; border: 1px solid #fed7aa; border-radius: 10px; padding: 10px 14px; font-size: 0.82rem; color: #c2410c; margin-top: 10px; }
     .cat-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
     .chip { display: flex; align-items: center; gap: 6px; background: var(--sky-pale); border: 1px solid var(--border); border-radius: 99px; padding: 4px 12px; font-size: 0.8rem; }
+
+    /* Multiple budgets switcher */
+    .budget-switcher { margin-bottom: 1.25rem; }
+    .budget-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+    .budget-tab { padding: 7px 14px; border-radius: 8px; font-size: 0.82rem; font-weight: 500; border: 1.5px solid var(--border); background: white; color: var(--muted); cursor: pointer; font-family: 'Sora', sans-serif; transition: all 0.15s; }
+    .budget-tab.active { background: var(--sky-dark); color: white; border-color: var(--sky-dark); }
+    .budget-tab.new-btn { border-style: dashed; color: var(--sky-dark); }
+    .budget-tab.new-btn:hover { background: var(--sky-pale); }
+
     @media (max-width: 768px) {
       body { padding: 1.25rem; }
       .container { max-width: 100%; }
       .row { grid-template-columns: 1fr; }
+      .row-3 { grid-template-columns: 1fr; }
       .add-row { grid-template-columns: 1fr 90px 40px 40px; }
       .action-row { flex-direction: column-reverse; }
       .btn-ghost { width: 100%; }
@@ -86,9 +98,20 @@
 
     <div id="step1">
       <h2>Set up your finances</h2>
-      <p class="subtitle">Tell us what you earn and what you want to save each month.</p>
+      <p class="subtitle">Create a budget profile — give it a name and set your monthly income and savings target.</p>
+
+      <!-- Multiple budgets switcher -->
+      <div class="budget-switcher" id="budget-switcher" style="display:none;">
+        <div style="font-size:0.78rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">Your budget profiles</div>
+        <div class="budget-tabs" id="budget-tabs"></div>
+      </div>
+
       <div class="card">
-        <div class="card-title">Monthly finances</div>
+        <div class="card-title">Budget details</div>
+        <div class="field">
+          <label>Budget name <span class="optional-badge">(e.g. "Regular Month", "Vacation Budget")</span></label>
+          <input id="budget-name" type="text" placeholder="e.g. Regular Month" value="Regular Month" />
+        </div>
         <div class="row">
           <div class="field"><label>Monthly income ($)</label><input id="income" type="number" placeholder="e.g. 4,200" /></div>
           <div class="field"><label>Savings goal ($)</label><input id="savings" type="number" placeholder="e.g. 700" /></div>
@@ -96,6 +119,16 @@
         <div class="field">
           <label>Spending budget ($) <span style="font-weight:400;color:#94a3b8;">auto-calculated</span></label>
           <input id="budget-display" type="number" placeholder="Will calculate automatically" readonly style="color:var(--sky-dark);font-weight:500;" />
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>Yearly savings goal ($) <span class="optional-badge">optional</span></label>
+            <input id="yearly-goal" type="number" placeholder="e.g. 10,000" />
+          </div>
+          <div class="field">
+            <label>Monthly savings target <span style="font-weight:400;color:#94a3b8;">auto</span></label>
+            <input id="monthly-target" type="number" placeholder="—" readonly style="color:#16a34a;font-weight:500;" />
+          </div>
         </div>
       </div>
       <button class="btn-primary" onclick="goToStep2()">Next: Set up categories →</button>
@@ -152,12 +185,75 @@
       { name: 'Misc', budget: 200, color: '#94a3b8' },
     ]
 
+    let existingBudgets = []
+    let activeBudgetId = null
+
+    // Load existing budgets for switcher
+    async function loadExistingBudgets() {
+      const { data: budgets } = await supabase.from('budgets').select('*').eq('user_id', user.id).order('created_at', { ascending: true })
+      if (budgets && budgets.length > 0) {
+        existingBudgets = budgets
+        renderBudgetSwitcher()
+        // Load the most recent budget into the form
+        const latest = budgets[budgets.length - 1]
+        loadBudgetIntoForm(latest)
+      }
+    }
+
+    function loadBudgetIntoForm(b) {
+      activeBudgetId = b.id
+      document.getElementById('budget-name').value = b.name || 'Regular Month'
+      document.getElementById('income').value = b.income || ''
+      document.getElementById('savings').value = b.savings_goal || ''
+      document.getElementById('yearly-goal').value = b.yearly_goal || ''
+      calcBudget()
+    }
+
+    function renderBudgetSwitcher() {
+      if (existingBudgets.length === 0) { document.getElementById('budget-switcher').style.display = 'none'; return }
+      document.getElementById('budget-switcher').style.display = 'block'
+      const tabs = document.getElementById('budget-tabs')
+      tabs.innerHTML = ''
+      existingBudgets.forEach(b => {
+        const tab = document.createElement('button')
+        tab.className = 'budget-tab' + (b.id === activeBudgetId ? ' active' : '')
+        tab.textContent = b.name || 'Budget'
+        tab.onclick = () => { loadBudgetIntoForm(b); renderBudgetSwitcher() }
+        tabs.appendChild(tab)
+      })
+      const newBtn = document.createElement('button')
+      newBtn.className = 'budget-tab new-btn'
+      newBtn.textContent = '+ New budget'
+      newBtn.onclick = () => {
+        activeBudgetId = null
+        document.getElementById('budget-name').value = ''
+        document.getElementById('income').value = ''
+        document.getElementById('savings').value = ''
+        document.getElementById('yearly-goal').value = ''
+        document.getElementById('budget-display').value = ''
+        document.getElementById('monthly-target').value = ''
+        renderBudgetSwitcher()
+      }
+      tabs.appendChild(newBtn)
+    }
+
+    await loadExistingBudgets()
+
     document.getElementById('income').addEventListener('input', calcBudget)
     document.getElementById('savings').addEventListener('input', calcBudget)
+    document.getElementById('yearly-goal').addEventListener('input', calcBudget)
+
     function calcBudget() {
       const inc = parseFloat(document.getElementById('income').value) || 0
       const sav = parseFloat(document.getElementById('savings').value) || 0
+      const yearly = parseFloat(document.getElementById('yearly-goal').value) || 0
       document.getElementById('budget-display').value = inc - sav > 0 ? inc - sav : ''
+      if (yearly > 0) {
+        const monthsLeft = Math.max(12 - new Date().getMonth(), 1)
+        document.getElementById('monthly-target').value = Math.round(yearly / 12)
+      } else {
+        document.getElementById('monthly-target').value = ''
+      }
     }
 
     function renderCategories() {
@@ -201,31 +297,54 @@
       setStep(3)
       const income = parseFloat(document.getElementById('income').value) || 0
       const savings = parseFloat(document.getElementById('savings').value) || 0
+      const yearlyGoal = parseFloat(document.getElementById('yearly-goal').value) || 0
+      const budgetName = document.getElementById('budget-name').value.trim() || 'Regular Month'
       const totalCat = categories.reduce((s,c) => s+c.budget, 0)
       const spending = income - savings
       document.getElementById('review-content').innerHTML = `
+        <div class="review-row"><span>Budget name</span><span style="font-weight:600;">${budgetName}</span></div>
         <div class="review-row"><span>Monthly income</span><span style="color:var(--sky-dark);font-weight:600;">$${income.toLocaleString()}</span></div>
         <div class="review-row"><span>Savings goal</span><span>$${savings.toLocaleString()}/mo</span></div>
+        ${yearlyGoal ? `<div class="review-row"><span>Yearly savings goal</span><span style="color:#16a34a;font-weight:600;">$${yearlyGoal.toLocaleString()}</span></div>` : ''}
         <div class="review-row"><span>Spending budget</span><span>$${spending.toLocaleString()}/mo</span></div>
         <div class="review-row"><span>Category total</span><span style="color:${totalCat>spending?'var(--danger)':'var(--success)'};font-weight:600;">$${totalCat.toLocaleString()}</span></div>
         ${totalCat>spending?`<div class="warn-box">⚠ Categories exceed budget by $${(totalCat-spending).toLocaleString()}. You may want to adjust.</div>`:''}
         <div class="cat-chips">${categories.map(c=>`<div class="chip"><div style="width:8px;height:8px;border-radius:50%;background:${c.color};"></div>${c.name} · $${c.budget}</div>`).join('')}</div>
       `
     }
+
     window.saveSetup = async function() {
       const msg = document.getElementById('msg3')
       const btn = document.getElementById('save-btn')
       msg.textContent = 'Saving...' ; btn.disabled = true
       const income = parseFloat(document.getElementById('income').value)
       const savings = parseFloat(document.getElementById('savings').value) || 0
+      const yearlyGoal = parseFloat(document.getElementById('yearly-goal').value) || null
+      const budgetName = document.getElementById('budget-name').value.trim() || 'Regular Month'
       const month = new Date().toISOString().slice(0,7) + '-01'
-      const { error: be } = await supabase.from('budgets').upsert({ user_id: user.id, month, income, savings_goal: savings }, { onConflict: 'user_id,month' })
-      if (be) { msg.textContent = 'Error: '+be.message; btn.disabled=false; return }
+
+      // Save budget — upsert by id if editing, otherwise insert new
+      let budgetError
+      if (activeBudgetId) {
+        const { error } = await supabase.from('budgets').update({ name: budgetName, income, savings_goal: savings, yearly_goal: yearlyGoal, month }).eq('id', activeBudgetId)
+        budgetError = error
+      } else {
+        const { error } = await supabase.from('budgets').insert({ user_id: user.id, name: budgetName, income, savings_goal: savings, yearly_goal: yearlyGoal, month })
+        budgetError = error
+      }
+
+      if (budgetError) {
+        // Fallback: upsert by user_id + month for backwards compat
+        const { error: be } = await supabase.from('budgets').upsert({ user_id: user.id, name: budgetName, income, savings_goal: savings, yearly_goal: yearlyGoal, month }, { onConflict: 'user_id,month' })
+        if (be) { msg.textContent = 'Error: ' + be.message; btn.disabled = false; return }
+      }
+
       await supabase.from('categories').delete().eq('user_id', user.id)
       const { error: ce } = await supabase.from('categories').insert(categories.map(c => ({ user_id: user.id, name: c.name, budget: c.budget, color: c.color })))
-      if (ce) { msg.textContent = 'Error: '+ce.message; btn.disabled=false; return }
+      if (ce) { msg.textContent = 'Error: ' + ce.message; btn.disabled = false; return }
       window.location.href = '/index.html'
     }
+
     renderCategories()
   </script>
 </body>
