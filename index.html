@@ -230,7 +230,7 @@
   <div class="main">
     <div class="page-header">
       <div>
-        <div class="greeting">Good morning, <span class="name" id="greeting-name">there</span> 👋</div>
+        <div class="greeting" id="greeting-full">Good morning, <span class="name">there</span> 👋</div>
         <div class="header-sub" id="header-sub">Here's your financial Overview for this month</div>
       </div>
       <div class="date-badge" id="date-badge"></div>
@@ -386,8 +386,8 @@
 
     const hour = new Date().getHours()
     const greetWord = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
-    document.getElementById('greeting-text').textContent = greetWord
-    document.getElementById('greeting-name').textContent = firstName.charAt(0).toUpperCase() + firstName.slice(1)
+    const cap = s => s.charAt(0).toUpperCase() + s.slice(1)
+    document.getElementById('greeting-full').innerHTML = greetWord + ', <span class="name" style="background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800;">' + cap(firstName) + '</span> 👋'
     document.getElementById('user-initials-desktop').textContent = initials
     document.getElementById('user-initials-mobile').textContent = initials
     document.getElementById('user-name-desktop').textContent = displayName
