@@ -65,7 +65,14 @@ function updateToggleLabel() {
   if (label) label.textContent = enabled ? 'On' : 'Off'
 }
 
-async function init() {
+async function // ── Wire up all buttons directly (MV3 blocks inline onclick) ──
+document.getElementById('login-btn')?.addEventListener('click', doLogin)
+document.querySelector('.btn-signout')?.addEventListener('click', doSignout)
+document.querySelector('.back-btn')?.addEventListener('click', () => showScreen(currentSession ? 'main' : 'login'))
+const dashBtn = document.querySelector('[onclick="openDashboard()"]')
+if (dashBtn) { dashBtn.removeAttribute('onclick'); dashBtn.addEventListener('click', openDashboard) }
+
+init() {
   const stored = await store.get(['flo_enabled', 'flo_session'])
   enabled = stored.flo_enabled !== false
   currentSession = stored.flo_session || null
@@ -214,5 +221,12 @@ window.doSignout = doSignout
 window.analyzeProduct = analyzeProduct
 window.openDashboard = openDashboard
 window.showScreen = showScreen
+
+// ── Wire up all buttons directly (MV3 blocks inline onclick) ──
+document.getElementById('login-btn')?.addEventListener('click', doLogin)
+document.querySelector('.btn-signout')?.addEventListener('click', doSignout)
+document.querySelector('.back-btn')?.addEventListener('click', () => showScreen(currentSession ? 'main' : 'login'))
+const dashBtn = document.querySelector('[onclick="openDashboard()"]')
+if (dashBtn) { dashBtn.removeAttribute('onclick'); dashBtn.addEventListener('click', openDashboard) }
 
 init()
