@@ -1,82 +1,141 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>document.documentElement.setAttribute("data-theme",localStorage.getItem("flo_theme")||"dark")</script>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Flo — Terms of Service</title>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root { --sky: #38bdf8; --sky-dark: #0ea5e9; --sky-pale: #f0faff; --text: #0f172a; --muted: #64748b; --border: #e2e8f0; }
-    body { background: var(--sky-pale); color: var(--text); font-family: 'Sora', sans-serif; min-height: 100vh; padding: 2rem; }
-    .container { max-width: 720px; margin: 0 auto; }
-    .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3rem; }
-    .logo-link { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-    .back-link { font-size: 0.85rem; color: var(--muted); cursor: pointer; background: none; border: none; font-family: 'Sora', sans-serif; }
-    .back-link:hover { color: var(--sky-dark); }
-    .card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 2.5rem; }
-    h1 { font-size: 1.7rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 6px; }
-    .updated { font-size: 0.82rem; color: var(--muted); margin-bottom: 2rem; }
-    h2 { font-size: 1rem; font-weight: 600; margin: 2rem 0 0.6rem; }
-    p { font-size: 0.9rem; line-height: 1.75; color: #334155; margin-bottom: 0.75rem; }
-    ul { padding-left: 1.5rem; margin-bottom: 0.75rem; }
-    li { font-size: 0.9rem; line-height: 1.75; color: #334155; margin-bottom: 4px; }
-    a { color: var(--sky-dark); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .footer-links { display: flex; gap: 1.5rem; margin-top: 2rem; font-size: 0.82rem; }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root[data-theme="dark"]{--bg:#0c0c0f;--card:#141418;--border:#1e1e27;--text:#f4f4f5;--muted:#71717a;--muted2:#52525b;--accent:#a78bfa;--accent2:#ec4899;--body-text:#c4c4cc;}
+    :root[data-theme="light"]{--bg:#f5f5fa;--card:#ffffff;--border:#e4e4f0;--text:#0c0c0f;--muted:#6b6b7b;--muted2:#9898ab;--accent:#7c3aed;--accent2:#db2777;--body-text:#374151;}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sans-serif;min-height:100vh;padding:2rem;transition:background 0.2s;}
+    .container{max-width:740px;margin:0 auto;}
+    .top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:2.5rem;}
+    .logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+    .logo-mark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;}
+    .logo-text{font-size:14px;font-weight:800;letter-spacing:3px;color:var(--text);}
+    .top-right{display:flex;align-items:center;gap:12px;}
+    .theme-btn{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;}
+    .theme-btn:hover{color:var(--accent);border-color:var(--accent);}
+    .back-btn{font-size:13px;color:var(--muted);cursor:pointer;background:none;border:none;font-family:'Inter',sans-serif;transition:color 0.15s;}
+    .back-btn:hover{color:var(--accent);}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2.5rem 3rem;}
+    .doc-header{margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border);}
+    h1{font-size:1.75rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:6px;}
+    .updated{font-size:12px;color:var(--muted2);margin-bottom:8px;}
+    .intro{font-size:14px;color:var(--muted);line-height:1.7;}
+    h2{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--accent);margin:2rem 0 0.75rem;}
+    p{font-size:14px;line-height:1.8;color:var(--body-text);margin-bottom:0.75rem;}
+    ul{padding-left:1.5rem;margin-bottom:0.75rem;}
+    li{font-size:14px;line-height:1.8;color:var(--body-text);margin-bottom:4px;}
+    .callout{background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);border-radius:10px;padding:14px 16px;margin:1rem 0;font-size:13px;line-height:1.7;color:var(--body-text);}
+    .callout strong{color:var(--accent);}
+    .warning{background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:10px;padding:14px 16px;margin:1rem 0;font-size:13px;line-height:1.7;color:var(--body-text);}
+    .warning strong{color:#f87171;}
+    a{color:var(--accent);text-decoration:none;}
+    a:hover{text-decoration:underline;}
+    .footer-links{display:flex;gap:1.5rem;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);font-size:13px;}
+    @media(max-width:600px){.card{padding:1.5rem;}.top-bar{flex-wrap:wrap;gap:10px;}}
   </style>
 </head>
 <body>
   <div class="container">
     <div class="top-bar">
-      <a class="logo-link" href="/index.html">
-        <svg width="80" height="28" viewBox="0 0 80 28">
-          <rect x="0" y="0" width="28" height="28" rx="14" fill="#0ea5e9"/>
-          <path d="M6 14 Q9 9 13 14 Q17 19 21 14" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-          <text x="34" y="19" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="300" fill="#0f172a" letter-spacing="2">FLO</text>
-        </svg>
+      <a class="logo" href="/index.html">
+        <div class="logo-mark"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M2 8 Q5 3 8 8 Q11 13 14 8" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg></div>
+        <span class="logo-text">FLO</span>
       </a>
-      <button class="back-link" onclick="history.back()">← Back</button>
+      <div class="top-right">
+        <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">☀ Light</button>
+        <button class="back-btn" onclick="history.back()">← Back</button>
+      </div>
     </div>
 
     <div class="card">
-      <h1>Terms of Service</h1>
-      <p class="updated">Last updated: April 2026</p>
+      <div class="doc-header">
+        <h1>Terms of Service</h1>
+        <div class="updated">Last updated: April 2026</div>
+        <p class="intro">Please read these terms carefully before using Flo. By creating an account or using any part of our service, you agree to be bound by these terms.</p>
+      </div>
 
-      <p>Welcome to Flo. By creating an account or using our service, you agree to these terms. Please read them carefully.</p>
+      <h2>1. About Flo</h2>
+      <p>Flo is a personal finance management platform that provides budgeting tools, transaction tracking, spending insights, and AI-powered financial commentary. Flo is offered as a subscription-based service.</p>
+      <div class="warning">
+        <strong>Important disclaimer:</strong> Flo is a financial wellness tool, not a licensed financial advisor, broker, or investment service. Nothing on Flo constitutes professional financial, investment, tax, or legal advice. Flo does not make buy or sell recommendations on any assets, securities, or financial products. All AI-generated insights are for general informational and educational purposes only. <strong>If you require professional financial advice, please consult a qualified financial advisor.</strong>
+      </div>
 
-      <h2>1. What Flo does</h2>
-      <p>Flo is a personal finance tool that helps you track your budget, log transactions, and get AI-powered financial insights. Flo is not a licensed financial advisor, bank, or investment service. The AI advice provided is for informational purposes only and should not be considered professional financial advice.</p>
-
-      <h2>2. Your account</h2>
-      <p>You must provide a valid email address to create an account. You are responsible for keeping your password secure and for all activity that occurs under your account. You must be at least 13 years old to use Flo.</p>
-
-      <h2>3. Your data</h2>
-      <p>You own your financial data. We store it securely so you can access it across sessions. We do not sell your data to third parties. See our <a href="/privacy.html">Privacy Policy</a> for full details on how we handle your information.</p>
-
-      <h2>4. Acceptable use</h2>
-      <p>You agree not to:</p>
+      <h2>2. Subscription & Billing</h2>
+      <p>Access to Flo requires a valid subscription. By subscribing, you agree to the following:</p>
       <ul>
-        <li>Use Flo for any illegal purpose</li>
-        <li>Attempt to access other users' data</li>
-        <li>Abuse or overload our AI service</li>
-        <li>Reverse engineer or copy the service</li>
+        <li>Subscriptions are billed on a recurring basis (monthly or annually, depending on your plan)</li>
+        <li>You authorize us to charge your payment method automatically at the start of each billing period</li>
+        <li>Prices may change with 30 days' advance notice</li>
+        <li>Subscriptions auto-renew unless cancelled before the renewal date</li>
+        <li>No refunds are issued for partial billing periods, except where required by law</li>
+      </ul>
+      <p>You can cancel your subscription at any time from your account settings. Cancellation takes effect at the end of your current billing period — you retain access until then.</p>
+
+      <h2>3. AI-Powered Features</h2>
+      <p>Flo uses AI (powered by Anthropic's Claude) to provide financial commentary, spending summaries, and general budgeting observations. You understand and agree that:</p>
+      <div class="callout">
+        <strong>The AI does not tell you whether to buy or not buy any specific item or product.</strong> Any commentary generated by the AI is general in nature and based solely on the financial data you have entered. It is not personalized investment advice, and it does not account for your full financial situation, risk tolerance, tax obligations, or future financial needs.
+      </div>
+      <ul>
+        <li>AI responses may occasionally be inaccurate, incomplete, or outdated</li>
+        <li>You should not make significant financial decisions based solely on AI-generated content</li>
+        <li>For personalized financial planning, investment decisions, or tax matters — consult a licensed professional</li>
+        <li>Flo is not responsible for any financial outcome resulting from acting on AI-generated commentary</li>
       </ul>
 
-      <h2>5. AI limitations</h2>
-      <p>The AI advisor in Flo is powered by Anthropic's Claude. It provides general guidance based on the financial data you enter. It may make mistakes. Do not make major financial decisions based solely on AI recommendations — always consult a qualified financial professional for important decisions.</p>
+      <h2>4. Your Account</h2>
+      <p>To use Flo you must provide a valid email address and create a secure password. You are responsible for:</p>
+      <ul>
+        <li>Keeping your login credentials secure and confidential</li>
+        <li>All activity that occurs under your account</li>
+        <li>Notifying us immediately if you suspect unauthorized access</li>
+      </ul>
+      <p>You must be at least 18 years old to create an account. Users between 13 and 17 may use Flo only with parental consent.</p>
 
-      <h2>6. Service availability</h2>
-      <p>We aim to keep Flo running smoothly but cannot guarantee 100% uptime. We may update, modify, or discontinue features at any time. We'll do our best to notify you of significant changes.</p>
+      <h2>5. Your Data</h2>
+      <p>You own your financial data. We store it securely to power your Flo experience. We do not sell your personal or financial data to third parties. See our <a href="/privacy.html">Privacy Policy</a> for full details on how your data is collected, stored, and used.</p>
 
-      <h2>7. Termination</h2>
-      <p>You can delete your account at any time from your account settings. We may suspend or terminate accounts that violate these terms.</p>
+      <h2>6. Acceptable Use</h2>
+      <p>You agree not to:</p>
+      <ul>
+        <li>Use Flo for any unlawful purpose or in violation of any applicable law</li>
+        <li>Attempt to access, tamper with, or obtain data belonging to other users</li>
+        <li>Abuse, overload, or attempt to exploit the AI service</li>
+        <li>Reverse engineer, decompile, or copy any part of the service</li>
+        <li>Use automated tools to scrape or extract data from Flo</li>
+        <li>Impersonate any person or entity or misrepresent your identity</li>
+      </ul>
+      <p>We reserve the right to suspend or terminate accounts that violate these terms without notice.</p>
 
-      <h2>8. Limitation of liability</h2>
-      <p>Flo is provided "as is" without warranties of any kind. We are not liable for any financial losses or damages arising from your use of the service or reliance on AI-generated advice.</p>
+      <h2>7. Service Availability</h2>
+      <p>We aim to keep Flo available and reliable at all times. However, we do not guarantee uninterrupted service. We may perform maintenance, updates, or modifications at any time. We will make reasonable efforts to notify users of planned downtime in advance.</p>
 
-      <h2>9. Contact</h2>
-      <p>If you have questions about these terms, please reach out through the app.</p>
+      <h2>8. Intellectual Property</h2>
+      <p>All content, design, code, and features of Flo are the property of Flo and are protected by applicable intellectual property laws. You may not reproduce, distribute, or create derivative works from any part of the service without our explicit written consent.</p>
+
+      <h2>9. Limitation of Liability</h2>
+      <p>To the fullest extent permitted by law, Flo and its operators are not liable for:</p>
+      <ul>
+        <li>Any financial losses, damages, or missed opportunities arising from your use of the service</li>
+        <li>Reliance on AI-generated commentary or budgeting insights</li>
+        <li>Data loss due to service interruption or technical failure</li>
+        <li>Any indirect, incidental, special, or consequential damages</li>
+      </ul>
+      <p>Flo is provided "as is" without warranties of any kind, express or implied.</p>
+
+      <h2>10. Termination</h2>
+      <p>You may delete your account at any time from the account settings page. Upon deletion, all your personal data, financial data, and transaction history will be permanently removed within 30 days. Cancelling your subscription does not delete your account — you must delete it separately if desired.</p>
+
+      <h2>11. Changes to These Terms</h2>
+      <p>We may update these terms from time to time. If we make material changes, we'll notify you via email or an in-app notice at least 14 days before they take effect. Continued use of Flo after that date constitutes acceptance of the updated terms.</p>
+
+      <h2>12. Contact</h2>
+      <p>If you have questions about these terms or need to exercise any rights under them, please contact us through the app. We'll respond as promptly as possible.</p>
 
       <div class="footer-links">
         <a href="/privacy.html">Privacy Policy</a>
@@ -84,5 +143,11 @@
       </div>
     </div>
   </div>
+  <script>
+    const _t=localStorage.getItem('flo_theme')||'dark'
+    function applyTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('flo_theme',t);document.getElementById('theme-btn').textContent=t==='dark'?'☀ Light':'☾ Dark'}
+    applyTheme(_t)
+    window.toggleTheme=()=>applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark')
+  </script>
 </body>
 </html>

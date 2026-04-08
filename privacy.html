@@ -1,104 +1,141 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>document.documentElement.setAttribute("data-theme",localStorage.getItem("flo_theme")||"dark")</script>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Flo — Privacy Policy</title>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root { --sky: #38bdf8; --sky-dark: #0ea5e9; --sky-pale: #f0faff; --text: #0f172a; --muted: #64748b; --border: #e2e8f0; }
-    body { background: var(--sky-pale); color: var(--text); font-family: 'Sora', sans-serif; min-height: 100vh; padding: 2rem; }
-    .container { max-width: 720px; margin: 0 auto; }
-    .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3rem; }
-    .logo-link { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-    .back-link { font-size: 0.85rem; color: var(--muted); cursor: pointer; background: none; border: none; font-family: 'Sora', sans-serif; }
-    .back-link:hover { color: var(--sky-dark); }
-    .card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 2.5rem; }
-    h1 { font-size: 1.7rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 6px; }
-    .updated { font-size: 0.82rem; color: var(--muted); margin-bottom: 2rem; }
-    h2 { font-size: 1rem; font-weight: 600; margin: 2rem 0 0.6rem; }
-    p { font-size: 0.9rem; line-height: 1.75; color: #334155; margin-bottom: 0.75rem; }
-    ul { padding-left: 1.5rem; margin-bottom: 0.75rem; }
-    li { font-size: 0.9rem; line-height: 1.75; color: #334155; margin-bottom: 4px; }
-    a { color: var(--sky-dark); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .footer-links { display: flex; gap: 1.5rem; margin-top: 2rem; font-size: 0.82rem; }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root[data-theme="dark"]{--bg:#0c0c0f;--card:#141418;--border:#1e1e27;--text:#f4f4f5;--muted:#71717a;--muted2:#52525b;--accent:#a78bfa;--accent2:#ec4899;--body-text:#c4c4cc;}
+    :root[data-theme="light"]{--bg:#f5f5fa;--card:#ffffff;--border:#e4e4f0;--text:#0c0c0f;--muted:#6b6b7b;--muted2:#9898ab;--accent:#7c3aed;--accent2:#db2777;--body-text:#374151;}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sans-serif;min-height:100vh;padding:2rem;transition:background 0.2s;}
+    .container{max-width:740px;margin:0 auto;}
+    .top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:2.5rem;}
+    .logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+    .logo-mark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;}
+    .logo-text{font-size:14px;font-weight:800;letter-spacing:3px;color:var(--text);}
+    .top-right{display:flex;align-items:center;gap:12px;}
+    .theme-btn{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;}
+    .theme-btn:hover{color:var(--accent);border-color:var(--accent);}
+    .back-btn{font-size:13px;color:var(--muted);cursor:pointer;background:none;border:none;font-family:'Inter',sans-serif;transition:color 0.15s;}
+    .back-btn:hover{color:var(--accent);}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2.5rem 3rem;}
+    .doc-header{margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border);}
+    h1{font-size:1.75rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:6px;}
+    .updated{font-size:12px;color:var(--muted2);margin-bottom:8px;}
+    .intro{font-size:14px;color:var(--muted);line-height:1.7;}
+    h2{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--accent);margin:2rem 0 0.75rem;}
+    p{font-size:14px;line-height:1.8;color:var(--body-text);margin-bottom:0.75rem;}
+    ul{padding-left:1.5rem;margin-bottom:0.75rem;}
+    li{font-size:14px;line-height:1.8;color:var(--body-text);margin-bottom:4px;}
+    .callout{background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);border-radius:10px;padding:14px 16px;margin:1rem 0;font-size:13px;line-height:1.7;color:var(--body-text);}
+    .callout strong{color:var(--accent);}
+    a{color:var(--accent);text-decoration:none;}
+    a:hover{text-decoration:underline;}
+    .footer-links{display:flex;gap:1.5rem;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);font-size:13px;}
+    @media(max-width:600px){.card{padding:1.5rem;}.top-bar{flex-wrap:wrap;gap:10px;}}
   </style>
 </head>
 <body>
   <div class="container">
     <div class="top-bar">
-      <a class="logo-link" href="/index.html">
-        <svg width="80" height="28" viewBox="0 0 80 28">
-          <rect x="0" y="0" width="28" height="28" rx="14" fill="#0ea5e9"/>
-          <path d="M6 14 Q9 9 13 14 Q17 19 21 14" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-          <text x="34" y="19" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="300" fill="#0f172a" letter-spacing="2">FLO</text>
-        </svg>
+      <a class="logo" href="/index.html">
+        <div class="logo-mark"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M2 8 Q5 3 8 8 Q11 13 14 8" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg></div>
+        <span class="logo-text">FLO</span>
       </a>
-      <button class="back-link" onclick="history.back()">← Back</button>
+      <div class="top-right">
+        <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">☀ Light</button>
+        <button class="back-btn" onclick="history.back()">← Back</button>
+      </div>
     </div>
 
     <div class="card">
-      <h1>Privacy Policy</h1>
-      <p class="updated">Last updated: April 2026</p>
+      <div class="doc-header">
+        <h1>Privacy Policy</h1>
+        <div class="updated">Last updated: April 2026</div>
+        <p class="intro">Your privacy is important to us. This policy explains exactly what data Flo collects, how we use it, who we share it with, and what control you have over it.</p>
+      </div>
 
-      <p>Your privacy matters to us. This policy explains what data Flo collects, how we use it, and your rights over it.</p>
-
-      <h2>1. What we collect</h2>
-      <p>When you use Flo, we collect:</p>
+      <h2>1. What We Collect</h2>
+      <p>When you use Flo, we collect the following categories of data:</p>
       <ul>
-        <li>Your email address (for account creation and login)</li>
-        <li>Financial data you enter — income, budgets, categories, and transactions</li>
-        <li>Questions you ask the AI advisor</li>
-        <li>Basic usage data (when you log in, which features you use)</li>
+        <li><strong>Account data</strong> — your email address, name, and encrypted password (managed by Supabase Auth)</li>
+        <li><strong>Financial data</strong> — income, savings goals, budget categories, and transactions that you manually enter</li>
+        <li><strong>AI interaction data</strong> — questions you ask the Flo AI advisor and the financial summary sent to generate responses</li>
+        <li><strong>Usage data</strong> — login timestamps, feature usage, and session information for service improvement</li>
+        <li><strong>Device data</strong> — browser type and general device information for compatibility purposes</li>
+      </ul>
+      <p>We do not collect your bank credentials, credit card numbers, or connect to any financial institutions directly. All financial data in Flo is entered manually by you.</p>
+
+      <h2>2. How We Use Your Data</h2>
+      <p>Your data is used exclusively to:</p>
+      <ul>
+        <li>Provide, maintain, and improve the Flo service</li>
+        <li>Generate AI-powered financial insights using your budget and transaction data</li>
+        <li>Send transactional emails such as password resets and security alerts</li>
+        <li>Process subscription payments and manage your account</li>
+        <li>Understand aggregate usage patterns to improve the product (anonymized)</li>
       </ul>
 
-      <h2>2. How we use your data</h2>
-      <p>We use your data to:</p>
+      <h2>3. AI & Your Financial Data</h2>
+      <div class="callout">
+        <strong>When you use Ask Flo AI</strong>, a summary of your financial data (income, spending, budget categories) is sent to Anthropic's API to generate a response. This data is used only to produce your response and is not retained by Anthropic beyond the duration of the request, per their data processing policies.
+      </div>
+      <p>We do not use your personal financial data to train AI models. We do not share identifiable financial data with any third party for advertising or analytics purposes.</p>
+
+      <h2>4. What We Don't Do</h2>
       <ul>
-        <li>Provide and improve the Flo service</li>
-        <li>Power the AI advisor with your financial context</li>
-        <li>Send important account emails (password reset, security alerts)</li>
-        <li>Understand how users interact with the app</li>
+        <li>We do not sell your personal or financial data to any third party</li>
+        <li>We do not share your data with advertisers</li>
+        <li>We do not use your data to train AI or machine learning models</li>
+        <li>We do not access your bank accounts, investments, or external financial services</li>
       </ul>
 
-      <h2>3. What we don't do</h2>
-      <p>We do not sell your personal data to third parties. We do not share your financial data with advertisers. We do not use your data to train AI models.</p>
-
-      <h2>4. Third-party services</h2>
-      <p>Flo uses the following third-party services to operate:</p>
+      <h2>5. Third-Party Services</h2>
+      <p>Flo relies on the following trusted third parties to operate:</p>
       <ul>
-        <li>Supabase — database and authentication (your data is stored here)</li>
-        <li>Anthropic Claude — AI responses (your financial summary is sent to generate advice)</li>
-        <li>Vercel — hosting</li>
+        <li><strong>Supabase</strong> — database storage and authentication. Your financial data and account credentials are stored here with row-level security.</li>
+        <li><strong>Anthropic</strong> — AI response generation. A financial summary is sent per request and not retained.</li>
+        <li><strong>Vercel</strong> — application hosting and serverless functions.</li>
+        <li><strong>Stripe</strong> (if applicable) — payment processing for subscriptions. We do not store full card details.</li>
       </ul>
-      <p>Each of these services has their own privacy policy. Your AI questions and financial summary are sent to Anthropic to generate responses but are not stored by them beyond the request.</p>
+      <p>Each provider operates under their own privacy policy and data processing agreements.</p>
 
-      <h2>5. Data security</h2>
-      <p>Your data is protected by row-level security — meaning you can only access your own data. Passwords are handled entirely by Supabase Auth and are never stored in plain text. All data is transmitted over HTTPS.</p>
-
-      <h2>6. Your rights</h2>
-      <p>You have the right to:</p>
+      <h2>6. Data Security</h2>
+      <p>We take data security seriously. Your data is protected by:</p>
       <ul>
-        <li>Access all data we hold about you</li>
-        <li>Correct inaccurate data</li>
-        <li>Delete your account and all associated data</li>
-        <li>Export your data</li>
+        <li>Row-level security (RLS) — you can only access your own data, enforced at the database level</li>
+        <li>HTTPS encryption for all data in transit</li>
+        <li>Supabase Auth for secure password hashing — we never store plain-text passwords</li>
+        <li>Server-side API key management — your AI API keys are never exposed client-side</li>
       </ul>
-      <p>You can delete your account at any time from your account settings page.</p>
 
-      <h2>7. Data retention</h2>
-      <p>When you delete your account, all your personal data, financial data, and transaction history is permanently deleted within 30 days.</p>
+      <h2>7. Your Rights</h2>
+      <p>You have the following rights over your data:</p>
+      <ul>
+        <li><strong>Access</strong> — request a copy of the data we hold about you</li>
+        <li><strong>Correction</strong> — update or correct inaccurate information</li>
+        <li><strong>Deletion</strong> — delete your account and all associated data at any time from account settings</li>
+        <li><strong>Portability</strong> — request an export of your financial data in a readable format</li>
+        <li><strong>Objection</strong> — object to specific processing of your data where applicable</li>
+      </ul>
+      <p>To exercise any of these rights, contact us through the app. We'll respond within 30 days.</p>
 
-      <h2>8. Children's privacy</h2>
-      <p>Flo is not intended for children under 13. We do not knowingly collect data from children under 13.</p>
+      <h2>8. Data Retention</h2>
+      <p>We retain your data for as long as your account is active or as needed to provide the service. When you delete your account, all personal data, financial data, and transaction history is permanently and irreversibly deleted within 30 days. Subscription billing records may be retained longer as required by law.</p>
 
-      <h2>9. Changes to this policy</h2>
-      <p>We may update this policy from time to time. We'll notify you of significant changes via email or an in-app notice.</p>
+      <h2>9. Cookies</h2>
+      <p>Flo uses minimal cookies and local storage — primarily for session management and user preferences such as dark/light mode. We do not use advertising or tracking cookies.</p>
 
-      <h2>10. Contact</h2>
-      <p>If you have questions about your privacy or want to exercise your data rights, please reach out through the app.</p>
+      <h2>10. Children's Privacy</h2>
+      <p>Flo is not directed at children under 13. We do not knowingly collect personal data from children under 13. If you believe a child under 13 has provided us with data, please contact us and we will delete it promptly.</p>
+
+      <h2>11. Changes to This Policy</h2>
+      <p>We may update this privacy policy from time to time. If we make material changes, we will notify you via email or an in-app notice at least 14 days before changes take effect. Your continued use of Flo after that date constitutes acceptance of the updated policy.</p>
+
+      <h2>12. Contact</h2>
+      <p>If you have questions about this privacy policy, want to exercise your data rights, or have a privacy concern, please contact us through the app. We take all privacy inquiries seriously and will respond as promptly as possible.</p>
 
       <div class="footer-links">
         <a href="/terms.html">Terms of Service</a>
@@ -106,5 +143,11 @@
       </div>
     </div>
   </div>
+  <script>
+    const _t=localStorage.getItem('flo_theme')||'dark'
+    function applyTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('flo_theme',t);document.getElementById('theme-btn').textContent=t==='dark'?'☀ Light':'☾ Dark'}
+    applyTheme(_t)
+    window.toggleTheme=()=>applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark')
+  </script>
 </body>
 </html>
