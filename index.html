@@ -74,11 +74,23 @@
     .card-title { font-size: 0.85rem; font-weight: 600; }
     .card-link { font-size: 0.78rem; color: var(--sky-dark); background: none; border: none; font-family: 'Sora', sans-serif; cursor: pointer; }
     .card-link:hover { text-decoration: underline; }
-    .cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .cat-pill { display: flex; align-items: center; gap: 8px; background: var(--sky-pale); border: 1px solid var(--border); border-radius: 10px; padding: 9px 12px; }
+    .cat-grid { display: flex; flex-direction: column; gap: 8px; }
+    .cat-pill { background: var(--sky-pale); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; }
+    .cat-pill-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
     .cat-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-    .cat-pill-name { font-size: 0.8rem; font-weight: 500; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .cat-pill-amt { font-size: 0.78rem; color: var(--muted); white-space: nowrap; }
+    .cat-pill-name { font-size: 0.82rem; font-weight: 500; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cat-pill-amt { font-size: 0.75rem; color: var(--muted); white-space: nowrap; }
+    .cat-pill-amt.over { color: #dc2626; font-weight: 600; }
+    .cat-progress-track { background: var(--border); border-radius: 99px; height: 5px; overflow: hidden; }
+    .cat-progress-fill { height: 100%; border-radius: 99px; transition: width 0.4s ease; }
+    .cat-delete { background: none; border: none; color: #cbd5e1; cursor: pointer; font-size: 1rem; padding: 0 2px; line-height: 1; transition: color 0.15s; flex-shrink: 0; }
+    .cat-delete:hover { color: #ef4444; }
+    .cat-add-row { display: grid; grid-template-columns: 1fr 80px 36px 36px; gap: 6px; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+    .cat-add-inp { background: var(--sky-pale); border: 1.5px solid var(--border); border-radius: 8px; padding: 7px 10px; font-size: 0.82rem; font-family: 'Sora', sans-serif; color: var(--text); outline: none; width: 100%; transition: border-color 0.15s; }
+    .cat-add-inp:focus { border-color: var(--sky); background: white; }
+    .cat-color-pick { width: 36px; height: 34px; border-radius: 8px; border: 1.5px solid var(--border); background: white; cursor: pointer; padding: 2px; }
+    .cat-add-btn { width: 36px; height: 34px; background: var(--sky-dark); color: white; border: none; border-radius: 8px; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .cat-add-btn:hover { background: #0284c7; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
     .field label { font-size: 0.75rem; font-weight: 500; color: var(--muted); display: block; margin-bottom: 5px; }
     input, select { outline: none; }
@@ -104,11 +116,6 @@
     .quick-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
     .qp { font-size: 0.73rem; padding: 5px 11px; border-radius: 99px; border: 1px solid var(--border); background: white; color: var(--muted); cursor: pointer; font-family: 'Sora', sans-serif; transition: all 0.15s; }
     .qp:hover { border-color: var(--sky); color: var(--sky-dark); background: var(--sky-pale); }
-    .cat-edit-row { display: flex; align-items: center; gap: 8px; background: var(--sky-pale); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; margin-bottom: 6px; transition: border-color 0.15s; }
-    .cat-edit-row:focus-within { border-color: var(--sky); background: white; }
-    .cat-edit-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .cat-edit-name { flex: 1; font-size: 0.85rem; font-weight: 500; background: none; border: none; outline: none; font-family: 'Sora', sans-serif; color: var(--text); min-width: 0; }
-    .cat-edit-amt { font-size: 0.85rem; font-weight: 600; color: var(--sky-dark); background: none; border: none; outline: none; font-family: 'Sora', sans-serif; width: 70px; text-align: right; }
     .txn-row { position: relative; }
     .txn-delete { background: none; border: none; color: #cbd5e1; cursor: pointer; font-size: 1rem; padding: 2px 4px; margin-left: 8px; border-radius: 6px; transition: all 0.15s; flex-shrink: 0; }
     .txn-delete:hover { color: #ef4444; background: #fef2f2; }
@@ -222,14 +229,15 @@
       <div class="card">
         <div class="card-header">
           <div class="card-title">Budget categories</div>
-          <button class="card-link" id="cat-edit-btn" onclick="toggleCatEdit()">Edit →</button>
         </div>
         <div class="cat-grid" id="categories"></div>
-        <div id="cat-edit-area" style="display:none;margin-top:12px;"></div>
-        <div id="cat-save-row" style="display:none;margin-top:10px;gap:8px;display:none;flex-direction:column;">
-          <button class="btn-save" id="cat-save-btn" onclick="saveCategories()">Save changes</button>
-          <p id="cat-save-msg" style="font-size:0.78rem;color:var(--muted);text-align:center;min-height:14px;"></p>
+        <div class="cat-add-row">
+          <input class="cat-add-inp" id="new-cat-name" type="text" placeholder="New category" />
+          <input class="cat-add-inp" id="new-cat-budget" type="number" placeholder="$ budget" />
+          <input type="color" id="new-cat-color" class="cat-color-pick" value="#38bdf8" />
+          <button class="cat-add-btn" onclick="addCategoryDashboard()" title="Add category">+</button>
         </div>
+        <p id="cat-msg" style="font-size:0.78rem;color:var(--muted);margin-top:6px;min-height:14px;"></p>
       </div>
       <div class="card" id="log-section">
         <div class="card-header"><div class="card-title">Log a transaction</div></div>
@@ -327,22 +335,99 @@
         : `$${totalSaved.toLocaleString()} saved of $${budget.yearly_goal.toLocaleString()} goal · $${neededPerMonth.toLocaleString()}/mo needed to hit it · update in Setup`
     }
 
-    const { data: categories } = await supabase.from('categories').select('*').eq('user_id', user.id)
-    if (categories) {
-      const total = categories.reduce((s, c) => s + c.budget, 0)
+    let categories = []
+
+    async function loadCategories() {
+      const { data: cats } = await supabase.from('categories').select('*').eq('user_id', user.id)
+      if (!cats) return
+      categories = cats
+      const total = cats.reduce((s, c) => s + c.budget, 0)
       document.getElementById('total-budget').textContent = '$' + total.toLocaleString()
-      const container = document.getElementById('categories')
+
+      // Rebuild category select
       const select = document.getElementById('category')
-      categories.forEach(cat => {
-        const pill = document.createElement('div')
-        pill.className = 'cat-pill'
-        pill.innerHTML = `<div class="cat-dot" style="background:${cat.color}"></div><div class="cat-pill-name">${cat.name}</div><div class="cat-pill-amt">$${cat.budget.toLocaleString()}</div>`
-        container.appendChild(pill)
+      const currentVal = select.value
+      select.innerHTML = '<option value="">Select...</option>'
+      cats.forEach(cat => {
         const opt = document.createElement('option')
         opt.value = cat.id; opt.textContent = cat.name
         select.appendChild(opt)
       })
+      if (currentVal) select.value = currentVal
     }
+
+    function renderCategoryBars(spentByCatId) {
+      const container = document.getElementById('categories')
+      container.innerHTML = ''
+      categories.forEach(cat => {
+        const spent = spentByCatId[cat.id] || 0
+        const pct = cat.budget > 0 ? Math.min((spent / cat.budget) * 100, 100) : 0
+        const over = spent > cat.budget
+        const color = over ? '#ef4444' : cat.color
+
+        const pill = document.createElement('div')
+        pill.className = 'cat-pill'
+
+        const row = document.createElement('div')
+        row.className = 'cat-pill-row'
+
+        const dot = document.createElement('div')
+        dot.className = 'cat-dot'
+        dot.style.background = cat.color
+
+        const name = document.createElement('div')
+        name.className = 'cat-pill-name'
+        name.textContent = cat.name
+
+        const amt = document.createElement('div')
+        amt.className = 'cat-pill-amt' + (over ? ' over' : '')
+        amt.textContent = '$' + Math.round(spent).toLocaleString() + ' / $' + cat.budget.toLocaleString()
+
+        const del = document.createElement('button')
+        del.className = 'cat-delete'
+        del.title = 'Delete category'
+        del.textContent = '×'
+        del.onclick = () => deleteCategoryDashboard(cat)
+
+        row.append(dot, name, amt, del)
+
+        const track = document.createElement('div')
+        track.className = 'cat-progress-track'
+        const fill = document.createElement('div')
+        fill.className = 'cat-progress-fill'
+        fill.style.width = pct + '%'
+        fill.style.background = color
+        track.appendChild(fill)
+
+        pill.append(row, track)
+        container.appendChild(pill)
+      })
+    }
+
+    window.addCategoryDashboard = async function() {
+      const name = document.getElementById('new-cat-name').value.trim()
+      const budget = parseFloat(document.getElementById('new-cat-budget').value)
+      const color = document.getElementById('new-cat-color').value
+      const msg = document.getElementById('cat-msg')
+      if (!name || !budget) { msg.textContent = 'Enter a name and budget amount.'; return }
+      const { error } = await supabase.from('categories').insert({ user_id: user.id, name, budget, color })
+      if (error) { msg.textContent = 'Error: ' + error.message; return }
+      document.getElementById('new-cat-name').value = ''
+      document.getElementById('new-cat-budget').value = ''
+      msg.textContent = '✓ Category added!'
+      setTimeout(() => msg.textContent = '', 2000)
+      await loadCategories()
+      loadTransactions(true)
+    }
+
+    window.deleteCategoryDashboard = async function(cat) {
+      if (!confirm(`Delete "${cat.name}"? This won't delete its transactions.`)) return
+      await supabase.from('categories').delete().eq('id', cat.id)
+      await loadCategories()
+      loadTransactions(true)
+    }
+
+    await loadCategories()
 
     // Transaction pagination
     let txnOffset = 0
@@ -395,8 +480,8 @@
         document.getElementById('load-more-btn').style.display = 'none'
       }
 
-      // Recalculate totals from ALL transactions (not just displayed)
-      const { data: allTxns } = await supabase.from('transactions').select('amount').eq('user_id', user.id)
+      // Recalculate totals from ALL transactions
+      const { data: allTxns } = await supabase.from('transactions').select('amount, category_id').eq('user_id', user.id)
       const totalSpent = allTxns?.reduce((s, t) => s + Number(t.amount), 0) || 0
       const remaining = budget.income - budget.savings_goal - totalSpent
       document.getElementById('total-spent').textContent = '$' + totalSpent.toLocaleString()
@@ -407,29 +492,18 @@
         ? "⚠ You've exceeded your spending budget this month"
         : "Here's your financial overview for this month"
 
-      // Budget alerts — check per category
-      if (reset && categories) {
-        const spentByCat = {}
-        allTxns?.forEach(t => {
-          // Need category name lookup - use a separate query
-        })
-        checkBudgetAlerts(allTxns)
-      }
+      // Build spentByCatId and update category bars
+      const spentByCatId = {}
+      allTxns?.forEach(t => {
+        if (t.category_id) spentByCatId[t.category_id] = (spentByCatId[t.category_id] || 0) + Number(t.amount)
+      })
+      renderCategoryBars(spentByCatId)
+
+      if (reset) checkBudgetAlerts(allTxns, spentByCatId)
     }
 
-    async function checkBudgetAlerts(allTxns) {
-      if (!categories || !allTxns) return
-      const { data: txnsWithCat } = await supabase
-        .from('transactions').select('amount, categories(id, name)')
-        .eq('user_id', user.id)
-
-      const spentByCatId = {}
-      txnsWithCat?.forEach(t => {
-        if (t.categories?.id) {
-          spentByCatId[t.categories.id] = (spentByCatId[t.categories.id] || 0) + Number(t.amount)
-        }
-      })
-
+    async function checkBudgetAlerts(allTxns, spentByCatId) {
+      if (!categories || !categories.length) return
       const alertsArea = document.getElementById('alerts-area')
       alertsArea.innerHTML = ''
       const dismissed = JSON.parse(sessionStorage.getItem('flo_dismissed_alerts') || '[]')
