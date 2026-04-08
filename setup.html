@@ -124,12 +124,16 @@
         <div class="row">
           <div class="field">
             <label>Yearly savings goal ($) <span class="optional-badge">optional</span></label>
-            <input id="yearly-goal" type="number" placeholder="e.g. 10,000" />
+            <input id="yearly-goal" type="number" placeholder="e.g. 10,000" oninput="calcBudget()" />
           </div>
           <div class="field">
-            <label>Monthly savings target <span style="font-weight:400;color:#94a3b8;">auto</span></label>
-            <input id="monthly-target" type="number" placeholder="—" readonly style="color:#16a34a;font-weight:500;" />
+            <label>Already saved this year ($) <span class="optional-badge">optional</span></label>
+            <input id="total-saved" type="number" placeholder="e.g. 3,500" oninput="calcBudget()" />
           </div>
+        </div>
+        <div class="field" id="monthly-target-field" style="display:none;">
+          <label>Monthly needed to hit goal <span style="font-weight:400;color:#94a3b8;">auto</span></label>
+          <input id="monthly-target" type="number" placeholder="—" readonly style="color:#16a34a;font-weight:500;" />
         </div>
       </div>
       <button class="btn-primary" onclick="goToStep2()">Next: Set up categories →</button>
@@ -207,6 +211,7 @@
       document.getElementById('income').value = b.income || ''
       document.getElementById('savings').value = b.savings_goal || ''
       document.getElementById('yearly-goal').value = b.yearly_goal || ''
+      document.getElementById('total-saved').value = b.total_saved || ''
       calcBudget()
     }
 
@@ -248,12 +253,16 @@
       const inc = parseFloat(document.getElementById('income').value) || 0
       const sav = parseFloat(document.getElementById('savings').value) || 0
       const yearly = parseFloat(document.getElementById('yearly-goal').value) || 0
+      const saved = parseFloat(document.getElementById('total-saved').value) || 0
       document.getElementById('budget-display').value = inc - sav > 0 ? inc - sav : ''
       if (yearly > 0) {
         const monthsLeft = Math.max(12 - new Date().getMonth(), 1)
-        document.getElementById('monthly-target').value = Math.round(yearly / 12)
+        const needed = Math.max(0, yearly - saved)
+        document.getElementById('monthly-target').value = Math.round(needed / monthsLeft)
+        document.getElementById('monthly-target-field').style.display = 'block'
       } else {
         document.getElementById('monthly-target').value = ''
+        document.getElementById('monthly-target-field').style.display = 'none'
       }
     }
 
@@ -353,22 +362,23 @@
       const income = parseFloat(document.getElementById('income').value)
       const savings = parseFloat(document.getElementById('savings').value) || 0
       const yearlyGoal = parseFloat(document.getElementById('yearly-goal').value) || null
+      const totalSaved = parseFloat(document.getElementById('total-saved').value) || 0
       const budgetName = document.getElementById('budget-name').value.trim() || 'Regular Month'
       const month = new Date().toISOString().slice(0,7) + '-01'
 
       // Save budget — upsert by id if editing, otherwise insert new
       let budgetError
       if (activeBudgetId) {
-        const { error } = await supabase.from('budgets').update({ name: budgetName, income, savings_goal: savings, yearly_goal: yearlyGoal, month }).eq('id', activeBudgetId)
+        const { error } = await supabase.from('budgets').update({ name: budgetName, income, savings_goal: savings, yearly_goal: yearlyGoal, total_saved: totalSaved, month }).eq('id', activeBudgetId)
         budgetError = error
       } else {
-        const { error } = await supabase.from('budgets').insert({ user_id: user.id, name: budgetName, income, savings_goal: savings, yearly_goal: yearlyGoal, month })
+        const { error } = await supabase.from('budgets').insert({ user_id: user.id, name: budgetName, income, savings_goal: savings, yearly_goal: yearlyGoal, total_saved: totalSaved, month })
         budgetError = error
       }
 
       if (budgetError) {
         // Fallback: upsert by user_id + month for backwards compat
-        const { error: be } = await supabase.from('budgets').upsert({ user_id: user.id, name: budgetName, income, savings_goal: savings, yearly_goal: yearlyGoal, month }, { onConflict: 'user_id,month' })
+        const { error: be } = await supabase.from('budgets').upsert({ user_id: user.id, name: budgetName, income, savings_goal: savings, yearly_goal: yearlyGoal, total_saved: totalSaved, month }, { onConflict: 'user_id,month' })
         if (be) { msg.textContent = 'Error: ' + be.message; btn.disabled = false; return }
       }
 
