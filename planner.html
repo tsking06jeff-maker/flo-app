@@ -2,440 +2,194 @@
 <html lang="en" data-theme="dark">
 <head>
   <script>document.documentElement.setAttribute("data-theme",localStorage.getItem("flo_theme")||"dark")</script>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Flo — Expense Planner</title>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root { --sky: #38bdf8; --sky-dark: #0ea5e9; --sky-pale: #f0faff; --text: #0f172a; --muted: #64748b; --border: #e2e8f0; --bg: #f8fafc; --success: #16a34a; --danger: #dc2626; }
-    body { background:var(--bg); color: var(--text); font-family: 'Sora', sans-serif; min-height: 100vh; }
-    .sidebar { position: fixed; top: 0; left: 0; width: 224px; height: 100vh; background: white; border-right: 1px solid var(--border); padding: 1.5rem 1rem; display: flex; flex-direction: column; z-index: 10; }
-    .sidebar-logo { padding: 0.25rem 0.5rem 1.75rem; }
-    .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; font-size: 0.85rem; font-weight: 500; color: var(--muted); cursor: pointer; transition: all 0.15s; text-decoration: none; margin-bottom: 2px; }
-    .nav-item:hover, .nav-item.active { background: var(--sky-pale); color: var(--sky-dark); }
-    .nav-icon { font-size: 0.95rem; width: 18px; text-align: center; }
-    .nav-ext { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; font-size: 0.82rem; font-weight: 500; color: #7c3aed; cursor: pointer; transition: all 0.15s; text-decoration: none; margin-bottom: 2px; background: #faf5ff; border: 1px solid #ede9fe; }
-    .nav-ext:hover { background: #ede9fe; }
-    .sidebar-bottom { margin-top: auto; }
-    .user-pill { display: flex; align-items: center; gap: 9px; padding: 10px 12px; border-radius: 10px; background: var(--sky-pale); }
-    .user-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--sky-dark); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.72rem; font-weight: 600; flex-shrink: 0; }
-    .user-info { flex: 1; overflow: hidden; }
-    .user-name { font-size: 0.73rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .user-label { font-size: 0.68rem; color: #94a3b8; }
-    .sign-out-btn { background: none; border: none; color: #cbd5e1; cursor: pointer; font-size: 0.9rem; padding: 2px 4px; }
-    .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid var(--border); padding: 8px 0 max(8px, env(safe-area-inset-bottom)); z-index: 100; justify-content: space-around; }
-    .bottom-nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 12px; cursor: pointer; color: var(--muted); font-size: 0.65rem; font-weight: 500; border: none; background: none; font-family: 'Sora', sans-serif; }
-    .bottom-nav-item.active { color: var(--sky-dark); }
-    .bottom-nav-icon { font-size: 1.2rem; }
-    .mobile-topbar { display: none; position: fixed; top: 0; left: 0; right: 0; background: white; border-bottom: 1px solid var(--border); padding: 12px 1.25rem; z-index: 10; align-items: center; justify-content: space-between; }
-    .main { margin-left: 224px; padding: 2rem 2.5rem 3rem; max-width: 900px; }
-    .page-header { margin-bottom: 2rem; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-    .page-header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; }
-    .page-header p { color: var(--muted); font-size: 0.85rem; margin-top: 3px; }
-    .btn-new { display: flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 10px; background: var(--sky-dark); color: white; border: none; font-size: 0.85rem; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; transition: background 0.15s; }
-    .btn-new:hover { background: #0284c7; }
-    .goals-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.25rem; margin-bottom: 2rem; }
-    .goal-card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; position: relative; }
-    .goal-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 6px; }
-    .goal-emoji { font-size: 1.6rem; margin-right: 6px; }
-    .goal-name { font-size: 1rem; font-weight: 600; letter-spacing: -0.01em; }
-    .goal-target { font-size: 0.8rem; color: var(--muted); margin-bottom: 12px; }
-    .goal-actions { display: flex; gap: 6px; }
-    .goal-btn { background: none; border: none; font-size: 0.85rem; cursor: pointer; color: var(--muted); padding: 2px 6px; border-radius: 6px; font-family: 'Sora', sans-serif; transition: all 0.15s; }
-    .goal-btn:hover { background: var(--sky-pale); color: var(--sky-dark); }
-    .goal-btn.danger:hover { background: #fef2f2; color: var(--danger); }
-    .progress-track { background: var(--border); border-radius: 99px; height: 10px; overflow: hidden; margin-bottom: 10px; }
-    .progress-fill { height: 100%; border-radius: 99px; transition: width 0.6s ease; }
-    .goal-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-    .goal-stat { background: var(--sky-pale); border-radius: 10px; padding: 8px 10px; }
-    .goal-stat-label { font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 4px; }
-    .goal-stat-value { font-size: 0.95rem; font-weight: 600; }
-    .goal-stat-value.green { color: var(--success); }
-    .goal-stat-value.sky { color: var(--sky-dark); }
-    .goal-stat-value.orange { color: #d97706; }
-    .deadline-badge { display: inline-flex; align-items: center; gap: 5px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 99px; padding: 3px 10px; font-size: 0.73rem; color: var(--success); margin-bottom: 10px; }
-    .deadline-badge.urgent { background: #fff7ed; border-color: #fed7aa; color: #d97706; }
-    .deadline-badge.overdue { background: #fef2f2; border-color: #fecaca; color: var(--danger); }
-    .add-savings-row { display: flex; gap: 8px; margin-top: 12px; }
-    .savings-inp { flex: 1; background: var(--sky-pale); border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 0.85rem; font-family: 'Sora', sans-serif; color: var(--text); outline: none; }
-    .savings-inp:focus { border-color: var(--sky); background: white; }
-    .btn-add-savings { padding: 8px 14px; border-radius: 8px; background: var(--sky-dark); color: white; border: none; font-size: 0.82rem; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; white-space: nowrap; }
-    .btn-add-savings:hover { background: #0284c7; }
-    .empty-goals { text-align: center; padding: 4rem 2rem; color: var(--muted); }
-    .empty-goals .icon { font-size: 3rem; margin-bottom: 1rem; }
-    .empty-goals h3 { font-size: 1.1rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
-    .empty-goals p { font-size: 0.88rem; line-height: 1.6; margin-bottom: 1.5rem; }
-    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
-    .modal-overlay.show { display: flex; }
-    .modal { background: white; border-radius: 16px; padding: 2rem; max-width: 460px; width: 92%; }
-    .modal h2 { font-size: 1.1rem; font-weight: 600; margin-bottom: 1.25rem; }
-    .field { margin-bottom: 1rem; }
-    label { font-size: 0.78rem; font-weight: 500; color: var(--muted); display: block; margin-bottom: 5px; }
-    input[type="text"], input[type="number"], input[type="date"], select.modal-select {
-      width: 100%; background: var(--sky-pale); border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 14px; color: var(--text); font-size: 0.9rem; font-family: 'Sora', sans-serif; outline: none; transition: border-color 0.2s;
-    }
-    input:focus, select.modal-select:focus { border-color: var(--sky); background: white; }
-    .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .modal-actions { display: flex; gap: 10px; margin-top: 1.25rem; }
-    .btn-primary { flex: 1; padding: 12px; border-radius: 10px; border: none; background: var(--sky-dark); color: white; font-size: 0.9rem; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; }
-    .btn-primary:hover { background: #0284c7; }
-    .btn-cancel { padding: 12px 20px; border-radius: 10px; border: 1.5px solid var(--border); background: white; color: var(--muted); font-size: 0.9rem; font-family: 'Sora', sans-serif; cursor: pointer; }
-    .btn-cancel:hover { border-color: var(--sky); color: var(--sky-dark); }
-    .emoji-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
-    .emoji-opt { font-size: 1.4rem; cursor: pointer; padding: 4px 6px; border-radius: 8px; border: 2px solid transparent; transition: all 0.15s; }
-    .emoji-opt.selected { border-color: var(--sky-dark); background: var(--sky-pale); }
-    #form-msg-modal { font-size: 0.8rem; color: var(--muted); margin-top: 8px; min-height: 16px; }
-    @media (max-width: 768px) {
-      .sidebar { display: none; }
-      .bottom-nav { display: flex; }
-      .mobile-topbar { display: flex; }
-      .main { margin-left: 0; padding: 5rem 1rem 6rem; }
-      .goals-grid { grid-template-columns: 1fr; }
-      .modal-row { grid-template-columns: 1fr; }
-    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root[data-theme="dark"]{--bg:#0c0c0f;--card:#141418;--card2:#18181d;--border:#1e1e27;--border2:#2a2a35;--text:#f4f4f5;--muted:#71717a;--muted2:#52525b;--accent:#a78bfa;--accent2:#ec4899;--accent-dim:rgba(167,139,250,0.12);--green:#4ade80;--red:#f87171;--orange:#fb923c;--inp-bg:#0c0c0f;}
+    :root[data-theme="light"]{--bg:#f5f5fa;--card:#ffffff;--card2:#f8f8fc;--border:#e4e4f0;--border2:#d4d4e8;--text:#0c0c0f;--muted:#6b6b7b;--muted2:#9898ab;--accent:#7c3aed;--accent2:#db2777;--accent-dim:rgba(124,58,237,0.08);--green:#16a34a;--red:#dc2626;--orange:#d97706;--inp-bg:#f5f5fa;}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sans-serif;min-height:100vh;transition:background 0.2s;}
+    .sidebar{position:fixed;top:0;left:0;width:220px;height:100vh;background:var(--card);border-right:1px solid var(--border);padding:20px 12px;display:flex;flex-direction:column;z-index:10;}
+    .sidebar-logo{padding:4px 8px 20px;display:flex;align-items:center;gap:10px;}
+    .logo-mark{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .logo-text{font-size:14px;font-weight:800;letter-spacing:3px;color:var(--text);}
+    .nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all 0.15s;text-decoration:none;margin-bottom:1px;}
+    .nav-item:hover,.nav-item.active{background:var(--accent-dim);color:var(--accent);}
+    .nav-icon{font-size:14px;width:16px;text-align:center;}
+    .nav-ext{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;font-size:13px;font-weight:500;color:var(--accent2);cursor:pointer;transition:all 0.15s;text-decoration:none;margin-bottom:1px;background:rgba(236,72,153,0.08);border:1px solid rgba(236,72,153,0.15);}
+    .sidebar-bottom{margin-top:auto;display:flex;flex-direction:column;gap:8px;}
+    .theme-toggle{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:8px;background:var(--card2);border:1px solid var(--border);cursor:pointer;font-size:12px;font-weight:500;color:var(--muted);}
+    .toggle-track{width:32px;height:18px;background:var(--border2);border-radius:99px;position:relative;transition:background 0.2s;}
+    .toggle-track.on{background:var(--accent);}
+    .toggle-thumb{position:absolute;width:12px;height:12px;background:white;border-radius:50%;top:3px;left:3px;transition:transform 0.2s;}
+    .toggle-track.on .toggle-thumb{transform:translateX(14px);}
+    .user-pill{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:8px;background:var(--card2);border:1px solid var(--border);}
+    .user-avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;color:white;font-size:11px;font-weight:700;flex-shrink:0;}
+    .user-name-pill{font-size:12px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .user-sub-pill{font-size:10px;color:var(--muted2);}
+    .sign-out-btn{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:14px;padding:2px;}
+    .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);padding:8px 0 max(8px,env(safe-area-inset-bottom));z-index:100;justify-content:space-around;}
+    .bottom-nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 12px;cursor:pointer;color:var(--muted);font-size:10px;font-weight:500;border:none;background:none;font-family:'Inter',sans-serif;}
+    .bottom-nav-item.active{color:var(--accent);}
+    .bottom-nav-icon{font-size:18px;}
+    .mobile-topbar{display:none;position:fixed;top:0;left:0;right:0;background:var(--card);border-bottom:1px solid var(--border);padding:12px 16px;z-index:10;align-items:center;justify-content:space-between;}
+    .main{margin-left:220px;padding:28px 32px 40px;max-width:calc(220px + 860px);}
+    .page-header{margin-bottom:24px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+    .page-title{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+    .page-sub{font-size:12px;color:var(--muted);margin-top:3px;}
+    .btn-new{display:flex;align-items:center;gap:6px;padding:10px 18px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:none;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;transition:opacity 0.15s;}
+    .btn-new:hover{opacity:0.9;}
+    .goals-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-bottom:20px;}
+    .goal-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;}
+    .goal-card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;}
+    .goal-emoji{font-size:1.5rem;margin-right:6px;}
+    .goal-name{font-size:14px;font-weight:700;}
+    .goal-target{font-size:11px;color:var(--muted);margin-bottom:10px;}
+    .goal-actions{display:flex;gap:4px;}
+    .goal-btn{background:none;border:none;font-size:12px;cursor:pointer;color:var(--muted);padding:3px 8px;border-radius:6px;font-family:'Inter',sans-serif;transition:all 0.15s;}
+    .goal-btn:hover{background:var(--accent-dim);color:var(--accent);}
+    .goal-btn.danger:hover{background:rgba(248,113,113,0.1);color:var(--red);}
+    .progress-track{background:var(--border);border-radius:99px;height:8px;overflow:hidden;margin-bottom:10px;}
+    .progress-fill{height:100%;border-radius:99px;transition:width 0.6s ease;}
+    .goal-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;}
+    .goal-stat{background:var(--card2);border-radius:8px;padding:8px 10px;}
+    .goal-stat-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted2);margin-bottom:3px;}
+    .goal-stat-value{font-size:13px;font-weight:800;}
+    .goal-stat-value.green{color:var(--green);}
+    .goal-stat-value.accent{color:var(--accent);}
+    .goal-stat-value.orange{color:var(--orange);}
+    .deadline-badge{display:inline-flex;align-items:center;gap:5px;border-radius:99px;padding:3px 10px;font-size:11px;margin-bottom:8px;}
+    .deadline-badge.ok{background:rgba(74,222,128,0.1);color:var(--green);}
+    .deadline-badge.urgent{background:rgba(251,146,60,0.1);color:var(--orange);}
+    .deadline-badge.overdue{background:rgba(248,113,113,0.1);color:var(--red);}
+    .add-savings-row{display:flex;gap:6px;margin-top:10px;}
+    .savings-inp{flex:1;background:var(--inp-bg);border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:12px;font-family:'Inter',sans-serif;color:var(--text);outline:none;}
+    .savings-inp:focus{border-color:var(--accent);}
+    .btn-add-savings{padding:7px 14px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:none;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;white-space:nowrap;}
+    .empty-goals{text-align:center;padding:4rem 2rem;color:var(--muted2);}
+    .empty-icon{font-size:3rem;margin-bottom:12px;}
+    .empty-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;}
+    .empty-sub{font-size:12px;line-height:1.6;margin-bottom:20px;}
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;align-items:center;justify-content:center;}
+    .modal-overlay.show{display:flex;}
+    .modal{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:440px;width:92%;}
+    .modal h2{font-size:15px;font-weight:800;margin-bottom:16px;color:var(--text);}
+    .field{margin-bottom:10px;}
+    .field label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted2);display:block;margin-bottom:5px;}
+    .std-input{width:100%;background:var(--inp-bg);border:1px solid var(--border);border-radius:8px;padding:9px 11px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.15s;}
+    .std-input:focus{border-color:var(--accent);}
+    .modal-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .modal-actions{display:flex;gap:8px;margin-top:16px;}
+    .btn-primary{flex:1;padding:11px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;}
+    .btn-cancel{padding:11px 18px;border-radius:9px;border:1px solid var(--border);background:none;color:var(--muted);font-size:13px;font-family:'Inter',sans-serif;cursor:pointer;}
+    .emoji-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+    .emoji-opt{font-size:1.3rem;cursor:pointer;padding:3px 5px;border-radius:7px;border:2px solid transparent;transition:all 0.15s;}
+    .emoji-opt.selected{border-color:var(--accent);background:var(--accent-dim);}
+    #form-msg-modal{font-size:11px;color:var(--muted);margin-top:6px;min-height:14px;}
+    @media(max-width:768px){.sidebar{display:none;}.bottom-nav{display:flex;}.mobile-topbar{display:flex;}.main{margin-left:0;padding:5rem 14px 6rem;}.goals-grid{grid-template-columns:1fr;}.modal-row{grid-template-columns:1fr;}}
   </style>
 </head>
 <body>
   <div class="sidebar">
-    <div class="sidebar-logo">
-      <svg width="96" height="34" viewBox="0 0 96 34">
-        <rect x="0" y="0" width="34" height="34" rx="17" fill="#0ea5e9"/>
-        <path d="M7 17 Q11 11 16 17 Q21 23 25 17" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <text x="42" y="23" font-family="'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="300" fill="#0f172a" letter-spacing="2.5">FLO</text>
-      </svg>
-    </div>
-    <a class="nav-item" onclick="window.location.href='/index.html'"><span class="nav-icon">◉</span> Dashboard</a>
-    <a class="nav-item" onclick="window.location.href='/charts.html'"><span class="nav-icon">📊</span> Charts</a>
-    <a class="nav-item" onclick="window.location.href='/reports.html'"><span class="nav-icon">📋</span> Reports</a>
-    <a class="nav-item active"><span class="nav-icon">✈️</span> Planner</a>
-    <a class="nav-item" onclick="window.location.href='/setup.html'"><span class="nav-icon">⚙</span> Edit budget</a>
-    <a class="nav-item" onclick="window.location.href='/account.html'"><span class="nav-icon">👤</span> Account</a>
-    <a class="nav-ext" onclick="showExtModal()" style="cursor:pointer;"><span class="nav-icon">🧩</span> Add extension</a>
+    <div class="sidebar-logo"><div class="logo-mark"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M2 8 Q5 3 8 8 Q11 13 14 8" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg></div><span class="logo-text">FLO</span></div>
+    <a class="nav-item" onclick="location.href='/index.html'"><span class="nav-icon">⬡</span> Dashboard</a>
+    <a class="nav-item" onclick="location.href='/charts.html'"><span class="nav-icon">◈</span> Charts</a>
+    <a class="nav-item" onclick="location.href='/reports.html'"><span class="nav-icon">◧</span> Reports</a>
+    <a class="nav-item active"><span class="nav-icon">✦</span> Planner</a>
+    <a class="nav-item" onclick="location.href='/setup.html'"><span class="nav-icon">⊕</span> Edit budget</a>
+    <a class="nav-item" onclick="location.href='/account.html'"><span class="nav-icon">◎</span> Account</a>
+    <a class="nav-ext" href="#" onclick="showExtModal();return false;"><span class="nav-icon">⧉</span> Add extension</a>
     <div class="sidebar-bottom">
-      <div class="user-pill">
-        <div class="user-avatar" id="user-initials">?</div>
-        <div class="user-info">
-          <div class="user-name" id="user-name">—</div>
-          <div class="user-label">Let your money flow</div>
-        </div>
-        <button class="sign-out-btn" onclick="signOut()">⇥</button>
-      </div>
+      <div class="theme-toggle" onclick="toggleTheme()"><span class="theme-label">Dark mode</span><div class="toggle-track on" id="toggle-track"><div class="toggle-thumb"></div></div></div>
+      <div class="user-pill"><div class="user-avatar" id="user-initials">?</div><div style="flex:1;overflow:hidden;"><div class="user-name-pill" id="user-name">—</div><div class="user-sub-pill">Let your money flow</div></div><button class="sign-out-btn" onclick="signOut()">⇥</button></div>
     </div>
   </div>
-
   <div class="mobile-topbar">
-    <svg width="52" height="20" viewBox="0 0 52 20">
-      <rect x="0" y="0" width="20" height="20" rx="10" fill="#0ea5e9"/>
-      <path d="M4 10 Q7 6 10 10 Q13 14 16 10" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-      <text x="24" y="14" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="300" fill="#0f172a" letter-spacing="1.5">FLO</text>
-    </svg>
-    <span style="font-size:0.9rem;font-weight:600;">Planner</span>
-    <button onclick="signOut()" style="background:none;border:none;color:var(--muted);font-size:0.8rem;font-family:'Sora',sans-serif;cursor:pointer;">Sign out</button>
+    <div style="display:flex;align-items:center;gap:8px;"><div class="logo-mark" style="width:24px;height:24px;border-radius:7px;"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M2 8 Q5 3 8 8 Q11 13 14 8" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg></div><span style="font-size:13px;font-weight:800;letter-spacing:2px;color:var(--text);">FLO</span></div>
+    <div class="toggle-track" id="toggle-track-mobile" onclick="toggleTheme()" style="cursor:pointer;"><div class="toggle-thumb"></div></div>
   </div>
-
   <div class="bottom-nav">
-    <button class="bottom-nav-item" onclick="window.location.href='/index.html'"><span class="bottom-nav-icon">◉</span><span>Home</span></button>
-    <button class="bottom-nav-item" onclick="window.location.href='/charts.html'"><span class="bottom-nav-icon">📊</span><span>Charts</span></button>
-    <button class="bottom-nav-item active"><span class="bottom-nav-icon">✈️</span><span>Planner</span></button>
-    <button class="bottom-nav-item" onclick="window.location.href='/account.html'"><span class="bottom-nav-icon">👤</span><span>Account</span></button>
+    <button class="bottom-nav-item" onclick="location.href='/index.html'"><span class="bottom-nav-icon">⬡</span><span>Home</span></button>
+    <button class="bottom-nav-item" onclick="location.href='/charts.html'"><span class="bottom-nav-icon">◈</span><span>Charts</span></button>
+    <button class="bottom-nav-item active"><span class="bottom-nav-icon">✦</span><span>Planner</span></button>
+    <button class="bottom-nav-item" onclick="location.href='/account.html'"><span class="bottom-nav-icon">◎</span><span>Account</span></button>
   </div>
-
   <div class="main">
     <div class="page-header">
-      <div>
-        <h1>Expense planner</h1>
-        <p>Plan and save for vacations and big purchases</p>
-      </div>
+      <div><div class="page-title">Expense planner</div><div class="page-sub">Plan and save for vacations and big purchases</div></div>
       <button class="btn-new" onclick="openNewGoal()">+ New goal</button>
     </div>
-
-    <div class="goals-grid" id="goals-grid">
-      <div style="grid-column:1/-1;" class="empty-goals">
-        <div class="icon">✈️</div>
-        <h3>No goals yet</h3>
-        <p>Create a saving goal for your next vacation, big purchase, or life event. Track your progress and see how much you need to save each month.</p>
-        <button class="btn-new" onclick="openNewGoal()">+ Create your first goal</button>
-      </div>
-    </div>
+    <div class="goals-grid" id="goals-grid"></div>
   </div>
-
-  <!-- New Goal Modal -->
   <div class="modal-overlay" id="goal-modal">
     <div class="modal">
       <h2 id="modal-title">New saving goal</h2>
-      <div class="field">
-        <label>Pick an emoji</label>
-        <div class="emoji-row" id="emoji-row">
-          ✈️ 🏖️ 🚗 🏠 💍 🎓 💻 📱 🎸 🐕 🌍 🎉 🏋️ 🛋️ 🎁 💰
-        </div>
-      </div>
-      <div class="field"><label>Goal name</label><input type="text" id="goal-name" placeholder="e.g. Summer vacation, New MacBook" /></div>
+      <div class="field"><label>Pick an emoji</label><div class="emoji-row" id="emoji-row"></div></div>
+      <div class="field"><label>Goal name</label><input type="text" class="std-input" id="goal-name" placeholder="e.g. Summer vacation, New MacBook" /></div>
       <div class="modal-row">
-        <div class="field"><label>Target amount ($)</label><input type="number" id="goal-target" placeholder="e.g. 2000" oninput="calcMonthly()" /></div>
-        <div class="field"><label>Already saved ($)</label><input type="number" id="goal-saved" placeholder="0" oninput="calcMonthly()" value="0" /></div>
+        <div class="field"><label>Target amount ($)</label><input type="number" class="std-input" id="goal-target" placeholder="e.g. 2000" oninput="calcMonthly()" /></div>
+        <div class="field"><label>Already saved ($)</label><input type="number" class="std-input" id="goal-saved" placeholder="0" oninput="calcMonthly()" value="0" /></div>
       </div>
       <div class="modal-row">
-        <div class="field"><label>Target date <span style="color:#94a3b8;font-weight:400;">(optional)</span></label><input type="date" id="goal-date" oninput="calcMonthly()" /></div>
-        <div class="field"><label>Monthly contribution ($)</label><input type="number" id="goal-monthly" placeholder="auto-calculated" style="color:var(--sky-dark);font-weight:500;" readonly /></div>
+        <div class="field"><label>Target date <span style="color:var(--muted2);font-weight:400;text-transform:none;">(optional)</span></label><input type="date" class="std-input" id="goal-date" oninput="calcMonthly()" /></div>
+        <div class="field"><label>Monthly needed</label><input type="number" class="std-input" id="goal-monthly" placeholder="auto" readonly style="color:var(--accent);font-weight:700;" /></div>
       </div>
       <p id="form-msg-modal"></p>
       <div class="modal-actions">
         <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-        <button class="btn-primary" id="modal-save-btn" onclick="saveGoal()">Save goal</button>
+        <button class="btn-primary" onclick="saveGoal()">Save goal</button>
       </div>
     </div>
   </div>
-
+  <div id="ext-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:999;align-items:center;justify-content:center;" onclick="if(event.target===this)hideExtModal()">
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:380px;width:92%;"><h2 style="font-size:15px;font-weight:800;margin-bottom:6px;color:var(--text);">⧉ Install the Flo extension</h2><p style="font-size:12px;color:var(--muted);margin-bottom:14px;">Get real-time advice while you shop.</p><div style="display:flex;gap:8px;"><button onclick="window.open('edge://extensions')" style="flex:1;padding:10px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:none;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;">Open extensions</button><button onclick="hideExtModal()" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--muted);font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;">Close</button></div></div>
+  </div>
   <script type="module">
     import { supabase } from './Supabase.js'
-
     const _t=localStorage.getItem('flo_theme')||'dark'
-    document.documentElement.setAttribute('data-theme',_t)
     function applyTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('flo_theme',t);document.querySelectorAll('.toggle-track').forEach(el=>el.className='toggle-track'+(t==='dark'?' on':''));document.querySelectorAll('.theme-label').forEach(el=>el.textContent=t==='dark'?'Dark mode':'Light mode')}
     applyTheme(_t)
     window.toggleTheme=()=>applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark')
-
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session) { localStorage.clear(); sessionStorage.clear(); window.location.href = '/login.html' }
-    const {data:{user:verifiedUser},error:ue} = await supabase.auth.getUser()
-    if (!verifiedUser || ue) { await supabase.auth.signOut(); localStorage.clear(); window.location.href = '/login.html' }
-    const user = session.user
-
-    const profile = user.user_metadata
-    document.getElementById('user-name').textContent = profile?.full_name || user.email
-    document.getElementById('user-initials').textContent = (profile?.first_name?.[0] || user.email[0]).toUpperCase()
-
-    window.signOut = async function() { await supabase.auth.signOut(); window.location.href = '/login.html' }
-
-    // Store goals in localStorage (no schema change needed, or use a goals table if available)
-    const GOALS_KEY = `flo_goals_${user.id}`
-    let goals = JSON.parse(localStorage.getItem(GOALS_KEY) || '[]')
-    let editingIndex = null
-    let selectedEmoji = '✈️'
-
-    // Setup emoji picker
-    const emojis = ['✈️','🏖️','🚗','🏠','💍','🎓','💻','📱','🎸','🐕','🌍','🎉','🏋️','🛋️','🎁','💰']
-    const emojiRow = document.getElementById('emoji-row')
-    emojiRow.innerHTML = ''
-    emojis.forEach(e => {
-      const span = document.createElement('span')
-      span.className = 'emoji-opt' + (e === selectedEmoji ? ' selected' : '')
-      span.textContent = e
-      span.onclick = () => {
-        selectedEmoji = e
-        document.querySelectorAll('.emoji-opt').forEach(el => el.classList.remove('selected'))
-        span.classList.add('selected')
-      }
-      emojiRow.appendChild(span)
-    })
-
-    function saveGoals() { localStorage.setItem(GOALS_KEY, JSON.stringify(goals)) }
-
-    function monthsUntil(dateStr) {
-      if (!dateStr) return null
-      const target = new Date(dateStr)
-      const now = new Date()
-      return Math.max(1, Math.round((target - now) / (1000 * 60 * 60 * 24 * 30)))
-    }
-
-    window.calcMonthly = function() {
-      const target = parseFloat(document.getElementById('goal-target').value) || 0
-      const saved = parseFloat(document.getElementById('goal-saved').value) || 0
-      const dateVal = document.getElementById('goal-date').value
-      const remaining = Math.max(0, target - saved)
-      if (dateVal && remaining > 0) {
-        const months = monthsUntil(dateVal)
-        document.getElementById('goal-monthly').value = Math.ceil(remaining / months)
-      } else {
-        document.getElementById('goal-monthly').value = ''
-      }
-    }
-
-    window.openNewGoal = function() {
-      editingIndex = null
-      selectedEmoji = '✈️'
-      document.getElementById('modal-title').textContent = 'New saving goal'
-      document.getElementById('goal-name').value = ''
-      document.getElementById('goal-target').value = ''
-      document.getElementById('goal-saved').value = '0'
-      document.getElementById('goal-date').value = ''
-      document.getElementById('goal-monthly').value = ''
-      document.getElementById('form-msg-modal').textContent = ''
-      document.querySelectorAll('.emoji-opt').forEach((el, i) => el.classList.toggle('selected', emojis[i] === '✈️'))
-      document.getElementById('goal-modal').classList.add('show')
-    }
-
-    window.closeModal = function() {
-      document.getElementById('goal-modal').classList.remove('show')
-    }
-
-    window.saveGoal = function() {
-      const name = document.getElementById('goal-name').value.trim()
-      const target = parseFloat(document.getElementById('goal-target').value)
-      const saved = parseFloat(document.getElementById('goal-saved').value) || 0
-      const date = document.getElementById('goal-date').value
-      const monthly = parseFloat(document.getElementById('goal-monthly').value) || 0
-      const msg = document.getElementById('form-msg-modal')
-
-      if (!name) { msg.textContent = 'Please enter a goal name.'; return }
-      if (!target || target <= 0) { msg.textContent = 'Please enter a valid target amount.'; return }
-
-      const goal = { id: Date.now(), emoji: selectedEmoji, name, target, saved, date: date || null, monthly: monthly || null, createdAt: new Date().toISOString() }
-
-      if (editingIndex !== null) {
-        goals[editingIndex] = { ...goals[editingIndex], ...goal, id: goals[editingIndex].id }
-      } else {
-        goals.push(goal)
-      }
-      saveGoals()
-      closeModal()
-      renderGoals()
-    }
-
-    window.editGoal = function(idx) {
-      editingIndex = idx
-      const g = goals[idx]
-      selectedEmoji = g.emoji || '✈️'
-      document.getElementById('modal-title').textContent = 'Edit goal'
-      document.getElementById('goal-name').value = g.name
-      document.getElementById('goal-target').value = g.target
-      document.getElementById('goal-saved').value = g.saved || 0
-      document.getElementById('goal-date').value = g.date || ''
-      document.getElementById('goal-monthly').value = g.monthly || ''
-      document.getElementById('form-msg-modal').textContent = ''
-      document.querySelectorAll('.emoji-opt').forEach((el, i) => el.classList.toggle('selected', emojis[i] === selectedEmoji))
-      document.getElementById('goal-modal').classList.add('show')
-    }
-
-    window.deleteGoal = function(idx) {
-      if (!confirm('Delete this goal?')) return
-      goals.splice(idx, 1)
-      saveGoals()
-      renderGoals()
-    }
-
-    window.addSavings = function(idx) {
-      const inp = document.getElementById(`savings-inp-${idx}`)
-      const amount = parseFloat(inp.value)
-      if (!amount || amount <= 0) return
-      goals[idx].saved = Math.min((goals[idx].saved || 0) + amount, goals[idx].target)
-      saveGoals()
-      inp.value = ''
-      renderGoals()
-    }
-
-    function renderGoals() {
-      const grid = document.getElementById('goals-grid')
-      if (!goals.length) {
-        grid.innerHTML = `<div style="grid-column:1/-1;" class="empty-goals"><div class="icon">✈️</div><h3>No goals yet</h3><p>Create a saving goal for your next vacation, big purchase, or life event.</p><button class="btn-new" onclick="openNewGoal()">+ Create your first goal</button></div>`
-        return
-      }
-      grid.innerHTML = ''
-      goals.forEach((g, idx) => {
-        const pct = g.target > 0 ? Math.min((g.saved / g.target) * 100, 100) : 0
-        const remaining = Math.max(0, g.target - g.saved)
-        const months = g.date ? monthsUntil(g.date) : null
-        const complete = g.saved >= g.target
-
-        let deadlineBadge = ''
-        if (g.date) {
-          const daysLeft = Math.round((new Date(g.date) - new Date()) / (1000 * 60 * 60 * 24))
-          const label = new Date(g.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-          if (daysLeft < 0) deadlineBadge = `<div class="deadline-badge overdue">⚠ Deadline passed · ${label}</div>`
-          else if (daysLeft < 60) deadlineBadge = `<div class="deadline-badge urgent">⏰ ${daysLeft} days left · ${label}</div>`
-          else deadlineBadge = `<div class="deadline-badge">📅 ${label}</div>`
-        }
-
-        const color = complete ? '#16a34a' : pct >= 80 ? '#0ea5e9' : '#38bdf8'
-
-        const card = document.createElement('div')
-        card.className = 'goal-card'
-        card.innerHTML = `
-          <div class="goal-card-header">
-            <div style="display:flex;align-items:center;gap:2px;">
-              <span class="goal-emoji">${g.emoji || '🎯'}</span>
-              <div>
-                <div class="goal-name">${g.name}</div>
-                <div class="goal-target">$${Math.round(g.saved).toLocaleString()} saved of $${g.target.toLocaleString()}</div>
-              </div>
-            </div>
-            <div class="goal-actions">
-              <button class="goal-btn" onclick="editGoal(${idx})">Edit</button>
-              <button class="goal-btn danger" onclick="deleteGoal(${idx})">Delete</button>
-            </div>
-          </div>
-          ${deadlineBadge}
-          <div class="progress-track"><div class="progress-fill" style="width:${pct}%;background:${color}"></div></div>
-          <div class="goal-stats">
-            <div class="goal-stat"><div class="goal-stat-label">Progress</div><div class="goal-stat-value ${complete ? 'green' : 'sky'}">${Math.round(pct)}%</div></div>
-            <div class="goal-stat"><div class="goal-stat-label">Remaining</div><div class="goal-stat-value orange">$${Math.round(remaining).toLocaleString()}</div></div>
-            <div class="goal-stat"><div class="goal-stat-label">${months ? 'Need/mo' : 'Monthly'}</div><div class="goal-stat-value sky">${g.monthly ? '$' + Math.round(g.monthly).toLocaleString() : months ? '$' + Math.ceil(remaining / months).toLocaleString() : '—'}</div></div>
-          </div>
-          ${!complete ? `
-          <div class="add-savings-row">
-            <input type="number" class="savings-inp" id="savings-inp-${idx}" placeholder="Add savings ($)" />
-            <button class="btn-add-savings" onclick="addSavings(${idx})">+ Add</button>
-          </div>` : `<div style="text-align:center;padding:10px;font-size:0.88rem;color:#16a34a;font-weight:600;">🎉 Goal reached!</div>`}
-        `
+    window.showExtModal=()=>document.getElementById('ext-modal').style.display='flex'
+    window.hideExtModal=()=>document.getElementById('ext-modal').style.display='none'
+    const {data:{session}}=await supabase.auth.getSession()
+    if(!session){localStorage.clear();location.href='/login.html'}
+    const {data:{user:vu},error:ue}=await supabase.auth.getUser()
+    if(!vu||ue){await supabase.auth.signOut();localStorage.clear();location.href='/login.html'}
+    const user=session.user
+    const p=user.user_metadata; document.getElementById('user-name').textContent=p?.full_name||p?.first_name||user.email; document.getElementById('user-initials').textContent=(p?.first_name?.[0]||user.email[0]).toUpperCase()
+    window.signOut=async()=>{await supabase.auth.signOut();localStorage.clear();location.href='/login.html'}
+    const GOALS_KEY=`flo_goals_${user.id}`
+    let goals=JSON.parse(localStorage.getItem(GOALS_KEY)||'[]')
+    let editingIndex=null,selectedEmoji='✈️'
+    const emojis=['✈️','🏖️','🚗','🏠','💍','🎓','💻','📱','🎸','🐕','🌍','🎉','🏋️','🛋️','🎁','💰']
+    const emojiRow=document.getElementById('emoji-row'); emojiRow.innerHTML=''
+    emojis.forEach(e=>{const span=document.createElement('span');span.className='emoji-opt'+(e===selectedEmoji?' selected':'');span.textContent=e;span.onclick=()=>{selectedEmoji=e;document.querySelectorAll('.emoji-opt').forEach(el=>el.classList.remove('selected'));span.classList.add('selected')};emojiRow.appendChild(span)})
+    function saveGoals(){localStorage.setItem(GOALS_KEY,JSON.stringify(goals))}
+    function monthsUntil(d){if(!d)return null;return Math.max(1,Math.round((new Date(d)-new Date())/(1000*60*60*24*30)))}
+    window.calcMonthly=function(){const t=parseFloat(document.getElementById('goal-target').value)||0,s=parseFloat(document.getElementById('goal-saved').value)||0,d=document.getElementById('goal-date').value,r=Math.max(0,t-s);if(d&&r>0){document.getElementById('goal-monthly').value=Math.ceil(r/monthsUntil(d))}else document.getElementById('goal-monthly').value=''}
+    window.openNewGoal=function(){editingIndex=null;selectedEmoji='✈️';document.getElementById('modal-title').textContent='New saving goal';document.getElementById('goal-name').value='';document.getElementById('goal-target').value='';document.getElementById('goal-saved').value='0';document.getElementById('goal-date').value='';document.getElementById('goal-monthly').value='';document.getElementById('form-msg-modal').textContent='';document.querySelectorAll('.emoji-opt').forEach((el,i)=>el.classList.toggle('selected',emojis[i]==='✈️'));document.getElementById('goal-modal').classList.add('show')}
+    window.closeModal=()=>document.getElementById('goal-modal').classList.remove('show')
+    window.saveGoal=function(){const name=document.getElementById('goal-name').value.trim(),target=parseFloat(document.getElementById('goal-target').value),saved=parseFloat(document.getElementById('goal-saved').value)||0,date=document.getElementById('goal-date').value,monthly=parseFloat(document.getElementById('goal-monthly').value)||0,msg=document.getElementById('form-msg-modal');if(!name){msg.textContent='Please enter a goal name.';return}if(!target||target<=0){msg.textContent='Please enter a valid target amount.';return}const goal={id:Date.now(),emoji:selectedEmoji,name,target,saved,date:date||null,monthly:monthly||null,createdAt:new Date().toISOString()};if(editingIndex!==null){goals[editingIndex]={...goals[editingIndex],...goal,id:goals[editingIndex].id}}else goals.push(goal);saveGoals();closeModal();renderGoals()}
+    window.editGoal=function(idx){editingIndex=idx;const g=goals[idx];selectedEmoji=g.emoji||'✈️';document.getElementById('modal-title').textContent='Edit goal';document.getElementById('goal-name').value=g.name;document.getElementById('goal-target').value=g.target;document.getElementById('goal-saved').value=g.saved||0;document.getElementById('goal-date').value=g.date||'';document.getElementById('goal-monthly').value=g.monthly||'';document.getElementById('form-msg-modal').textContent='';document.querySelectorAll('.emoji-opt').forEach((el,i)=>el.classList.toggle('selected',emojis[i]===selectedEmoji));document.getElementById('goal-modal').classList.add('show')}
+    window.deleteGoal=function(idx){if(!confirm('Delete this goal?'))return;goals.splice(idx,1);saveGoals();renderGoals()}
+    window.addSavings=function(idx){const inp=document.getElementById(`si-${idx}`),amount=parseFloat(inp.value);if(!amount||amount<=0)return;goals[idx].saved=Math.min((goals[idx].saved||0)+amount,goals[idx].target);saveGoals();inp.value='';renderGoals()}
+    function renderGoals(){
+      const grid=document.getElementById('goals-grid')
+      if(!goals.length){grid.innerHTML=`<div style="grid-column:1/-1;" class="empty-goals"><div class="empty-icon">✈️</div><div class="empty-title">No goals yet</div><div class="empty-sub">Create a saving goal for your next vacation, big purchase, or life event.</div><button class="btn-new" onclick="openNewGoal()">+ Create your first goal</button></div>`;return}
+      grid.innerHTML=''
+      goals.forEach((g,idx)=>{
+        const pct=g.target>0?Math.min((g.saved/g.target)*100,100):0,remaining=Math.max(0,g.target-g.saved),complete=g.saved>=g.target,months=g.date?monthsUntil(g.date):null
+        let deadlineBadge=''
+        if(g.date){const days=Math.round((new Date(g.date)-new Date())/(1000*60*60*24)),label=new Date(g.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});if(days<0)deadlineBadge=`<div class="deadline-badge overdue">⚠ Deadline passed · ${label}</div>`;else if(days<60)deadlineBadge=`<div class="deadline-badge urgent">⏰ ${days} days left · ${label}</div>`;else deadlineBadge=`<div class="deadline-badge ok">📅 ${label}</div>`}
+        const color=complete?'var(--green)':pct>=80?'var(--accent)':g.emoji?'var(--accent)':'var(--accent)'
+        const card=document.createElement('div');card.className='goal-card'
+        card.innerHTML=`<div class="goal-card-header"><div style="display:flex;align-items:center;gap:4px;"><span class="goal-emoji">${g.emoji||'🎯'}</span><div><div class="goal-name">${g.name}</div><div class="goal-target">$${Math.round(g.saved).toLocaleString()} saved of $${g.target.toLocaleString()}</div></div></div><div class="goal-actions"><button class="goal-btn" onclick="editGoal(${idx})">Edit</button><button class="goal-btn danger" onclick="deleteGoal(${idx})">Delete</button></div></div>${deadlineBadge}<div class="progress-track"><div class="progress-fill" style="width:${pct}%;background:linear-gradient(90deg,var(--accent),var(--accent2))"></div></div><div class="goal-stats"><div class="goal-stat"><div class="goal-stat-label">Progress</div><div class="goal-stat-value ${complete?'green':'accent'}">${Math.round(pct)}%</div></div><div class="goal-stat"><div class="goal-stat-label">Remaining</div><div class="goal-stat-value orange">$${Math.round(remaining).toLocaleString()}</div></div><div class="goal-stat"><div class="goal-stat-label">${months?'Need/mo':'Monthly'}</div><div class="goal-stat-value accent">${g.monthly?'$'+Math.round(g.monthly).toLocaleString():months?'$'+Math.ceil(remaining/months).toLocaleString():'—'}</div></div></div>${!complete?`<div class="add-savings-row"><input type="number" class="savings-inp" id="si-${idx}" placeholder="Add savings ($)" /><button class="btn-add-savings" onclick="addSavings(${idx})">+ Add</button></div>`:`<div style="text-align:center;padding:10px;font-size:13px;color:var(--green);font-weight:700;">🎉 Goal reached!</div>`}`
         grid.appendChild(card)
       })
     }
-
     renderGoals()
   </script>
-
-  <!-- Extension install modal -->
-  <div class="modal-overlay" id="ext-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;" onclick="if(event.target===this)hideExtModal()">
-    <div style="background:white;border-radius:20px;padding:2rem;max-width:440px;width:92%;box-shadow:0 8px 40px rgba(0,0,0,0.15);">
-      <div style="font-size:2rem;margin-bottom:12px;">🧩</div>
-      <h2 style="font-size:1.1rem;font-weight:600;margin-bottom:8px;">Install the Flo extension</h2>
-      <p style="font-size:0.87rem;color:#64748b;line-height:1.7;margin-bottom:1.25rem;">The Flo extension pops up on Amazon, Walmart, Target and more — asking "Should I buy this?" before you checkout.</p>
-      <div style="background:#f0faff;border:1px solid #bae6fd;border-radius:12px;padding:1rem;font-size:0.83rem;color:#0c4a6e;line-height:1.8;margin-bottom:1.25rem;">
-        <strong>How to install:</strong><br>
-        1. Open <strong>edge://extensions</strong> or <strong>chrome://extensions</strong><br>
-        2. Enable <strong>Developer mode</strong> (top right toggle)<br>
-        3. Click <strong>Load unpacked</strong><br>
-        4. Select your <code style="background:#e0f2fe;padding:1px 5px;border-radius:4px;">finance-assistant/extension</code> folder
-      </div>
-      <button onclick="hideExtModal()" style="width:100%;padding:12px;border-radius:10px;border:none;background:#0ea5e9;color:white;font-size:0.9rem;font-weight:600;font-family:'Sora',sans-serif;cursor:pointer;">Got it</button>
-    </div>
-  </div>
-  <script>
-    function showExtModal() { const m = document.getElementById('ext-modal'); m.style.display='flex'; }
-    function hideExtModal() { const m = document.getElementById('ext-modal'); m.style.display='none'; }
-  </script>
-
-  <!-- Extension install modal -->
-  <div class="modal-overlay" id="ext-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;" onclick="if(event.target===this)hideExtModal()">
-    <div style="background:white;border-radius:20px;padding:2rem;max-width:420px;width:92%;box-shadow:0 8px 40px rgba(0,0,0,0.15);">
-      <div style="font-size:2rem;margin-bottom:0.75rem;">🧩</div>
-      <h2 style="font-size:1.1rem;font-weight:600;margin-bottom:6px;">Install the Flo Extension</h2>
-      <p style="font-size:0.85rem;color:#64748b;line-height:1.6;margin-bottom:1.25rem;">The Flo extension isn't on the Chrome Web Store yet. Install it manually in 3 steps:</p>
-      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:1.5rem;">
-        <div style="display:flex;gap:12px;align-items:flex-start;background:#f0faff;border-radius:10px;padding:12px;">
-          <div style="width:24px;height:24px;border-radius:50%;background:#0ea5e9;color:white;font-size:0.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
-          <div style="font-size:0.85rem;line-height:1.5;">Download the extension folder from GitHub or copy it from <code style="background:#e2e8f0;padding:1px 5px;border-radius:4px;">C:\Users\clxmp\Desktop\finance-assistant\extension</code></div>
-        </div>
-        <div style="display:flex;gap:12px;align-items:flex-start;background:#f0faff;border-radius:10px;padding:12px;">
-          <div style="width:24px;height:24px;border-radius:50%;background:#0ea5e9;color:white;font-size:0.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
-          <div style="font-size:0.85rem;line-height:1.5;">Go to <strong>edge://extensions</strong> (or <strong>chrome://extensions</strong>) and turn on <strong>Developer mode</strong></div>
-        </div>
-        <div style="display:flex;gap:12px;align-items:flex-start;background:#f0faff;border-radius:10px;padding:12px;">
-          <div style="width:24px;height:24px;border-radius:50%;background:#0ea5e9;color:white;font-size:0.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
-          <div style="font-size:0.85rem;line-height:1.5;">Click <strong>Load unpacked</strong> and select the extension folder</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:10px;">
-        <button onclick="window.open('edge://extensions','_blank')" style="flex:1;padding:11px;border-radius:10px;background:#0ea5e9;color:white;border:none;font-size:0.88rem;font-weight:600;font-family:'Sora',sans-serif;cursor:pointer;">Open Extensions Page</button>
-        <button onclick="hideExtModal()" style="padding:11px 18px;border-radius:10px;border:1.5px solid #e2e8f0;background:white;color:#64748b;font-size:0.88rem;font-family:'Sora',sans-serif;cursor:pointer;">Close</button>
-      </div>
-    </div>
-  </div>
-  <script>
-    function showExtModal() { const m = document.getElementById('ext-modal'); m.style.display='flex'; }
-    function hideExtModal() { const m = document.getElementById('ext-modal'); m.style.display='none'; }
-  </script>
-
 </body>
 </html>
