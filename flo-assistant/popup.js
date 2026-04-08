@@ -29,6 +29,43 @@ async function getSession() {
   return new Promise(resolve => chrome.storage.local.get(['flo_session'], r => resolve(r.flo_session || null)))
 }
 
+async function refreshSession(session) {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY },
+      body: JSON.stringify({ refresh_token: session.refresh_token })
+    })
+    const data = await res.json()
+    if (!data.access_token) return null
+    const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+      headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${data.access_token}` }
+    })
+    const userData = await userRes.json()
+    if (!userData?.id) return null
+    const newSession = { ...data, user: userData }
+    currentSession = newSession
+    await saveSession(newSession)
+    return newSession
+  } catch (e) { return null }
+}
+
+async function supaFetch(path, session) {
+  let s = session || currentSession
+  let res = await fetch(SUPABASE_URL + path, {
+    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${s.access_token}` }
+  })
+  if (res.status === 401) {
+    const newSession = await refreshSession(s)
+    if (!newSession) { await clearSession(); currentSession = null; showScreen('login'); return [] }
+    res = await fetch(SUPABASE_URL + path, {
+      headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${newSession.access_token}` }
+    })
+  }
+  const data = await res.json()
+  return Array.isArray(data) ? data : []
+}
+
 async function saveSession(session) {
   return new Promise(resolve => chrome.storage.local.set({ flo_session: session }, resolve))
 }
@@ -120,12 +157,8 @@ async function loadBudgetSummary() {
   try {
     const userId = currentSession?.user?.id
     if (!userId) { await clearSession(); currentSession = null; showScreen('login'); return }
-    const budgets = await supabaseRequest(
-      `/rest/v1/budgets?user_id=eq.${userId}&limit=1&select=income,savings_goal`
-    )
-    const txns = await supabaseRequest(
-      `/rest/v1/transactions?user_id=eq.${userId}&select=amount`
-    )
+    const budgets = await supaFetch(`/rest/v1/budgets?user_id=eq.${userId}&limit=1&select=income,savings_goal`)
+    const txns = await supaFetch(`/rest/v1/transactions?user_id=eq.${userId}&select=amount`)
 
     const budget = budgets?.[0]
     if (!budget) return
@@ -169,9 +202,9 @@ async function analyzeProduct() {
     const userId = currentSession?.user?.id
     if (!userId) { aiArea.innerHTML = '<div class="ai-result neutral">Session expired. Please sign out and sign back in.</div>'; return }
     const [budgets, categories, txns] = await Promise.all([
-      supabaseRequest(`/rest/v1/budgets?user_id=eq.${userId}&limit=1`),
-      supabaseRequest(`/rest/v1/categories?user_id=eq.${userId}`),
-      supabaseRequest(`/rest/v1/transactions?user_id=eq.${userId}&select=amount,categories(name)&order=created_at.desc&limit=20`)
+      supaFetch(`/rest/v1/budgets?user_id=eq.${userId}&limit=1`),
+      supaFetch(`/rest/v1/categories?user_id=eq.${userId}`),
+      supaFetch(`/rest/v1/transactions?user_id=eq.${userId}&select=amount,categories(name)&order=created_at.desc&limit=20`)
     ])
 
     const budget = budgets?.[0]

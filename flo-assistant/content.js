@@ -78,6 +78,49 @@ function setStorage(obj) {
   return new Promise(resolve => chrome.storage.local.set(obj, resolve))
 }
 
+// Refresh the session token using the refresh_token
+async function refreshSession(session) {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY },
+      body: JSON.stringify({ refresh_token: session.refresh_token })
+    })
+    const data = await res.json()
+    if (!data.access_token) return null
+    // Fetch user separately
+    const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+      headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${data.access_token}` }
+    })
+    const userData = await userRes.json()
+    if (!userData?.id) return null
+    const newSession = { ...data, user: userData }
+    await setStorage({ flo_session: newSession })
+    return newSession
+  } catch (e) {
+    return null
+  }
+}
+
+// Fetch from Supabase, auto-refresh token on 401
+async function supaFetch(url, session) {
+  let res = await fetch(url, {
+    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${session.access_token}` }
+  })
+  if (res.status === 401) {
+    const newSession = await refreshSession(session)
+    if (!newSession) return { _authError: true }
+    // Retry with new token
+    res = await fetch(url, {
+      headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${newSession.access_token}` }
+    })
+    // Update the session reference in caller scope won't work easily,
+    // so we store it and reload widget if needed
+    return res.json()
+  }
+  return res.json()
+}
+
 async function initFloWidget() {
   const stored = await getStorage(['flo_enabled', 'flo_session'])
   if (stored.flo_enabled === false) return
@@ -267,22 +310,26 @@ async function initFloWidget() {
 
       try {
         const [budgets, categories, txns] = await Promise.all([
-          fetch(`${SUPABASE_URL}/rest/v1/budgets?user_id=eq.${uid}&limit=1`, {
-            headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${validSession.access_token}` }
-          }).then(r => r.json()),
-          fetch(`${SUPABASE_URL}/rest/v1/categories?user_id=eq.${uid}`, {
-            headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${validSession.access_token}` }
-          }).then(r => r.json()),
-          fetch(`${SUPABASE_URL}/rest/v1/transactions?user_id=eq.${uid}&select=amount,categories(name)&order=created_at.desc&limit=20`, {
-            headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${validSession.access_token}` }
-          }).then(r => r.json())
+          supaFetch(`${SUPABASE_URL}/rest/v1/budgets?user_id=eq.${uid}&limit=1`, validSession),
+          supaFetch(`${SUPABASE_URL}/rest/v1/categories?user_id=eq.${uid}`, validSession),
+          supaFetch(`${SUPABASE_URL}/rest/v1/transactions?user_id=eq.${uid}&select=amount,categories(name)&order=created_at.desc&limit=20`, validSession)
         ])
 
-        const budget = budgets?.[0]
-        const totalSpent = txns?.reduce((s, t) => s + Number(t.amount), 0) || 0
+        if (budgets?._authError) {
+          await setStorage({ flo_session: null })
+          document.getElementById('flo-verdict').textContent = 'Session expired'
+          document.getElementById('flo-reason').textContent = 'Please sign in again — reload the page.'
+          res.className = 'neutral'; res.style.display = 'block'
+          btn.textContent = 'Should I buy this? →'; btn.disabled = false
+          return
+        }
+
+        const budget = Array.isArray(budgets) ? budgets[0] : null
+        const txnList = Array.isArray(txns) ? txns : []
+        const totalSpent = txnList.reduce((s, t) => s + Number(t.amount), 0)
         const remaining = budget ? budget.income - budget.savings_goal - totalSpent : 0
         const bycat = {}
-        txns?.forEach(t => { const n = t.categories?.name || 'Misc'; bycat[n] = (bycat[n] || 0) + Number(t.amount) })
+        txnList.forEach(t => { const n = t.categories?.name || 'Misc'; bycat[n] = (bycat[n] || 0) + Number(t.amount) })
 
         const sys = `You are Flo, a concise AI financial advisor in a browser extension. The user is considering: ${product.title || 'a product'} priced at ${product.price} on ${product.site}.
 Finances: Income $${budget?.income || 0}/mo | Savings goal $${budget?.savings_goal || 0}/mo | Spent $${totalSpent.toFixed(2)} | Remaining $${remaining.toFixed(2)}
@@ -326,7 +373,6 @@ Start with YES or NO. Then 1-2 short sentences. Be direct.`
 
 async function loadBudget(session) {
   try {
-    // ✅ Guard: safely get userId — this was the crash point
     const userId = session?.user?.id
     if (!userId) {
       console.warn('Flo: loadBudget called with no user.id — clearing session')
@@ -335,16 +381,19 @@ async function loadBudget(session) {
     }
 
     const [budgets, txns] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/budgets?user_id=eq.${userId}&limit=1`, {
-        headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${session.access_token}` }
-      }).then(r => r.json()),
-      fetch(`${SUPABASE_URL}/rest/v1/transactions?user_id=eq.${userId}&select=amount`, {
-        headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${session.access_token}` }
-      }).then(r => r.json())
+      supaFetch(`${SUPABASE_URL}/rest/v1/budgets?user_id=eq.${userId}&limit=1`, session),
+      supaFetch(`${SUPABASE_URL}/rest/v1/transactions?user_id=eq.${userId}&select=amount`, session)
     ])
 
-    const budget = budgets?.[0]
-    const spent = txns?.reduce((s, t) => s + Number(t.amount), 0) || 0
+    // If auth failed, clear session and show login on next load
+    if (budgets?._authError || txns?._authError) {
+      await setStorage({ flo_session: null })
+      return
+    }
+
+    const budget = Array.isArray(budgets) ? budgets[0] : null
+    const txnList = Array.isArray(txns) ? txns : []
+    const spent = txnList.reduce((s, t) => s + Number(t.amount), 0)
     const remaining = budget ? budget.income - budget.savings_goal - spent : 0
 
     document.getElementById('fb-spent').textContent = '$' + Math.round(spent).toLocaleString()
