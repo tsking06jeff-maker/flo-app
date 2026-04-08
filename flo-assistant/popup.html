@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Flo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --sky: #38bdf8; --sky-dark: #0ea5e9; --sky-pale: #f0faff;
+      --text: #0f172a; --muted: #64748b; --border: #e2e8f0; --bg: #f8fafc;
+    }
+    body { width: 340px; font-family: 'Sora', sans-serif; background: var(--bg); color: var(--text); }
+
+    /* Header */
+    .header { background: white; border-bottom: 1px solid var(--border); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; }
+    .header-logo { display: flex; align-items: center; gap: 8px; }
+    .logo-mark { width: 28px; height: 28px; background: var(--sky-dark); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .logo-name { font-size: 0.95rem; font-weight: 600; letter-spacing: -0.01em; }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+
+    /* Toggle switch */
+    .toggle-wrap { display: flex; align-items: center; gap: 6px; }
+    .toggle-label { font-size: 0.72rem; color: var(--muted); font-weight: 500; }
+    .toggle { position: relative; width: 36px; height: 20px; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; inset: 0; background: #cbd5e1; border-radius: 99px; cursor: pointer; transition: background 0.2s; }
+    .toggle-slider::before { content: ''; position: absolute; width: 14px; height: 14px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: transform 0.2s; }
+    .toggle input:checked + .toggle-slider { background: var(--sky-dark); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(16px); }
+
+    .settings-btn { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 1rem; padding: 2px; }
+    .settings-btn:hover { color: var(--text); }
+
+    /* Screens */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* Login screen */
+    .login-area { padding: 20px 16px; }
+    .login-title { font-size: 1rem; font-weight: 600; margin-bottom: 4px; }
+    .login-sub { font-size: 0.78rem; color: var(--muted); margin-bottom: 16px; }
+    .field { margin-bottom: 10px; }
+    .field label { font-size: 0.72rem; font-weight: 500; color: var(--muted); display: block; margin-bottom: 4px; }
+    .inp { width: 100%; background: var(--sky-pale); border: 1.5px solid var(--border); border-radius: 8px; padding: 9px 11px; color: var(--text); font-size: 0.85rem; font-family: 'Sora', sans-serif; outline: none; }
+    .inp:focus { border-color: var(--sky); background: white; }
+    .btn-primary { width: 100%; padding: 11px; border-radius: 8px; border: none; background: var(--sky-dark); color: white; font-size: 0.88rem; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; margin-top: 4px; }
+    .btn-primary:hover { background: #0284c7; }
+    .btn-primary:disabled { background: #7dd3fc; cursor: not-allowed; }
+    #login-msg { font-size: 0.75rem; color: #dc2626; margin-top: 8px; min-height: 16px; }
+
+    /* Main screen */
+    .main-area { padding: 14px 16px; }
+
+    /* Disabled state */
+    .disabled-state { padding: 24px 16px; text-align: center; }
+    .disabled-icon { font-size: 2rem; margin-bottom: 10px; }
+    .disabled-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 6px; }
+    .disabled-sub { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+
+    /* Product detected */
+    .product-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; }
+    .product-site { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 4px; }
+    .product-title { font-size: 0.82rem; font-weight: 500; line-height: 1.4; margin-bottom: 8px; color: var(--text); }
+    .product-price { font-size: 1.4rem; font-weight: 600; color: var(--sky-dark); letter-spacing: -0.02em; }
+
+    /* No product */
+    .no-product { text-align: center; padding: 20px 0; }
+    .no-product-icon { font-size: 1.8rem; margin-bottom: 8px; }
+    .no-product-text { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+
+    /* AI result */
+    .ai-result { border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; font-size: 0.83rem; line-height: 1.6; }
+    .ai-result.yes { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+    .ai-result.no { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+    .ai-result.neutral { background: var(--sky-pale); border: 1px solid #bae6fd; color: #0c4a6e; }
+    .ai-result.loading { background: var(--sky-pale); border: 1px solid var(--border); color: var(--muted); font-style: italic; }
+    .ai-verdict { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+
+    .btn-analyze { width: 100%; padding: 11px; border-radius: 8px; border: none; background: var(--sky-dark); color: white; font-size: 0.85rem; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; }
+    .btn-analyze:hover { background: #0284c7; }
+    .btn-analyze:disabled { background: #7dd3fc; cursor: not-allowed; }
+
+    /* Budget summary */
+    .budget-bar { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; }
+    .budget-item { text-align: center; }
+    .budget-val { font-size: 0.9rem; font-weight: 600; }
+    .budget-val.green { color: #16a34a; }
+    .budget-val.red { color: #dc2626; }
+    .budget-lbl { font-size: 0.65rem; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .divider-v { width: 1px; background: var(--border); height: 28px; }
+
+    /* Settings screen */
+    .settings-area { padding: 14px 16px; }
+    .settings-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 14px; }
+    .settings-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; }
+    .settings-row:last-child { border-bottom: none; }
+    .settings-row-label { color: var(--text); font-weight: 500; }
+    .settings-row-sub { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+    .btn-signout { width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid var(--border); background: white; color: var(--muted); font-size: 0.82rem; font-family: 'Sora', sans-serif; cursor: pointer; margin-top: 14px; }
+    .btn-signout:hover { border-color: #ef4444; color: #ef4444; }
+    .back-btn { background: none; border: none; color: var(--muted); font-size: 0.78rem; font-family: 'Sora', sans-serif; cursor: pointer; margin-bottom: 14px; padding: 0; }
+    .back-btn:hover { color: var(--sky-dark); }
+  </style>
+</head>
+<body>
+
+  <!-- Header (always visible) -->
+  <div class="header">
+    <div class="header-logo">
+      <div class="logo-mark">
+        <svg width="16" height="16" viewBox="0 0 16 16">
+          <path d="M3 8 Q6 4 8 8 Q10 12 13 8" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="logo-name">Flo</span>
+    </div>
+    <div class="header-right">
+      <div class="toggle-wrap" id="toggle-wrap" style="display:none;">
+        <span class="toggle-label" id="toggle-label">On</span>
+        <label class="toggle">
+          <input type="checkbox" id="enabled-toggle" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <button class="settings-btn" id="settings-btn" title="Settings">⚙</button>
+    </div>
+  </div>
+
+  <!-- Login screen -->
+  <div class="screen active" id="screen-login">
+    <div class="login-area">
+      <div class="login-title">Sign in to Flo</div>
+      <div class="login-sub">Use your Flo account to get personalized advice</div>
+      <div class="field">
+        <label>Email</label>
+        <input class="inp" id="login-email" type="email" placeholder="you@example.com" />
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input class="inp" id="login-password" type="password" placeholder="••••••••" />
+      </div>
+      <button class="btn-primary" id="login-btn" onclick="doLogin()">Sign in</button>
+      <p id="login-msg"></p>
+    </div>
+  </div>
+
+  <!-- Disabled screen -->
+  <div class="screen" id="screen-disabled">
+    <div class="disabled-state">
+      <div class="disabled-icon">⏸</div>
+      <div class="disabled-title">Flo is paused</div>
+      <div class="disabled-sub">Toggle the switch above to re-enable smart shopping advice.</div>
+    </div>
+  </div>
+
+  <!-- Main screen -->
+  <div class="screen" id="screen-main">
+    <div class="main-area">
+      <div id="product-area"></div>
+      <div id="ai-area"></div>
+      <div id="budget-area"></div>
+    </div>
+  </div>
+
+  <!-- Settings screen -->
+  <div class="screen" id="screen-settings">
+    <div class="settings-area">
+      <button class="back-btn" onclick="showScreen('main')">← Back</button>
+      <div class="settings-title">Settings</div>
+
+      <div class="settings-row">
+        <div>
+          <div class="settings-row-label">Smart shopping</div>
+          <div class="settings-row-sub">Analyze products while browsing</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="settings-toggle" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <div class="settings-row">
+        <div>
+          <div class="settings-row-label">Account</div>
+          <div class="settings-row-sub" id="settings-email">—</div>
+        </div>
+      </div>
+
+      <div class="settings-row">
+        <div>
+          <div class="settings-row-label">Flo dashboard</div>
+          <div class="settings-row-sub">Open your full budget dashboard</div>
+        </div>
+        <button onclick="openDashboard()" style="background:none;border:none;color:var(--sky-dark);font-size:0.8rem;font-family:'Sora',sans-serif;cursor:pointer;">Open →</button>
+      </div>
+
+      <button class="btn-signout" onclick="doSignout()">Sign out of Flo</button>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

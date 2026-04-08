@@ -19,14 +19,13 @@ function checkRateLimit(userId) {
 }
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', process.env.ALLOWED_ORIGIN || '*')
+  res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
 
   if (req.method === 'OPTIONS') return res.status(200).end()
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
-  // 1. Auth check — verify Supabase session token
   const authHeader = req.headers.authorization
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ error: 'Unauthorized' })
@@ -38,13 +37,11 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Invalid session' })
   }
 
-  // 2. Per-user rate limit
   if (!checkRateLimit(user.id)) {
     return res.status(429).json({ error: 'Too many requests. You can ask up to 20 questions per hour.' })
   }
 
-  // 3. Input validation
-  const { messages, system, model, max_tokens } = req.body
+  const { messages, system, max_tokens } = req.body
 
   if (!messages || !Array.isArray(messages) || messages.length === 0) {
     return res.status(400).json({ error: 'Invalid request body' })
@@ -59,7 +56,6 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'System prompt too long.' })
   }
 
-  // 4. Sanitize — only allow expected fields through to Anthropic
   const safeBody = {
     model: 'claude-sonnet-4-20250514',
     max_tokens: Math.min(max_tokens || 1000, 1000),
@@ -71,7 +67,6 @@ export default async function handler(req, res) {
 
   if (system) safeBody.system = String(system).slice(0, 10000)
 
-  // 5. Call Anthropic
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
