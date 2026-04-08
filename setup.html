@@ -7,15 +7,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --sky: #38bdf8; --sky-dark: #0ea5e9; --sky-light: #bae6fd;
-      --sky-pale: #f0faff; --white: #ffffff; --text: #0f172a;
-      --muted: #64748b; --border: #e2e8f0; --danger: #ef4444; --success: #22c55e;
-    }
+    :root { --sky: #38bdf8; --sky-dark: #0ea5e9; --sky-pale: #f0faff; --text: #0f172a; --muted: #64748b; --border: #e2e8f0; --danger: #ef4444; --success: #22c55e; }
     body { background: var(--sky-pale); color: var(--text); font-family: 'Sora', sans-serif; min-height: 100vh; padding: 2rem; display: flex; justify-content: center; }
     .container { width: 100%; max-width: 580px; }
     .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0 2rem; }
-    .logo-inline { display: flex; align-items: center; gap: 10px; }
     .steps { display: flex; gap: 6px; }
     .step { width: 32px; height: 4px; border-radius: 99px; background: var(--border); transition: background 0.3s; }
     .step.active { background: var(--sky); }
@@ -24,56 +19,51 @@
     .subtitle { color: var(--muted); font-size: 0.88rem; margin-bottom: 2rem; }
     .card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem; margin-bottom: 1.25rem; box-shadow: 0 2px 12px rgba(56,189,248,0.05); }
     .card-title { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 1.25rem; }
-    label { font-size: 0.78rem; font-weight: 500; color: var(--muted); display: block; margin-bottom: 5px; }
-    input[type="text"], input[type="number"] {
-      width: 100%; background: var(--sky-pale); border: 1.5px solid var(--border);
-      border-radius: 10px; padding: 10px 14px; color: var(--text); font-size: 0.92rem;
-      font-family: 'Sora', sans-serif; outline: none; transition: border-color 0.2s, background 0.2s;
-    }
-    input:focus { border-color: var(--sky); background: white; }
     .field { margin-bottom: 1rem; }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+    .field label { font-size: 0.78rem; font-weight: 500; color: var(--muted); display: block; margin-bottom: 5px; }
     .optional-badge { font-size: 0.7rem; color: #94a3b8; font-weight: 400; margin-left: 4px; }
+    .std-input { width: 100%; background: var(--sky-pale); border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 14px; color: var(--text); font-size: 0.92rem; font-family: 'Sora', sans-serif; outline: none; transition: border-color 0.2s, background 0.2s; }
+    .std-input:focus { border-color: var(--sky); background: white; }
+    .std-input[readonly] { color: var(--sky-dark); font-weight: 500; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .cat-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1rem; }
-    .cat-item { display: flex; align-items: center; gap: 10px; background: var(--sky-pale); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; transition: border-color 0.15s; }
+    .cat-item { display: flex; align-items: center; gap: 8px; background: var(--sky-pale); border: 1.5px solid var(--border); border-radius: 10px; padding: 9px 12px; transition: border-color 0.15s, background 0.15s; }
     .cat-item:focus-within { border-color: var(--sky); background: white; }
-    .cat-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
-    .cat-name-inp { flex: 1; font-size: 0.87rem; font-weight: 500; background: none; border: none; outline: none; color: var(--text); font-family: 'Sora', sans-serif; min-width: 0; }
-    .cat-amt-inp { font-size: 0.85rem; color: var(--sky-dark); font-weight: 600; background: none; border: none; outline: none; font-family: 'Sora', sans-serif; width: 80px; text-align: right; }
-    .cat-remove { background: none; border: none; color: #cbd5e1; cursor: pointer; font-size: 1.1rem; padding: 0 2px; transition: color 0.15s; flex-shrink: 0; }
+    .cat-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+    .cat-name-inp { flex: 1; min-width: 0; font-size: 0.88rem; font-weight: 500; color: var(--text); font-family: 'Sora', sans-serif; background: transparent !important; border: none !important; outline: none !important; padding: 0 !important; box-shadow: none !important; border-radius: 0 !important; width: auto !important; }
+    .cat-name-inp::placeholder { color: #cbd5e1; }
+    .cat-sep { font-size: 0.8rem; color: var(--muted); flex-shrink: 0; }
+    .cat-amt-inp { width: 68px !important; text-align: right; font-size: 0.88rem; font-weight: 600; color: var(--sky-dark); font-family: 'Sora', sans-serif; background: transparent !important; border: none !important; outline: none !important; padding: 0 !important; box-shadow: none !important; border-radius: 0 !important; }
+    .cat-amt-inp::placeholder { color: #cbd5e1; font-weight: 400; }
+    .cat-remove { background: none; border: none; color: #cbd5e1; cursor: pointer; font-size: 1.1rem; padding: 0 2px; transition: color 0.15s; flex-shrink: 0; line-height: 1; }
     .cat-remove:hover { color: var(--danger); }
-    .add-row { display: grid; grid-template-columns: 1fr 110px 44px 44px; gap: 8px; align-items: center; }
-    .color-pick { width: 44px; height: 40px; border-radius: 10px; border: 1.5px solid var(--border); background: white; cursor: pointer; padding: 3px; }
-    .btn-add { width: 44px; height: 40px; background: var(--sky-dark); color: white; border: none; border-radius: 10px; font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .add-row { display: grid; grid-template-columns: 1fr 100px 42px 42px; gap: 8px; align-items: center; }
+    .color-pick { width: 42px; height: 40px; border-radius: 10px; border: 1.5px solid var(--border); background: white; cursor: pointer; padding: 3px; }
+    .btn-add { width: 42px; height: 40px; background: var(--sky-dark); color: white; border: none; border-radius: 10px; font-size: 1.4rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
     .btn-add:hover { background: #0284c7; }
     .btn-primary { width: 100%; padding: 13px; border-radius: 10px; border: none; background: var(--sky-dark); color: white; font-size: 0.92rem; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; transition: background 0.15s; }
     .btn-primary:hover { background: #0284c7; }
+    .btn-primary:disabled { background: #7dd3fc; cursor: not-allowed; }
     .btn-ghost { padding: 13px 20px; border-radius: 10px; border: 1.5px solid var(--border); background: white; color: var(--muted); font-size: 0.9rem; font-family: 'Sora', sans-serif; cursor: pointer; }
     .btn-ghost:hover { border-color: var(--sky); color: var(--sky-dark); }
     .action-row { display: flex; gap: 10px; }
     .action-row .btn-primary { flex: 1; }
-    #msg1, #msg2, #msg3 { font-size: 0.82rem; color: var(--muted); text-align: center; margin-top: 0.75rem; min-height: 18px; }
     .review-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
     .review-row:last-child { border-bottom: none; }
     .review-row span:first-child { color: var(--muted); }
     .warn-box { background: #fff7ed; border: 1px solid #fed7aa; border-radius: 10px; padding: 10px 14px; font-size: 0.82rem; color: #c2410c; margin-top: 10px; }
     .cat-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
     .chip { display: flex; align-items: center; gap: 6px; background: var(--sky-pale); border: 1px solid var(--border); border-radius: 99px; padding: 4px 12px; font-size: 0.8rem; }
-
-    /* Multiple budgets switcher */
     .budget-switcher { margin-bottom: 1.25rem; }
     .budget-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
     .budget-tab { padding: 7px 14px; border-radius: 8px; font-size: 0.82rem; font-weight: 500; border: 1.5px solid var(--border); background: white; color: var(--muted); cursor: pointer; font-family: 'Sora', sans-serif; transition: all 0.15s; }
     .budget-tab.active { background: var(--sky-dark); color: white; border-color: var(--sky-dark); }
     .budget-tab.new-btn { border-style: dashed; color: var(--sky-dark); }
     .budget-tab.new-btn:hover { background: var(--sky-pale); }
-
+    .msg { font-size: 0.82rem; color: var(--muted); text-align: center; margin-top: 0.75rem; min-height: 18px; }
     @media (max-width: 768px) {
       body { padding: 1.25rem; }
-      .container { max-width: 100%; }
       .row { grid-template-columns: 1fr; }
-      .row-3 { grid-template-columns: 1fr; }
       .add-row { grid-template-columns: 1fr 90px 40px 40px; }
       .action-row { flex-direction: column-reverse; }
       .btn-ghost { width: 100%; }
@@ -83,13 +73,11 @@
 <body>
   <div class="container">
     <div class="top-bar">
-      <div class="logo-inline">
-        <svg width="100" height="36" viewBox="0 0 100 36">
-          <rect x="0" y="0" width="36" height="36" rx="18" fill="#0ea5e9"/>
-          <path d="M8 18 Q12 12 17 18 Q22 24 26 18" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
-          <text x="44" y="25" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="300" fill="#0f172a" letter-spacing="2.5">FLO</text>
-        </svg>
-      </div>
+      <svg width="100" height="36" viewBox="0 0 100 36">
+        <rect x="0" y="0" width="36" height="36" rx="18" fill="#0ea5e9"/>
+        <path d="M8 18 Q12 12 17 18 Q22 24 26 18" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <text x="44" y="25" font-family="'Helvetica Neue'" font-size="18" font-weight="300" fill="#0f172a" letter-spacing="2.5">FLO</text>
+      </svg>
       <div class="steps">
         <div class="step active" id="s1"></div>
         <div class="step" id="s2"></div>
@@ -100,55 +88,52 @@
     <div id="step1">
       <h2>Set up your finances</h2>
       <p class="subtitle">Create a budget profile — give it a name and set your monthly income and savings target.</p>
-
-      <!-- Multiple budgets switcher -->
       <div class="budget-switcher" id="budget-switcher" style="display:none;">
         <div style="font-size:0.78rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">Your budget profiles</div>
         <div class="budget-tabs" id="budget-tabs"></div>
       </div>
-
       <div class="card">
         <div class="card-title">Budget details</div>
         <div class="field">
-          <label>Budget name <span class="optional-badge">(e.g. "Regular Month", "Vacation Budget")</span></label>
-          <input id="budget-name" type="text" placeholder="e.g. Regular Month" value="Regular Month" />
+          <label>Budget name <span class="optional-badge">(e.g. "Regular Month", "Vacation Mode")</span></label>
+          <input class="std-input" id="budget-name" type="text" placeholder="Regular Month" value="Regular Month" />
         </div>
         <div class="row">
-          <div class="field"><label>Monthly income ($)</label><input id="income" type="number" placeholder="e.g. 4,200" /></div>
-          <div class="field"><label>Savings goal ($)</label><input id="savings" type="number" placeholder="e.g. 700" /></div>
+          <div class="field"><label>Monthly income ($)</label><input class="std-input" id="income" type="number" placeholder="e.g. 4,200" oninput="calcBudget()" /></div>
+          <div class="field"><label>Monthly savings goal ($)</label><input class="std-input" id="savings" type="number" placeholder="e.g. 700" oninput="calcBudget()" /></div>
         </div>
         <div class="field">
           <label>Spending budget ($) <span style="font-weight:400;color:#94a3b8;">auto-calculated</span></label>
-          <input id="budget-display" type="number" placeholder="Will calculate automatically" readonly style="color:var(--sky-dark);font-weight:500;" />
+          <input class="std-input" id="budget-display" type="number" placeholder="Will calculate automatically" readonly />
         </div>
         <div class="row">
           <div class="field">
             <label>Yearly savings goal ($) <span class="optional-badge">optional</span></label>
-            <input id="yearly-goal" type="number" placeholder="e.g. 10,000" oninput="calcBudget()" />
+            <input class="std-input" id="yearly-goal" type="number" placeholder="e.g. 10,000" oninput="calcBudget()" />
           </div>
           <div class="field">
             <label>Already saved this year ($) <span class="optional-badge">optional</span></label>
-            <input id="total-saved" type="number" placeholder="e.g. 3,500" oninput="calcBudget()" />
+            <input class="std-input" id="total-saved" type="number" placeholder="e.g. 3,500" oninput="calcBudget()" />
           </div>
         </div>
         <div class="field" id="monthly-target-field" style="display:none;">
           <label>Monthly needed to hit goal <span style="font-weight:400;color:#94a3b8;">auto</span></label>
-          <input id="monthly-target" type="number" placeholder="—" readonly style="color:#16a34a;font-weight:500;" />
+          <input class="std-input" id="monthly-target" type="number" placeholder="—" readonly />
         </div>
       </div>
       <button class="btn-primary" onclick="goToStep2()">Next: Set up categories →</button>
-      <p id="msg1"></p>
+      <p class="msg" id="msg1"></p>
     </div>
 
     <div id="step2" style="display:none;">
       <h2>Spending categories</h2>
-      <p class="subtitle">Customize your budget buckets — or keep the defaults we've prepared.</p>
+      <p class="subtitle">Edit names and amounts directly, or add your own below.</p>
       <div class="card">
         <div class="card-title">Your categories</div>
         <div class="cat-list" id="cat-list"></div>
         <div class="add-row">
-          <input id="cat-name" type="text" placeholder="Category name" />
-          <input id="cat-budget" type="number" placeholder="$ budget" />
+          <input class="std-input" id="cat-name" type="text" placeholder="Category name" style="padding:9px 12px;" />
+          <input class="std-input" id="cat-budget" type="number" placeholder="$ budget" style="padding:9px 12px;" />
           <input type="color" id="cat-color" class="color-pick" value="#38bdf8" />
           <button class="btn-add" onclick="addCategory()">+</button>
         </div>
@@ -157,7 +142,7 @@
         <button class="btn-ghost" onclick="goToStep1()">← Back</button>
         <button class="btn-primary" onclick="goToStep3()">Next: Review →</button>
       </div>
-      <p id="msg2"></p>
+      <p class="msg" id="msg2"></p>
     </div>
 
     <div id="step3" style="display:none;">
@@ -171,7 +156,7 @@
         <button class="btn-ghost" onclick="goToStep2()">← Back</button>
         <button class="btn-primary" id="save-btn" onclick="saveSetup()">Save &amp; go to dashboard →</button>
       </div>
-      <p id="msg3"></p>
+      <p class="msg" id="msg3"></p>
     </div>
   </div>
 
@@ -182,26 +167,23 @@
     const user = session.user
 
     let categories = [
-      { name: 'Housing', budget: 1200, color: '#38bdf8' },
-      { name: 'Food', budget: 600, color: '#34d399' },
-      { name: 'Transport', budget: 300, color: '#fbbf24' },
-      { name: 'Entertainment', budget: 200, color: '#f472b6' },
-      { name: 'Subscriptions', budget: 150, color: '#a78bfa' },
-      { name: 'Misc', budget: 200, color: '#94a3b8' },
+      { name: 'Housing',       budget: 1200, color: '#38bdf8' },
+      { name: 'Food',          budget: 600,  color: '#34d399' },
+      { name: 'Transport',     budget: 300,  color: '#fbbf24' },
+      { name: 'Entertainment', budget: 200,  color: '#f472b6' },
+      { name: 'Subscriptions', budget: 150,  color: '#a78bfa' },
+      { name: 'Misc',          budget: 200,  color: '#94a3b8' },
     ]
 
     let existingBudgets = []
     let activeBudgetId = null
 
-    // Load existing budgets for switcher
     async function loadExistingBudgets() {
       const { data: budgets } = await supabase.from('budgets').select('*').eq('user_id', user.id).order('created_at', { ascending: true })
       if (budgets && budgets.length > 0) {
         existingBudgets = budgets
         renderBudgetSwitcher()
-        // Load the most recent budget into the form
-        const latest = budgets[budgets.length - 1]
-        loadBudgetIntoForm(latest)
+        loadBudgetIntoForm(budgets[budgets.length - 1])
       }
     }
 
@@ -216,7 +198,7 @@
     }
 
     function renderBudgetSwitcher() {
-      if (existingBudgets.length === 0) { document.getElementById('budget-switcher').style.display = 'none'; return }
+      if (!existingBudgets.length) { document.getElementById('budget-switcher').style.display = 'none'; return }
       document.getElementById('budget-switcher').style.display = 'block'
       const tabs = document.getElementById('budget-tabs')
       tabs.innerHTML = ''
@@ -232,12 +214,9 @@
       newBtn.textContent = '+ New budget'
       newBtn.onclick = () => {
         activeBudgetId = null
-        document.getElementById('budget-name').value = ''
-        document.getElementById('income').value = ''
-        document.getElementById('savings').value = ''
-        document.getElementById('yearly-goal').value = ''
-        document.getElementById('budget-display').value = ''
-        document.getElementById('monthly-target').value = ''
+        ;['budget-name','income','savings','yearly-goal','total-saved','budget-display','monthly-target'].forEach(id => {
+          document.getElementById(id).value = ''
+        })
         renderBudgetSwitcher()
       }
       tabs.appendChild(newBtn)
@@ -245,34 +224,33 @@
 
     await loadExistingBudgets()
 
-    document.getElementById('income').addEventListener('input', calcBudget)
-    document.getElementById('savings').addEventListener('input', calcBudget)
-    document.getElementById('yearly-goal').addEventListener('input', calcBudget)
-
-    function calcBudget() {
+    window.calcBudget = function() {
       const inc = parseFloat(document.getElementById('income').value) || 0
       const sav = parseFloat(document.getElementById('savings').value) || 0
       const yearly = parseFloat(document.getElementById('yearly-goal').value) || 0
       const saved = parseFloat(document.getElementById('total-saved').value) || 0
       document.getElementById('budget-display').value = inc - sav > 0 ? inc - sav : ''
+      const field = document.getElementById('monthly-target-field')
       if (yearly > 0) {
         const monthsLeft = Math.max(12 - new Date().getMonth(), 1)
-        const needed = Math.max(0, yearly - saved)
-        document.getElementById('monthly-target').value = Math.round(needed / monthsLeft)
-        document.getElementById('monthly-target-field').style.display = 'block'
+        document.getElementById('monthly-target').value = Math.round(Math.max(0, yearly - saved) / monthsLeft)
+        field.style.display = 'block'
       } else {
         document.getElementById('monthly-target').value = ''
-        document.getElementById('monthly-target-field').style.display = 'none'
+        field.style.display = 'none'
       }
     }
 
     function renderCategories() {
       const list = document.getElementById('cat-list')
       list.innerHTML = ''
-      if (!categories.length) { list.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;padding:6px 0;">No categories yet.</p>'; return }
+      if (!categories.length) {
+        list.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;padding:6px 0;">No categories yet.</p>'
+        return
+      }
       categories.forEach((cat, i) => {
-        const el = document.createElement('div')
-        el.className = 'cat-item'
+        const item = document.createElement('div')
+        item.className = 'cat-item'
 
         const dot = document.createElement('div')
         dot.className = 'cat-dot'
@@ -281,36 +259,39 @@
         const nameInp = document.createElement('input')
         nameInp.className = 'cat-name-inp'
         nameInp.type = 'text'
-        nameInp.value = cat.name
         nameInp.placeholder = 'Category name'
-        nameInp.addEventListener('change', () => { categories[i].name = nameInp.value })
-
-        const dollar = document.createElement('span')
-        dollar.textContent = '$'
-        dollar.style.cssText = 'font-size:0.82rem;color:var(--muted);margin-right:2px;'
+        nameInp.addEventListener('input', () => { categories[i].name = nameInp.value })
+        // Set value after appending to avoid global CSS interference
+        
+        const sep = document.createElement('span')
+        sep.className = 'cat-sep'
+        sep.textContent = '$'
 
         const amtInp = document.createElement('input')
         amtInp.className = 'cat-amt-inp'
         amtInp.type = 'number'
-        amtInp.value = cat.budget
         amtInp.placeholder = '0'
-        amtInp.addEventListener('change', () => { categories[i].budget = parseFloat(amtInp.value) || 0 })
+        amtInp.addEventListener('input', () => { categories[i].budget = parseFloat(amtInp.value) || 0 })
 
         const mo = document.createElement('span')
+        mo.className = 'cat-sep'
         mo.textContent = '/mo'
-        mo.style.cssText = 'font-size:0.78rem;color:var(--muted);white-space:nowrap;'
 
-        const removeBtn = document.createElement('button')
-        removeBtn.className = 'cat-remove'
-        removeBtn.textContent = '×'
-        removeBtn.addEventListener('click', () => { categories.splice(i, 1); renderCategories() })
+        const rm = document.createElement('button')
+        rm.className = 'cat-remove'
+        rm.textContent = '×'
+        rm.type = 'button'
+        rm.onclick = () => { categories.splice(i, 1); renderCategories() }
 
-        el.append(dot, nameInp, dollar, amtInp, mo, removeBtn)
-        list.appendChild(el)
+        item.append(dot, nameInp, sep, amtInp, mo, rm)
+        list.appendChild(item)
+
+        // Set values AFTER appending so global CSS doesn't reset them
+        nameInp.value = cat.name
+        amtInp.value = cat.budget
       })
     }
 
-    window.removeCategory = function(i) { categories.splice(i, 1); renderCategories() }
     window.addCategory = function() {
       const name = document.getElementById('cat-name').value.trim()
       const budget = parseFloat(document.getElementById('cat-budget').value)
@@ -324,41 +305,43 @@
 
     function setStep(n) {
       ;['step1','step2','step3'].forEach((id,i) => document.getElementById(id).style.display = i===n-1?'block':'none')
-      ;[1,2,3].forEach(i => { document.getElementById('s'+i).className = 'step' + (i===n?' active':i<n?' done':'') })
+      ;[1,2,3].forEach(i => document.getElementById('s'+i).className = 'step'+(i===n?' active':i<n?' done':''))
     }
 
     window.goToStep1 = () => setStep(1)
+
     window.goToStep2 = function() {
       if (!document.getElementById('income').value) { document.getElementById('msg1').textContent = 'Please enter your monthly income.'; return }
       document.getElementById('msg1').textContent = ''
       setStep(2); renderCategories()
     }
+
     window.goToStep3 = function() {
       if (!categories.length) { document.getElementById('msg2').textContent = 'Add at least one category.'; return }
       document.getElementById('msg2').textContent = ''
       setStep(3)
       const income = parseFloat(document.getElementById('income').value) || 0
       const savings = parseFloat(document.getElementById('savings').value) || 0
-      const yearlyGoal = parseFloat(document.getElementById('yearly-goal').value) || 0
-      const budgetName = document.getElementById('budget-name').value.trim() || 'Regular Month'
+      const yearly = parseFloat(document.getElementById('yearly-goal').value) || 0
+      const saved = parseFloat(document.getElementById('total-saved').value) || 0
+      const name = document.getElementById('budget-name').value.trim() || 'Regular Month'
       const totalCat = categories.reduce((s,c) => s+c.budget, 0)
       const spending = income - savings
       document.getElementById('review-content').innerHTML = `
-        <div class="review-row"><span>Budget name</span><span style="font-weight:600;">${budgetName}</span></div>
+        <div class="review-row"><span>Budget name</span><span style="font-weight:600;">${name}</span></div>
         <div class="review-row"><span>Monthly income</span><span style="color:var(--sky-dark);font-weight:600;">$${income.toLocaleString()}</span></div>
         <div class="review-row"><span>Savings goal</span><span>$${savings.toLocaleString()}/mo</span></div>
-        ${yearlyGoal ? `<div class="review-row"><span>Yearly savings goal</span><span style="color:#16a34a;font-weight:600;">$${yearlyGoal.toLocaleString()}</span></div>` : ''}
+        ${yearly ? `<div class="review-row"><span>Yearly goal</span><span style="color:#16a34a;font-weight:600;">$${yearly.toLocaleString()}</span></div>` : ''}
         <div class="review-row"><span>Spending budget</span><span>$${spending.toLocaleString()}/mo</span></div>
         <div class="review-row"><span>Category total</span><span style="color:${totalCat>spending?'var(--danger)':'var(--success)'};font-weight:600;">$${totalCat.toLocaleString()}</span></div>
-        ${totalCat>spending?`<div class="warn-box">⚠ Categories exceed budget by $${(totalCat-spending).toLocaleString()}. You may want to adjust.</div>`:''}
-        <div class="cat-chips">${categories.map(c=>`<div class="chip"><div style="width:8px;height:8px;border-radius:50%;background:${c.color};"></div>${c.name} · $${c.budget}</div>`).join('')}</div>
-      `
+        ${totalCat>spending?`<div class="warn-box">⚠ Categories exceed budget by $${(totalCat-spending).toLocaleString()}.</div>`:''}
+        <div class="cat-chips">${categories.map(c=>`<div class="chip"><div style="width:8px;height:8px;border-radius:50%;background:${c.color}"></div>${c.name} · $${c.budget}</div>`).join('')}</div>`
     }
 
     window.saveSetup = async function() {
       const msg = document.getElementById('msg3')
       const btn = document.getElementById('save-btn')
-      msg.textContent = 'Saving...' ; btn.disabled = true
+      msg.textContent = 'Saving...'; btn.disabled = true
       const income = parseFloat(document.getElementById('income').value)
       const savings = parseFloat(document.getElementById('savings').value) || 0
       const yearlyGoal = parseFloat(document.getElementById('yearly-goal').value) || null
@@ -366,7 +349,6 @@
       const budgetName = document.getElementById('budget-name').value.trim() || 'Regular Month'
       const month = new Date().toISOString().slice(0,7) + '-01'
 
-      // Save budget — upsert by id if editing, otherwise insert new
       let budgetError
       if (activeBudgetId) {
         const { error } = await supabase.from('budgets').update({ name: budgetName, income, savings_goal: savings, yearly_goal: yearlyGoal, total_saved: totalSaved, month }).eq('id', activeBudgetId)
@@ -375,13 +357,10 @@
         const { error } = await supabase.from('budgets').insert({ user_id: user.id, name: budgetName, income, savings_goal: savings, yearly_goal: yearlyGoal, total_saved: totalSaved, month })
         budgetError = error
       }
-
       if (budgetError) {
-        // Fallback: upsert by user_id + month for backwards compat
         const { error: be } = await supabase.from('budgets').upsert({ user_id: user.id, name: budgetName, income, savings_goal: savings, yearly_goal: yearlyGoal, total_saved: totalSaved, month }, { onConflict: 'user_id,month' })
         if (be) { msg.textContent = 'Error: ' + be.message; btn.disabled = false; return }
       }
-
       await supabase.from('categories').delete().eq('user_id', user.id)
       const { error: ce } = await supabase.from('categories').insert(categories.map(c => ({ user_id: user.id, name: c.name, budget: c.budget, color: c.color })))
       if (ce) { msg.textContent = 'Error: ' + ce.message; btn.disabled = false; return }
