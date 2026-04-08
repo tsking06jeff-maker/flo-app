@@ -1,266 +1,140 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flo — Let your money flow</title>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flo — Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --sky: #38bdf8; --sky-dark: #0ea5e9; --sky-light: #bae6fd;
-      --sky-pale: #f0faff; --white: #ffffff; --text: #0f172a;
-      --muted: #64748b; --border: #e2e8f0;
-    }
-    body {
-      background: var(--sky-pale); color: var(--text);
-      font-family: 'Sora', sans-serif; min-height: 100vh;
-      display: flex; align-items: center; justify-content: center; padding: 2rem;
-    }
-    .wrapper { width: 100%; max-width: 420px; }
-    .logo-area { text-align: center; margin-bottom: 2.5rem; }
-    .logo-svg { display: block; margin: 0 auto 14px; }
-    .tagline { font-size: 0.85rem; color: var(--muted); letter-spacing: 0.01em; }
-    .card {
-      background: white; border: 1px solid var(--border);
-      border-radius: 20px; padding: 2rem;
-      box-shadow: 0 4px 24px rgba(56,189,248,0.07);
-    }
-    .card-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 4px; }
-    .card-sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.75rem; }
-    .field { margin-bottom: 1.1rem; }
-    label { font-size: 0.78rem; font-weight: 500; color: var(--muted); display: block; margin-bottom: 5px; letter-spacing: 0.02em; }
-    input {
-      width: 100%; background: var(--sky-pale); border: 1.5px solid var(--border);
-      border-radius: 10px; padding: 11px 14px; color: var(--text); font-size: 0.92rem;
-      font-family: 'Sora', sans-serif; outline: none; transition: border-color 0.2s, background 0.2s;
-    }
-    input:focus { border-color: var(--sky); background: white; }
-    .name-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .btn-primary {
-      width: 100%; padding: 13px; border-radius: 10px; border: none;
-      background: var(--sky-dark); color: white; font-size: 0.92rem; font-weight: 600;
-      font-family: 'Sora', sans-serif; cursor: pointer; margin-top: 0.5rem;
-      transition: background 0.15s, transform 0.1s;
-    }
-    .btn-primary:hover { background: #0284c7; }
-    .btn-primary:active { transform: scale(0.98); }
-    .btn-primary:disabled { background: #7dd3fc; cursor: not-allowed; }
-    .divider { text-align: center; color: var(--border); font-size: 0.78rem; margin: 1rem 0; display: flex; align-items: center; gap: 10px; }
-    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-    .btn-secondary {
-      width: 100%; padding: 13px; border-radius: 10px; border: 1.5px solid var(--border);
-      background: white; color: var(--muted); font-size: 0.92rem; font-weight: 500;
-      font-family: 'Sora', sans-serif; cursor: pointer; transition: border-color 0.2s, color 0.2s;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-    }
-    .btn-secondary:hover { border-color: var(--sky); color: var(--sky-dark); }
-    .tab-switch { display: flex; background: var(--sky-pale); border-radius: 12px; padding: 4px; margin-bottom: 1.5rem; gap: 4px; }
-    .tab-btn { flex: 1; padding: 8px; border: none; background: none; border-radius: 9px; font-size: 0.82rem; font-weight: 500; font-family: 'Sora', sans-serif; color: var(--muted); cursor: pointer; transition: all 0.15s; }
-    .tab-btn.active { background: white; color: var(--sky-dark); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-    .magic-note { font-size: 0.78rem; color: var(--muted); text-align: center; margin-top: 8px; line-height: 1.6; }
-    #msg { font-size: 0.82rem; color: var(--muted); text-align: center; margin-top: 1rem; min-height: 20px; }
-    #msg.success { color: #16a34a; }
-    #msg.error { color: #dc2626; }
-    .terms-note { font-size: 0.75rem; color: var(--muted); text-align: center; margin-top: 1.25rem; line-height: 1.6; }
-    .terms-note a { color: var(--sky-dark); text-decoration: none; }
-    .terms-note a:hover { text-decoration: underline; }
-    .footer { text-align: center; font-size: 0.75rem; color: #cbd5e1; margin-top: 1.5rem; display: flex; justify-content: center; gap: 1.25rem; }
-    .footer a { color: #94a3b8; text-decoration: none; }
-    .footer a:hover { color: var(--muted); }
-    .deleted-banner { display: none; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 12px 16px; font-size: 0.85rem; color: #166534; text-align: center; margin-bottom: 1.25rem; }
-    .deleted-banner.show { display: block; }
-    .forgot-link { font-size: 0.78rem; color: var(--sky-dark); background: none; border: none; font-family: 'Sora', sans-serif; cursor: pointer; display: block; text-align: right; margin-top: -4px; margin-bottom: 8px; }
-    .forgot-link:hover { text-decoration: underline; }
-    @media (max-width: 480px) { .name-row { grid-template-columns: 1fr; } }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root[data-theme="dark"]{--bg:#0c0c0f;--card:#141418;--card2:#18181d;--border:#1e1e27;--text:#f4f4f5;--muted:#71717a;--muted2:#52525b;--accent:#a78bfa;--accent2:#ec4899;--accent-dim:rgba(167,139,250,0.12);--green:#4ade80;--red:#f87171;--inp-bg:#0c0c0f;}
+    :root[data-theme="light"]{--bg:#f5f5fa;--card:#ffffff;--card2:#f8f8fc;--border:#e4e4f0;--text:#0c0c0f;--muted:#6b6b7b;--muted2:#9898ab;--accent:#7c3aed;--accent2:#db2777;--accent-dim:rgba(124,58,237,0.08);--green:#16a34a;--red:#dc2626;--inp-bg:#f5f5fa;}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;transition:background 0.2s;}
+    .wrapper{width:100%;max-width:400px;}
+    .logo-area{text-align:center;margin-bottom:32px;}
+    .logo-mark{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;margin:0 auto 12px;}
+    .logo-text{font-size:20px;font-weight:800;letter-spacing:4px;color:var(--text);}
+    .tagline{font-size:12px;color:var(--muted);margin-top:4px;}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;transition:background 0.2s;}
+    .tab-switch{display:flex;background:var(--card2);border-radius:9px;padding:3px;margin-bottom:20px;gap:3px;}
+    .tab-btn{flex:1;padding:7px;border:none;background:none;border-radius:7px;font-size:12px;font-weight:600;font-family:'Inter',sans-serif;color:var(--muted);cursor:pointer;transition:all 0.15s;}
+    .tab-btn.active{background:var(--card);color:var(--accent);box-shadow:0 1px 4px rgba(0,0,0,0.15);}
+    .field{margin-bottom:12px;}
+    .field label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted2);display:block;margin-bottom:5px;}
+    .inp{width:100%;background:var(--inp-bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.15s;}
+    .inp:focus{border-color:var(--accent);}
+    .name-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .btn-primary{width:100%;padding:12px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;margin-top:4px;transition:opacity 0.15s;}
+    .btn-primary:hover{opacity:0.9;}
+    .btn-primary:disabled{opacity:0.5;cursor:not-allowed;}
+    .forgot-link{font-size:11px;color:var(--accent);background:none;border:none;font-family:'Inter',sans-serif;cursor:pointer;display:block;text-align:right;margin-top:-6px;margin-bottom:8px;}
+    .magic-note{font-size:11px;color:var(--muted);text-align:center;margin-top:8px;line-height:1.6;}
+    #msg{font-size:12px;text-align:center;margin-top:10px;min-height:18px;color:var(--muted);}
+    #msg.error{color:var(--red);}#msg.success{color:var(--green);}
+    .terms-note{font-size:11px;color:var(--muted2);text-align:center;margin-top:12px;line-height:1.6;}
+    .terms-note a{color:var(--accent);text-decoration:none;}
+    .footer{text-align:center;font-size:11px;color:var(--muted2);margin-top:16px;display:flex;justify-content:center;gap:16px;}
+    .footer a{color:var(--muted2);text-decoration:none;}
+    .theme-btn{position:fixed;top:16px;right:16px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;font-family:'Inter',sans-serif;}
+    .deleted-banner{display:none;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:10px 14px;font-size:12px;color:var(--green);text-align:center;margin-bottom:14px;}
+    .deleted-banner.show{display:block;}
+    @media(max-width:420px){.name-row{grid-template-columns:1fr;}}
   </style>
 </head>
 <body>
+  <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">☀ light</button>
   <div class="wrapper">
     <div class="logo-area">
-      <svg class="logo-svg" width="130" height="52" viewBox="0 0 130 52">
-        <rect x="0" y="6" width="46" height="40" rx="20" fill="#0ea5e9"/>
-        <path d="M10 26 Q15 18 20 26 Q25 34 30 26" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        <text x="56" y="33" font-family="'Helvetica Neue', Arial, sans-serif" font-size="22" font-weight="300" fill="#0f172a" letter-spacing="3">FLO</text>
-      </svg>
-      <p class="tagline">let your money flow</p>
+      <div class="logo-mark"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M4 12 Q8 5 12 12 Q16 19 20 12" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></div>
+      <div class="logo-text">FLO</div>
+      <div class="tagline">let your money flow</div>
     </div>
-
-    <div class="deleted-banner" id="deleted-banner">
-      Your account has been deleted. Thanks for using Flo.
-    </div>
-
+    <div class="deleted-banner" id="deleted-banner">account deleted. thanks for using flo.</div>
     <div class="card">
       <div class="tab-switch">
-        <button class="tab-btn active" id="tab-signin" onclick="switchMode('signin')">Sign in</button>
-        <button class="tab-btn" id="tab-signup" onclick="switchMode('signup')">Create account</button>
-        <button class="tab-btn" id="tab-magic" onclick="switchMode('magic')">Magic link</button>
+        <button class="tab-btn active" id="tab-signin" onclick="switchMode('signin')">sign in</button>
+        <button class="tab-btn" id="tab-signup" onclick="switchMode('signup')">create account</button>
+        <button class="tab-btn" id="tab-magic" onclick="switchMode('magic')">magic link</button>
       </div>
-
-      <!-- Sign In -->
       <div id="mode-signin">
-        <div class="field">
-          <label>Email address</label>
-          <input id="signin-email" type="email" placeholder="you@example.com" />
-        </div>
-        <div class="field">
-          <label>Password</label>
-          <input id="signin-password" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter') signIn()" />
-          <button class="forgot-link" onclick="forgotPassword()">Forgot password?</button>
-        </div>
-        <button class="btn-primary" id="signin-btn" onclick="signIn()">Sign in</button>
+        <div class="field"><label>Email</label><input class="inp" id="signin-email" type="email" placeholder="you@example.com" /></div>
+        <div class="field"><label>Password</label><input class="inp" id="signin-password" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')signIn()" /></div>
+        <button class="forgot-link" onclick="forgotPassword()">forgot password?</button>
+        <button class="btn-primary" id="signin-btn" onclick="signIn()">sign in</button>
       </div>
-
-      <!-- Sign Up -->
       <div id="mode-signup" style="display:none;">
         <div class="name-row">
-          <div class="field">
-            <label>First name</label>
-            <input id="signup-first" type="text" placeholder="Alex" />
-          </div>
-          <div class="field">
-            <label>Last name</label>
-            <input id="signup-last" type="text" placeholder="Smith" />
-          </div>
+          <div class="field"><label>First name</label><input class="inp" id="signup-first" type="text" placeholder="Alex" /></div>
+          <div class="field"><label>Last name</label><input class="inp" id="signup-last" type="text" placeholder="Smith" /></div>
         </div>
-        <div class="field">
-          <label>Email address</label>
-          <input id="signup-email" type="email" placeholder="you@example.com" />
-        </div>
-        <div class="field">
-          <label>Password</label>
-          <input id="signup-password" type="password" placeholder="At least 6 characters" onkeydown="if(event.key==='Enter') signUp()" />
-        </div>
-        <button class="btn-primary" id="signup-btn" onclick="signUp()">Create account</button>
-        <div class="terms-note">
-          By creating an account you agree to our
-          <a href="/terms.html">Terms of Service</a> and
-          <a href="/privacy.html">Privacy Policy</a>.
-        </div>
+        <div class="field"><label>Email</label><input class="inp" id="signup-email" type="email" placeholder="you@example.com" /></div>
+        <div class="field"><label>Password</label><input class="inp" id="signup-password" type="password" placeholder="at least 6 characters" onkeydown="if(event.key==='Enter')signUp()" /></div>
+        <button class="btn-primary" id="signup-btn" onclick="signUp()">create account</button>
+        <div class="terms-note">by signing up you agree to our <a href="/terms.html">terms</a> and <a href="/privacy.html">privacy policy</a>.</div>
       </div>
-
-      <!-- Magic Link -->
       <div id="mode-magic" style="display:none;">
-        <div class="field">
-          <label>Email address</label>
-          <input id="magic-email" type="email" placeholder="you@example.com" onkeydown="if(event.key==='Enter') sendMagicLink()" />
-        </div>
-        <button class="btn-primary" id="magic-btn" onclick="sendMagicLink()">Send magic link ✨</button>
-        <p class="magic-note">We'll send you a one-click sign in link — no password needed.</p>
+        <div class="field"><label>Email</label><input class="inp" id="magic-email" type="email" placeholder="you@example.com" onkeydown="if(event.key==='Enter')sendMagicLink()" /></div>
+        <button class="btn-primary" id="magic-btn" onclick="sendMagicLink()">send magic link ✨</button>
+        <p class="magic-note">we'll send a one-click sign in link — no password needed.</p>
       </div>
-
       <p id="msg"></p>
     </div>
-
-    <div class="footer">
-      <a href="/terms.html">Terms</a>
-      <a href="/privacy.html">Privacy</a>
-      <span style="color:#e2e8f0;">·</span>
-      <span>Flo — Smart budgeting powered by AI</span>
-    </div>
+    <div class="footer"><a href="/terms.html">terms</a><a href="/privacy.html">privacy</a><span>flo — smart budgeting</span></div>
   </div>
-
   <script type="module">
     import { supabase } from './Supabase.js'
-
-    // If already logged in, go to dashboard
+    const _t = localStorage.getItem('flo_theme')||'dark'
+    document.documentElement.setAttribute('data-theme',_t)
+    document.getElementById('theme-btn').textContent = _t==='dark'?'☀ light':'☾ dark'
+    window.toggleTheme = () => {
+      const t = document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'
+      document.documentElement.setAttribute('data-theme',t); localStorage.setItem('flo_theme',t)
+      document.getElementById('theme-btn').textContent = t==='dark'?'☀ light':'☾ dark'
+    }
     const { data: { session } } = await supabase.auth.getSession()
-    if (session) window.location.href = '/index.html'
-
-    // Handle Supabase auth redirects (magic link, email confirmation)
-    supabase.auth.onAuthStateChange((event, session) => {
-      if ((event === 'SIGNED_IN' || event === 'USER_UPDATED') && session) {
-        window.location.href = '/index.html'
-      }
-    })
-
-    const params = new URLSearchParams(window.location.search)
-    if (params.get('deleted') === 'true') {
-      document.getElementById('deleted-banner').classList.add('show')
+    if (session) location.href='/index.html'
+    supabase.auth.onAuthStateChange((event, session) => { if ((event==='SIGNED_IN'||event==='USER_UPDATED') && session) location.href='/index.html' })
+    const params = new URLSearchParams(location.search)
+    if (params.get('deleted')==='true') document.getElementById('deleted-banner').classList.add('show')
+    window.switchMode = m => {
+      ;['signin','signup','magic'].forEach(x => { document.getElementById('mode-'+x).style.display=x===m?'block':'none'; document.getElementById('tab-'+x).classList.toggle('active',x===m) })
+      document.getElementById('msg').textContent=''; document.getElementById('msg').className=''
     }
-
-    window.switchMode = function(mode) {
-      ;['signin','signup','magic'].forEach(m => {
-        document.getElementById('mode-' + m).style.display = m === mode ? 'block' : 'none'
-        document.getElementById('tab-' + m).classList.toggle('active', m === mode)
-      })
-      document.getElementById('msg').textContent = ''
-      document.getElementById('msg').className = ''
+    window.signIn = async () => {
+      const email=document.getElementById('signin-email').value.trim(), password=document.getElementById('signin-password').value
+      const msg=document.getElementById('msg'), btn=document.getElementById('signin-btn')
+      if (!email||!password){msg.textContent='fill in both fields.';msg.className='error';return}
+      btn.disabled=true;btn.textContent='signing in...'
+      const {error}=await supabase.auth.signInWithPassword({email,password})
+      if(error){msg.textContent=error.message;msg.className='error';btn.disabled=false;btn.textContent='sign in';return}
+      location.href='/index.html'
     }
-
-    window.signIn = async function() {
-      const email = document.getElementById('signin-email').value.trim()
-      const password = document.getElementById('signin-password').value
-      const msg = document.getElementById('msg')
-      const btn = document.getElementById('signin-btn')
-      if (!email || !password) { msg.textContent = 'Please fill in both fields.'; msg.className = 'error'; return }
-      btn.disabled = true; btn.textContent = 'Signing in...'
-      msg.textContent = ''; msg.className = ''
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) { msg.textContent = error.message; msg.className = 'error'; btn.disabled = false; btn.textContent = 'Sign in'; return }
-      window.location.href = '/index.html'
+    window.signUp = async () => {
+      const first=document.getElementById('signup-first').value.trim(), last=document.getElementById('signup-last').value.trim()
+      const email=document.getElementById('signup-email').value.trim(), password=document.getElementById('signup-password').value
+      const msg=document.getElementById('msg'), btn=document.getElementById('signup-btn')
+      if(!email||!password){msg.textContent='fill in email and password.';msg.className='error';return}
+      if(password.length<6){msg.textContent='password must be at least 6 characters.';msg.className='error';return}
+      btn.disabled=true;btn.textContent='creating account...'
+      const fullName=[first,last].filter(Boolean).join(' ')||email
+      const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name:fullName,first_name:first,last_name:last},emailRedirectTo:location.origin+'/auth-confirm.html'}})
+      if(error){msg.textContent=error.message;msg.className='error';btn.disabled=false;btn.textContent='create account';return}
+      if(data.user) await supabase.from('profiles').upsert({id:data.user.id,full_name:fullName,first_name:first,last_name:last,email})
+      if(data.session){location.href='/setup.html'}else{msg.textContent='✓ check your email for a confirmation link!';msg.className='success';btn.disabled=false;btn.textContent='create account'}
     }
-
-    window.signUp = async function() {
-      const firstName = document.getElementById('signup-first').value.trim()
-      const lastName = document.getElementById('signup-last').value.trim()
-      const email = document.getElementById('signup-email').value.trim()
-      const password = document.getElementById('signup-password').value
-      const msg = document.getElementById('msg')
-      const btn = document.getElementById('signup-btn')
-      if (!email || !password) { msg.textContent = 'Please fill in email and password.'; msg.className = 'error'; return }
-      if (password.length < 6) { msg.textContent = 'Password must be at least 6 characters.'; msg.className = 'error'; return }
-      btn.disabled = true; btn.textContent = 'Creating account...'
-      msg.textContent = ''; msg.className = ''
-      const fullName = [firstName, lastName].filter(Boolean).join(' ') || email
-      const { data, error } = await supabase.auth.signUp({
-        email, password,
-        options: {
-          data: { full_name: fullName, first_name: firstName, last_name: lastName },
-          emailRedirectTo: window.location.origin + '/auth-confirm.html'
-        }
-      })
-      if (error) { msg.textContent = error.message; msg.className = 'error'; btn.disabled = false; btn.textContent = 'Create account'; return }
-      if (data.user) {
-        await supabase.from('profiles').upsert({ id: data.user.id, full_name: fullName, first_name: firstName, last_name: lastName, email })
-      }
-      // If email confirmation is disabled in Supabase, go straight to setup
-      if (data.session) {
-        window.location.href = '/setup.html'
-      } else {
-        msg.textContent = '✓ Check your email for a confirmation link!'
-        msg.className = 'success'
-        btn.disabled = false; btn.textContent = 'Create account'
-      }
+    window.sendMagicLink = async () => {
+      const email=document.getElementById('magic-email').value.trim(), msg=document.getElementById('msg'), btn=document.getElementById('magic-btn')
+      if(!email){msg.textContent='enter your email.';msg.className='error';return}
+      btn.disabled=true;btn.textContent='sending...'
+      const {error}=await supabase.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+'/auth-confirm.html'}})
+      if(error){msg.textContent=error.message;msg.className='error';btn.disabled=false;btn.textContent='send magic link ✨';return}
+      msg.textContent='✓ magic link sent! check your email.';msg.className='success';btn.disabled=false;btn.textContent='resend link'
     }
-
-    window.sendMagicLink = async function() {
-      const email = document.getElementById('magic-email').value.trim()
-      const msg = document.getElementById('msg')
-      const btn = document.getElementById('magic-btn')
-      if (!email) { msg.textContent = 'Please enter your email.'; msg.className = 'error'; return }
-      btn.disabled = true; btn.textContent = 'Sending...'
-      msg.textContent = ''; msg.className = ''
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: { emailRedirectTo: window.location.origin + '/auth-confirm.html' }
-      })
-      if (error) { msg.textContent = error.message; msg.className = 'error'; btn.disabled = false; btn.textContent = 'Send magic link ✨'; return }
-      msg.textContent = '✓ Magic link sent! Check your email.'
-      msg.className = 'success'
-      btn.disabled = false; btn.textContent = 'Resend link'
-    }
-
-    window.forgotPassword = async function() {
-      const email = document.getElementById('signin-email').value.trim()
-      const msg = document.getElementById('msg')
-      if (!email) { msg.textContent = 'Enter your email above first.'; msg.className = 'error'; return }
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin + '/auth-confirm.html?type=recovery'
-      })
-      if (error) { msg.textContent = error.message; msg.className = 'error'; return }
-      msg.textContent = '✓ Password reset email sent! Check your inbox.'
-      msg.className = 'success'
+    window.forgotPassword = async () => {
+      const email=document.getElementById('signin-email').value.trim(), msg=document.getElementById('msg')
+      if(!email){msg.textContent='enter your email above first.';msg.className='error';return}
+      const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:location.origin+'/auth-confirm.html?type=recovery'})
+      if(error){msg.textContent=error.message;msg.className='error';return}
+      msg.textContent='✓ password reset email sent!';msg.className='success'
     }
   </script>
 </body>

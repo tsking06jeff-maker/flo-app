@@ -1,149 +1,180 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Flo — Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --sky: #38bdf8; --sky-dark: #0ea5e9; --sky-light: #bae6fd;
-      --sky-pale: #f0faff; --white: #ffffff; --text: #0f172a;
-      --muted: #64748b; --border: #e2e8f0; --bg: #f8fafc;
-    }
-    body { background: var(--bg); color: var(--text); font-family: 'Sora', sans-serif; min-height: 100vh; }
-    .sidebar { position: fixed; top: 0; left: 0; width: 224px; height: 100vh; background: white; border-right: 1px solid var(--border); padding: 1.5rem 1rem; display: flex; flex-direction: column; z-index: 10; }
-    .sidebar-logo { padding: 0.25rem 0.5rem 1.75rem; }
-    .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; font-size: 0.85rem; font-weight: 500; color: var(--muted); cursor: pointer; transition: all 0.15s; text-decoration: none; margin-bottom: 2px; }
-    .nav-item:hover, .nav-item.active { background: var(--sky-pale); color: var(--sky-dark); }
-    .nav-icon { font-size: 0.95rem; width: 18px; text-align: center; }
-    .nav-ext { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; font-size: 0.82rem; font-weight: 500; color: #7c3aed; cursor: pointer; transition: all 0.15s; text-decoration: none; margin-bottom: 2px; background: #faf5ff; border: 1px solid #ede9fe; }
-    .nav-ext:hover { background: #ede9fe; }
-    .sidebar-bottom { margin-top: auto; }
-    .user-pill { display: flex; align-items: center; gap: 9px; padding: 10px 12px; border-radius: 10px; background: var(--sky-pale); }
-    .user-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--sky-dark); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.72rem; font-weight: 600; flex-shrink: 0; }
-    .user-info { flex: 1; overflow: hidden; }
-    .user-email { font-size: 0.73rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .user-label { font-size: 0.68rem; color: #94a3b8; }
-    .sign-out-btn { background: none; border: none; color: #cbd5e1; cursor: pointer; font-size: 0.9rem; padding: 2px 4px; }
-    .sign-out-btn:hover { color: var(--muted); }
-    .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid var(--border); padding: 8px 0 max(8px, env(safe-area-inset-bottom)); z-index: 100; justify-content: space-around; }
-    .bottom-nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 12px; border-radius: 10px; cursor: pointer; color: var(--muted); font-size: 0.65rem; font-weight: 500; border: none; background: none; font-family: 'Sora', sans-serif; transition: color 0.15s; }
-    .bottom-nav-item.active { color: var(--sky-dark); }
-    .bottom-nav-icon { font-size: 1.2rem; }
-    .mobile-topbar { display: none; position: fixed; top: 0; left: 0; right: 0; background: white; border-bottom: 1px solid var(--border); padding: 12px 1.25rem; z-index: 10; align-items: center; justify-content: space-between; }
-    .mobile-user { display: flex; align-items: center; gap: 8px; }
-    .mobile-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--sky-dark); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.68rem; font-weight: 600; }
-    .main { margin-left: 224px; padding: 2rem 2.5rem 3rem; }
-    .page-header { margin-bottom: 1.25rem; display: flex; align-items: flex-start; justify-content: space-between; }
-    .page-header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; }
-    .page-header p { color: var(--muted); font-size: 0.85rem; margin-top: 3px; }
-    .date-badge { font-size: 0.78rem; color: var(--muted); background: white; border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; white-space: nowrap; }
 
-    /* Budget alerts */
-    .alerts-area { margin-bottom: 1.25rem; display: flex; flex-direction: column; gap: 8px; }
-    .alert-banner { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 10px; font-size: 0.83rem; font-weight: 500; }
-    .alert-banner.warning { background: #fff7ed; border: 1px solid #fed7aa; color: #c2410c; }
-    .alert-banner.danger { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
-    .alert-dismiss { background: none; border: none; cursor: pointer; font-size: 1rem; color: inherit; opacity: 0.6; margin-left: auto; padding: 0 2px; }
+    :root[data-theme="dark"] {
+      --bg: #0c0c0f; --card: #141418; --card2: #18181d;
+      --border: #1e1e27; --border2: #2a2a35;
+      --text: #f4f4f5; --muted: #71717a; --muted2: #52525b;
+      --accent: #a78bfa; --accent2: #ec4899;
+      --accent-dim: rgba(167,139,250,0.12);
+      --green: #4ade80; --red: #f87171; --orange: #fb923c;
+      --green-dim: rgba(74,222,128,0.1); --red-dim: rgba(248,113,113,0.1);
+      --inp-bg: #0c0c0f; --shadow: 0 4px 24px rgba(0,0,0,0.4);
+    }
+    :root[data-theme="light"] {
+      --bg: #f5f5fa; --card: #ffffff; --card2: #f8f8fc;
+      --border: #e4e4f0; --border2: #d4d4e8;
+      --text: #0c0c0f; --muted: #6b6b7b; --muted2: #9898ab;
+      --accent: #7c3aed; --accent2: #db2777;
+      --accent-dim: rgba(124,58,237,0.08);
+      --green: #16a34a; --red: #dc2626; --orange: #d97706;
+      --green-dim: rgba(22,163,74,0.08); --red-dim: rgba(220,38,38,0.08);
+      --inp-bg: #f5f5fa; --shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-system, sans-serif; min-height: 100vh; transition: background 0.2s, color 0.2s; }
+
+    /* Sidebar */
+    .sidebar { position: fixed; top: 0; left: 0; width: 220px; height: 100vh; background: var(--card); border-right: 1px solid var(--border); padding: 20px 12px; display: flex; flex-direction: column; z-index: 10; transition: background 0.2s, border-color 0.2s; }
+    .sidebar-logo { padding: 4px 8px 20px; display: flex; align-items: center; gap: 10px; }
+    .logo-mark { width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .logo-text { font-size: 14px; font-weight: 800; letter-spacing: 3px; color: var(--text); }
+    .nav-item { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--muted); cursor: pointer; transition: all 0.15s; text-decoration: none; margin-bottom: 1px; }
+    .nav-item:hover { background: var(--accent-dim); color: var(--accent); }
+    .nav-item.active { background: var(--accent-dim); color: var(--accent); }
+    .nav-icon { font-size: 14px; width: 16px; text-align: center; }
+    .nav-ext { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--accent2); cursor: pointer; transition: all 0.15s; text-decoration: none; margin-bottom: 1px; background: rgba(236,72,153,0.08); border: 1px solid rgba(236,72,153,0.15); }
+    .nav-ext:hover { background: rgba(236,72,153,0.15); }
+    .sidebar-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 8px; }
+    .theme-toggle { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 8px; background: var(--card2); border: 1px solid var(--border); cursor: pointer; font-size: 12px; font-weight: 500; color: var(--muted); }
+    .toggle-track { width: 32px; height: 18px; background: var(--border2); border-radius: 99px; position: relative; transition: background 0.2s; }
+    .toggle-track.on { background: var(--accent); }
+    .toggle-thumb { position: absolute; width: 12px; height: 12px; background: white; border-radius: 50%; top: 3px; left: 3px; transition: transform 0.2s; }
+    .toggle-track.on .toggle-thumb { transform: translateX(14px); }
+    .user-pill { display: flex; align-items: center; gap: 8px; padding: 9px 10px; border-radius: 8px; background: var(--card2); border: 1px solid var(--border); }
+    .user-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+    .user-info { flex: 1; overflow: hidden; }
+    .user-name-pill { font-size: 12px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .user-sub-pill { font-size: 10px; color: var(--muted2); }
+    .sign-out-btn { background: none; border: none; color: var(--muted2); cursor: pointer; font-size: 14px; padding: 2px; transition: color 0.15s; }
+    .sign-out-btn:hover { color: var(--red); }
+
+    /* Mobile */
+    .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--border); padding: 8px 0 max(8px, env(safe-area-inset-bottom)); z-index: 100; justify-content: space-around; }
+    .bottom-nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 5px 12px; cursor: pointer; color: var(--muted); font-size: 10px; font-weight: 500; border: none; background: none; font-family: 'Inter', sans-serif; transition: color 0.15s; }
+    .bottom-nav-item.active { color: var(--accent); }
+    .bottom-nav-icon { font-size: 18px; }
+    .mobile-topbar { display: none; position: fixed; top: 0; left: 0; right: 0; background: var(--card); border-bottom: 1px solid var(--border); padding: 12px 16px; z-index: 10; align-items: center; justify-content: space-between; }
+
+    /* Main */
+    .main { margin-left: 220px; padding: 28px 32px 40px; }
+    .page-header { margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .greeting { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+    .greeting .name { background: linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .header-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+    .date-badge { font-size: 11px; color: var(--muted); background: var(--card); border: 1px solid var(--border); border-radius: 7px; padding: 5px 10px; white-space: nowrap; }
+
+    /* Alerts */
+    .alerts-area { margin-bottom: 16px; display: flex; flex-direction: column; gap: 6px; }
+    .alert-banner { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-radius: 9px; font-size: 12px; font-weight: 500; }
+    .alert-banner.warning { background: rgba(251,146,60,0.1); border: 1px solid rgba(251,146,60,0.2); color: var(--orange); }
+    .alert-banner.danger { background: var(--red-dim); border: 1px solid rgba(248,113,113,0.2); color: var(--red); }
+    .alert-dismiss { background: none; border: none; cursor: pointer; font-size: 14px; color: inherit; opacity: 0.5; margin-left: auto; padding: 0 2px; }
     .alert-dismiss:hover { opacity: 1; }
 
-    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.75rem; }
-    .stat { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; }
-    .stat-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 8px; }
-    .stat-value { font-size: 1.65rem; font-weight: 600; letter-spacing: -0.03em; }
-    .stat-value.sky { color: var(--sky-dark); }
-    .stat-value.green { color: #16a34a; }
-    .stat-value.red { color: #dc2626; }
-    .stat-sub { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
+    /* Stats */
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+    .stat { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; transition: background 0.2s, border-color 0.2s; }
+    .stat-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted2); margin-bottom: 8px; }
+    .stat-value { font-size: 24px; font-weight: 800; letter-spacing: -1px; }
+    .stat-value.accent { color: var(--accent); }
+    .stat-value.green { color: var(--green); }
+    .stat-value.red { color: var(--red); }
+    .stat-value.white { color: var(--text); }
+    .stat-sub { font-size: 11px; color: var(--muted2); margin-top: 3px; }
 
-    /* Yearly goal bar */
-    .yearly-goal-bar { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 1.1rem 1.25rem; margin-bottom: 1.25rem; display: none; }
-    .yearly-goal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.82rem; }
-    .yearly-goal-title { font-weight: 600; color: var(--text); }
-    .yearly-goal-pct { color: var(--sky-dark); font-weight: 600; }
-    .progress-track { background: var(--border); border-radius: 99px; height: 8px; overflow: hidden; }
-    .progress-fill { height: 100%; border-radius: 99px; background: var(--sky-dark); transition: width 0.6s ease; }
-    .progress-fill.over { background: #dc2626; }
-    .yearly-goal-sub { font-size: 0.75rem; color: var(--muted); margin-top: 6px; }
+    /* Yearly goal */
+    .yearly-goal-bar { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; display: none; transition: background 0.2s; }
+    .yearly-goal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 12px; }
+    .yearly-goal-title { font-weight: 700; color: var(--text); }
+    .yearly-goal-pct { color: var(--accent); font-weight: 700; }
+    .progress-track { background: var(--border2); border-radius: 99px; height: 6px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width 0.6s ease; }
+    .yearly-goal-sub { font-size: 11px; color: var(--muted2); margin-top: 6px; }
 
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
-    .card { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
-    .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
-    .card-title { font-size: 0.85rem; font-weight: 600; }
-    .card-link { font-size: 0.78rem; color: var(--sky-dark); background: none; border: none; font-family: 'Sora', sans-serif; cursor: pointer; }
+    /* Grid */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; transition: background 0.2s, border-color 0.2s; }
+    .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .card-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted2); }
+    .card-link { font-size: 12px; color: var(--accent); background: none; border: none; font-family: 'Inter', sans-serif; cursor: pointer; font-weight: 500; }
     .card-link:hover { text-decoration: underline; }
-    .cat-grid { display: flex; flex-direction: column; gap: 8px; }
-    .cat-pill { background: var(--sky-pale); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; }
-    .cat-pill-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-    .cat-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-    .cat-pill-name { font-size: 0.82rem; font-weight: 500; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .cat-pill-amt { font-size: 0.75rem; color: var(--muted); white-space: nowrap; }
-    .cat-pill-amt.over { color: #dc2626; font-weight: 600; }
-    .cat-progress-track { background: var(--border); border-radius: 99px; height: 5px; overflow: hidden; }
+
+    /* Categories */
+    .cat-item { margin-bottom: 10px; }
+    .cat-row { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; }
+    .cat-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .cat-name { font-size: 12px; font-weight: 600; flex: 1; }
+    .cat-amt { font-size: 11px; color: var(--muted); white-space: nowrap; }
+    .cat-amt.over { color: var(--red); font-weight: 700; }
+    .cat-del { background: none; border: none; color: var(--muted2); cursor: pointer; font-size: 14px; padding: 0 2px; transition: color 0.15s; line-height: 1; flex-shrink: 0; }
+    .cat-del:hover { color: var(--red); }
+    .cat-progress-track { background: var(--border); border-radius: 99px; height: 4px; overflow: hidden; }
     .cat-progress-fill { height: 100%; border-radius: 99px; transition: width 0.4s ease; }
-    .cat-delete { background: none; border: none; color: #cbd5e1; cursor: pointer; font-size: 1rem; padding: 0 2px; line-height: 1; transition: color 0.15s; flex-shrink: 0; }
-    .cat-delete:hover { color: #ef4444; }
-    .cat-add-row { display: grid; grid-template-columns: 1fr 80px 36px 36px; gap: 6px; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
-    .cat-add-inp { background: var(--sky-pale); border: 1.5px solid var(--border); border-radius: 8px; padding: 7px 10px; font-size: 0.82rem; font-family: 'Sora', sans-serif; color: var(--text); outline: none; width: 100%; transition: border-color 0.15s; }
-    .cat-add-inp:focus { border-color: var(--sky); background: white; }
-    .cat-color-pick { width: 36px; height: 34px; border-radius: 8px; border: 1.5px solid var(--border); background: white; cursor: pointer; padding: 2px; }
-    .cat-add-btn { width: 36px; height: 34px; background: var(--sky-dark); color: white; border: none; border-radius: 8px; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-    .cat-add-btn:hover { background: #0284c7; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-    .field label { font-size: 0.75rem; font-weight: 500; color: var(--muted); display: block; margin-bottom: 5px; }
-    input, select { outline: none; }
-    .inp { width: 100%; background: var(--sky-pale); border: 1.5px solid var(--border); border-radius: 8px; padding: 9px 12px; color: var(--text); font-size: 0.85rem; font-family: 'Sora', sans-serif; transition: border-color 0.2s, background 0.2s; }
-    .inp:focus { border-color: var(--sky); background: white; }
-    .btn-save { background: var(--sky-dark); color: white; border: none; border-radius: 8px; padding: 11px; font-size: 0.85rem; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; width: 100%; margin-top: 6px; }
-    .btn-save:hover { background: #0284c7; }
-    #form-msg { font-size: 0.78rem; color: var(--muted); text-align: center; margin-top: 8px; min-height: 16px; }
-    .txn-list { display: flex; flex-direction: column; gap: 6px; }
-    .txn-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 13px; background: var(--sky-pale); border: 1px solid var(--border); border-radius: 10px; }
-    .txn-note { font-size: 0.85rem; font-weight: 500; }
-    .txn-cat { font-size: 0.73rem; color: var(--muted); margin-top: 2px; }
-    .txn-amt { font-size: 0.98rem; font-weight: 600; color: var(--sky-dark); white-space: nowrap; }
-    .load-more-btn { width: 100%; padding: 9px; border-radius: 8px; border: 1.5px solid var(--border); background: white; color: var(--muted); font-size: 0.82rem; font-family: 'Sora', sans-serif; cursor: pointer; margin-top: 8px; transition: all 0.15s; }
-    .load-more-btn:hover { border-color: var(--sky); color: var(--sky-dark); }
-    .chat-msgs { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1rem; max-height: 260px; overflow-y: auto; }
-    .msg-ai { background: var(--sky-pale); border: 1px solid var(--sky-light); border-radius: 12px 12px 12px 4px; padding: 11px 13px; font-size: 0.85rem; line-height: 1.6; max-width: 90%; }
-    .msg-user { background: var(--sky-dark); color: white; border-radius: 12px 12px 4px 12px; padding: 11px 13px; font-size: 0.85rem; max-width: 90%; align-self: flex-end; margin-left: auto; }
-    .chat-row { display: flex; gap: 8px; }
+    .cat-add-row { display: grid; grid-template-columns: 1fr 70px 28px 28px; gap: 5px; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+    .cat-add-inp { background: var(--inp-bg); border: 1px solid var(--border); border-radius: 7px; padding: 6px 8px; font-size: 11px; font-family: 'Inter', sans-serif; color: var(--text); outline: none; width: 100%; transition: border-color 0.15s; }
+    .cat-add-inp:focus { border-color: var(--accent); }
+    .cat-color-pick { width: 28px; height: 28px; border-radius: 7px; border: 1px solid var(--border); background: none; cursor: pointer; padding: 2px; }
+    .cat-add-btn { width: 28px; height: 28px; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white; border: none; border-radius: 7px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+
+    /* Form */
+    .field label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted2); display: block; margin-bottom: 5px; }
+    .inp { width: 100%; background: var(--inp-bg); border: 1px solid var(--border); border-radius: 8px; padding: 9px 11px; color: var(--text); font-size: 13px; font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.15s; }
+    .inp:focus { border-color: var(--accent); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+    .btn-save { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white; border: none; border-radius: 8px; padding: 11px; font-size: 13px; font-weight: 700; font-family: 'Inter', sans-serif; cursor: pointer; width: 100%; margin-top: 6px; transition: opacity 0.15s; }
+    .btn-save:hover { opacity: 0.9; }
+    #form-msg { font-size: 11px; color: var(--muted); text-align: center; margin-top: 6px; min-height: 14px; }
+    #cat-msg { font-size: 11px; color: var(--muted); margin-top: 4px; min-height: 14px; }
+
+    /* Transactions */
+    .txn-list { display: flex; flex-direction: column; gap: 5px; }
+    .txn-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 11px; background: var(--card2); border: 1px solid var(--border); border-radius: 9px; transition: border-color 0.15s; }
+    .txn-row:hover { border-color: var(--border2); }
+    .txn-note { font-size: 13px; font-weight: 600; }
+    .txn-cat { font-size: 11px; color: var(--muted2); margin-top: 1px; }
+    .txn-amt { font-size: 14px; font-weight: 800; color: var(--accent); white-space: nowrap; letter-spacing: -0.5px; }
+    .txn-delete { background: none; border: none; color: var(--muted2); cursor: pointer; font-size: 14px; padding: 0 3px; margin-left: 6px; border-radius: 5px; transition: all 0.15s; }
+    .txn-delete:hover { color: var(--red); background: var(--red-dim); }
+    .load-more-btn { width: 100%; padding: 8px; border-radius: 8px; border: 1px solid var(--border); background: none; color: var(--muted); font-size: 12px; font-family: 'Inter', sans-serif; cursor: pointer; margin-top: 6px; transition: all 0.15s; }
+    .load-more-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Chat */
+    .chat-msgs { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; max-height: 240px; overflow-y: auto; }
+    .msg-ai { background: var(--card2); border: 1px solid var(--border); border-radius: 10px 10px 10px 3px; padding: 10px 12px; font-size: 13px; line-height: 1.6; max-width: 90%; color: var(--text); }
+    .msg-user { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white; border-radius: 10px 10px 3px 10px; padding: 10px 12px; font-size: 13px; max-width: 90%; align-self: flex-end; margin-left: auto; }
+    .chat-row { display: flex; gap: 7px; }
     .chat-row .inp { flex: 1; }
-    .btn-ask { background: var(--sky-dark); color: white; border: none; border-radius: 8px; padding: 10px 14px; font-size: 0.85rem; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; white-space: nowrap; }
-    .btn-ask:hover { background: #0284c7; }
-    .quick-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-    .qp { font-size: 0.73rem; padding: 5px 11px; border-radius: 99px; border: 1px solid var(--border); background: white; color: var(--muted); cursor: pointer; font-family: 'Sora', sans-serif; transition: all 0.15s; }
-    .qp:hover { border-color: var(--sky); color: var(--sky-dark); background: var(--sky-pale); }
-    .txn-row { position: relative; }
-    .txn-delete { background: none; border: none; color: #cbd5e1; cursor: pointer; font-size: 1rem; padding: 2px 4px; margin-left: 8px; border-radius: 6px; transition: all 0.15s; flex-shrink: 0; }
-    .txn-delete:hover { color: #ef4444; background: #fef2f2; }
-    .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #0f172a; color: white; padding: 12px 20px; border-radius: 10px; font-size: 0.85rem; display: flex; align-items: center; gap: 12px; z-index: 999; box-shadow: 0 4px 20px rgba(0,0,0,0.2); animation: toast-in 0.2s ease; }
-    .toast-undo { background: none; border: none; color: #38bdf8; font-size: 0.85rem; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; padding: 0; }
-    .toast-undo:hover { color: #7dd3fc; }
+    .btn-ask { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white; border: none; border-radius: 8px; padding: 9px 14px; font-size: 13px; font-weight: 700; font-family: 'Inter', sans-serif; cursor: pointer; white-space: nowrap; }
+    .quick-pills { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+    .qp { font-size: 11px; padding: 4px 10px; border-radius: 99px; border: 1px solid var(--border); background: none; color: var(--muted); cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.15s; }
+    .qp:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+
+    /* Toast */
+    .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: var(--text); color: var(--bg); padding: 11px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 12px; z-index: 999; box-shadow: var(--shadow); animation: toast-in 0.2s ease; }
+    .toast-undo { background: none; border: none; color: var(--accent); font-size: 13px; font-weight: 700; font-family: 'Inter', sans-serif; cursor: pointer; padding: 0; }
     @keyframes toast-in { from { opacity: 0; transform: translateX(-50%) translateY(8px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
     @media (max-width: 768px) {
       .sidebar { display: none; }
       .bottom-nav { display: flex; }
       .mobile-topbar { display: flex; }
-      .main { margin-left: 0; padding: 5rem 1rem 6rem; }
-      .page-header { flex-direction: column; gap: 8px; }
+      .main { margin-left: 0; padding: 5rem 14px 6rem; }
+      .page-header { flex-direction: column; gap: 6px; }
       .date-badge { display: none; }
-      .stats { grid-template-columns: 1fr 1fr; gap: 10px; }
-      .stat { padding: 1rem; }
-      .stat-value { font-size: 1.3rem; }
+      .stats { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .stat { padding: 12px; }
+      .stat-value { font-size: 18px; }
       .grid-2 { grid-template-columns: 1fr; }
-      .cat-grid { grid-template-columns: 1fr; }
       .form-row { grid-template-columns: 1fr; }
-      .quick-pills { gap: 5px; }
-      .qp { font-size: 0.7rem; padding: 5px 10px; }
-      .chat-msgs { max-height: 200px; }
-      .card { padding: 1.25rem; }
-    }
-    @media (max-width: 380px) {
-      .stats { grid-template-columns: 1fr 1fr; }
-      .stat-value { font-size: 1.1rem; }
+      .card { padding: 14px; }
     }
   </style>
 </head>
@@ -151,25 +182,26 @@
 
   <div class="sidebar">
     <div class="sidebar-logo">
-      <svg width="96" height="34" viewBox="0 0 96 34">
-        <rect x="0" y="0" width="34" height="34" rx="17" fill="#0ea5e9"/>
-        <path d="M7 17 Q11 11 16 17 Q21 23 25 17" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <text x="42" y="23" font-family="'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="300" fill="#0f172a" letter-spacing="2.5">FLO</text>
-      </svg>
+      <div class="logo-mark"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M2 8 Q5 3 8 8 Q11 13 14 8" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg></div>
+      <span class="logo-text">FLO</span>
     </div>
-    <a class="nav-item active"><span class="nav-icon">◉</span> Dashboard</a>
-    <a class="nav-item" onclick="window.location.href='/charts.html'"><span class="nav-icon">📊</span> Charts</a>
-    <a class="nav-item" onclick="window.location.href='/reports.html'"><span class="nav-icon">📋</span> Reports</a>
-    <a class="nav-item" onclick="window.location.href='/planner.html'"><span class="nav-icon">✈️</span> Planner</a>
-    <a class="nav-item" onclick="window.location.href='/setup.html'"><span class="nav-icon">⚙</span> Edit budget</a>
-    <a class="nav-item" onclick="window.location.href='/account.html'"><span class="nav-icon">👤</span> Account</a>
-    <a class="nav-ext" onclick="showExtModal()" style="cursor:pointer;"><span class="nav-icon">🧩</span> Add extension</a>
+    <a class="nav-item active"><span class="nav-icon">⬡</span> Dashboard</a>
+    <a class="nav-item" onclick="location.href='/charts.html'"><span class="nav-icon">◈</span> Charts</a>
+    <a class="nav-item" onclick="location.href='/reports.html'"><span class="nav-icon">◧</span> Reports</a>
+    <a class="nav-item" onclick="location.href='/planner.html'"><span class="nav-icon">✦</span> Planner</a>
+    <a class="nav-item" onclick="location.href='/setup.html'"><span class="nav-icon">⊕</span> Edit budget</a>
+    <a class="nav-item" onclick="location.href='/account.html'"><span class="nav-icon">◎</span> Account</a>
+    <a class="nav-ext" href="#" onclick="showExtModal();return false;"><span class="nav-icon">⧉</span> Add extension</a>
     <div class="sidebar-bottom">
+      <div class="theme-toggle" onclick="toggleTheme()">
+        <span id="theme-label">dark mode</span>
+        <div class="toggle-track on" id="toggle-track"><div class="toggle-thumb"></div></div>
+      </div>
       <div class="user-pill">
         <div class="user-avatar" id="user-initials-desktop">?</div>
         <div class="user-info">
-          <div class="user-email" id="user-email-desktop">—</div>
-          <div class="user-label">let your money flow</div>
+          <div class="user-name-pill" id="user-name-desktop">—</div>
+          <div class="user-sub-pill">let your money flow</div>
         </div>
         <button class="sign-out-btn" onclick="signOut()" title="Sign out">⇥</button>
       </div>
@@ -177,48 +209,45 @@
   </div>
 
   <div class="mobile-topbar">
-    <div class="mobile-user">
-      <div class="mobile-avatar" id="user-initials-mobile">?</div>
-      <svg width="52" height="20" viewBox="0 0 52 20">
-        <rect x="0" y="0" width="20" height="20" rx="10" fill="#0ea5e9"/>
-        <path d="M4 10 Q7 6 10 10 Q13 14 16 10" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <text x="24" y="14" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="300" fill="#0f172a" letter-spacing="1.5">FLO</text>
-      </svg>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div class="logo-mark" style="width:24px;height:24px;border-radius:7px;"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M2 8 Q5 3 8 8 Q11 13 14 8" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg></div>
+      <span style="font-size:13px;font-weight:800;letter-spacing:2px;">FLO</span>
     </div>
-    <button onclick="signOut()" style="background:none;border:none;color:var(--muted);font-size:0.8rem;font-family:'Sora',sans-serif;cursor:pointer;">Sign out</button>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div class="toggle-track on" id="toggle-track-mobile" onclick="toggleTheme()" style="cursor:pointer;"><div class="toggle-thumb"></div></div>
+      <div class="user-avatar" id="user-initials-mobile" style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;color:white;font-size:10px;font-weight:700;">?</div>
+    </div>
   </div>
 
   <div class="bottom-nav">
-    <button class="bottom-nav-item active" onclick="scrollToTop()"><span class="bottom-nav-icon">◉</span><span>Home</span></button>
-    <button class="bottom-nav-item" onclick="window.location.href='/charts.html'"><span class="bottom-nav-icon">📊</span><span>Charts</span></button>
+    <button class="bottom-nav-item active" onclick="scrollToTop()"><span class="bottom-nav-icon">⬡</span><span>Home</span></button>
+    <button class="bottom-nav-item" onclick="location.href='/charts.html'"><span class="bottom-nav-icon">◈</span><span>Charts</span></button>
     <button class="bottom-nav-item" onclick="scrollToSection('log-section')"><span class="bottom-nav-icon">＋</span><span>Log</span></button>
     <button class="bottom-nav-item" onclick="scrollToSection('ai-section')"><span class="bottom-nav-icon">✦</span><span>Ask Flo</span></button>
-    <button class="bottom-nav-item" onclick="window.location.href='/account.html'"><span class="bottom-nav-icon">👤</span><span>Account</span></button>
+    <button class="bottom-nav-item" onclick="location.href='/account.html'"><span class="bottom-nav-icon">◎</span><span>Account</span></button>
   </div>
 
   <div class="main">
     <div class="page-header">
       <div>
-        <h1 id="greeting">Good morning 👋</h1>
-        <p id="header-sub">Here's your financial overview for this month</p>
+        <div class="greeting">good morning, <span class="name" id="greeting-name">there</span> 👋</div>
+        <div class="header-sub" id="header-sub">here's your financial overview for this month</div>
       </div>
       <div class="date-badge" id="date-badge"></div>
     </div>
 
-    <!-- Budget alerts area -->
     <div class="alerts-area" id="alerts-area"></div>
 
     <div class="stats">
-      <div class="stat"><div class="stat-label">Income</div><div class="stat-value sky" id="income">—</div></div>
-      <div class="stat"><div class="stat-label">Budget</div><div class="stat-value" id="total-budget">—</div></div>
-      <div class="stat"><div class="stat-label">Spent</div><div class="stat-value" id="total-spent">—</div></div>
+      <div class="stat"><div class="stat-label">Income</div><div class="stat-value accent" id="income">—</div></div>
+      <div class="stat"><div class="stat-label">Budget</div><div class="stat-value white" id="total-budget">—</div></div>
+      <div class="stat"><div class="stat-label">Spent</div><div class="stat-value white" id="total-spent">—</div></div>
       <div class="stat"><div class="stat-label">Remaining</div><div class="stat-value" id="remaining">—</div><div class="stat-sub" id="savings-sub"></div></div>
     </div>
 
-    <!-- Yearly goal progress bar (shown only if set) -->
     <div class="yearly-goal-bar" id="yearly-goal-bar">
       <div class="yearly-goal-header">
-        <span class="yearly-goal-title">🎯 Yearly savings goal</span>
+        <span class="yearly-goal-title">🎯 yearly savings goal</span>
         <span class="yearly-goal-pct" id="yearly-pct">0%</span>
       </div>
       <div class="progress-track"><div class="progress-fill" id="yearly-fill" style="width:0%"></div></div>
@@ -228,25 +257,26 @@
     <div class="grid-2">
       <div class="card">
         <div class="card-header">
-          <div class="card-title">Budget categories</div>
+          <div class="card-title">Categories</div>
         </div>
-        <div class="cat-grid" id="categories"></div>
+        <div id="categories"></div>
         <div class="cat-add-row">
-          <input class="cat-add-inp" id="new-cat-name" type="text" placeholder="New category" />
+          <input class="cat-add-inp" id="new-cat-name" type="text" placeholder="new category" />
           <input class="cat-add-inp" id="new-cat-budget" type="number" placeholder="$ budget" />
-          <input type="color" id="new-cat-color" class="cat-color-pick" value="#38bdf8" />
-          <button class="cat-add-btn" onclick="addCategoryDashboard()" title="Add category">+</button>
+          <input type="color" id="new-cat-color" class="cat-color-pick" value="#a78bfa" />
+          <button class="cat-add-btn" onclick="addCategoryDashboard()" title="Add">+</button>
         </div>
-        <p id="cat-msg" style="font-size:0.78rem;color:var(--muted);margin-top:6px;min-height:14px;"></p>
+        <p id="cat-msg"></p>
       </div>
+
       <div class="card" id="log-section">
         <div class="card-header"><div class="card-title">Log a transaction</div></div>
         <div class="form-row">
           <div class="field"><label>Amount ($)</label><input id="amount" type="number" class="inp" placeholder="0.00" /></div>
-          <div class="field"><label>Category</label><select id="category" class="inp"><option value="">Select...</option></select></div>
+          <div class="field"><label>Category</label><select id="category" class="inp"><option value="">select...</option></select></div>
         </div>
-        <div class="field" style="margin-bottom:0;"><label>Note (optional)</label><input id="note" type="text" class="inp" placeholder="e.g. Lunch at Chipotle" /></div>
-        <button class="btn-save" onclick="saveTransaction()">Save transaction</button>
+        <div class="field" style="margin-bottom:0;"><label>Note (optional)</label><input id="note" type="text" class="inp" placeholder="e.g. lunch at chipotle" /></div>
+        <button class="btn-save" onclick="saveTransaction()">save transaction</button>
         <p id="form-msg"></p>
       </div>
     </div>
@@ -255,26 +285,53 @@
       <div class="card">
         <div class="card-header">
           <div class="card-title">Recent transactions</div>
-          <button class="card-link" onclick="window.location.href='/charts.html'">View all →</button>
+          <button class="card-link" onclick="location.href='/charts.html'">view all →</button>
         </div>
         <div class="txn-list" id="transactions-list"></div>
-        <button class="load-more-btn" id="load-more-btn" onclick="loadMoreTransactions()" style="display:none;">Load more transactions</button>
+        <button class="load-more-btn" id="load-more-btn" onclick="loadMoreTransactions()" style="display:none;">load more</button>
       </div>
       <div class="card" id="ai-section">
         <div class="card-header"><div class="card-title">Ask Flo AI</div></div>
         <div class="chat-msgs" id="chat-messages">
-          <div class="msg-ai">Hi! I can see your budget and spending. Ask me anything — purchases, savings tips, or a full summary.</div>
+          <div class="msg-ai">hey! i can see your full budget. ask me anything — purchases, tips, or a quick summary.</div>
         </div>
         <div class="chat-row">
-          <input id="ai-input" type="text" class="inp" placeholder="Ask about your finances..." onkeydown="if(event.key==='Enter') askAI()" />
-          <button class="btn-ask" onclick="askAI()">Ask ↗</button>
+          <input id="ai-input" type="text" class="inp" placeholder="ask about your finances..." onkeydown="if(event.key==='Enter') askAI()" />
+          <button class="btn-ask" onclick="askAI()">ask ↗</button>
         </div>
         <div class="quick-pills">
-          <button class="qp" onclick="quickAsk('Where am I overspending?')">Overspending?</button>
-          <button class="qp" onclick="quickAsk('How can I save more?')">Save more?</button>
-          <button class="qp" onclick="quickAsk('Give me a financial summary')">Summary</button>
-          <button class="qp" onclick="quickAsk('Am I on track for my savings goal?')">On track?</button>
+          <button class="qp" onclick="quickAsk('where am i overspending?')">overspending?</button>
+          <button class="qp" onclick="quickAsk('how can i save more?')">save more?</button>
+          <button class="qp" onclick="quickAsk('give me a financial summary')">summary</button>
+          <button class="qp" onclick="quickAsk('am i on track for my savings goal?')">on track?</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Extension modal -->
+  <div id="ext-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:999;align-items:center;justify-content:center;" onclick="if(event.target===this)hideExtModal()">
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;max-width:420px;width:92%;">
+      <div style="font-size:28px;margin-bottom:12px;">⧉</div>
+      <h2 style="font-size:16px;font-weight:800;margin-bottom:6px;color:var(--text);">install the flo extension</h2>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:20px;">get real-time purchase advice while you shop. pops up automatically on amazon, walmart, target + more.</p>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;">
+        <div style="display:flex;gap:12px;align-items:flex-start;background:var(--card2);border-radius:9px;padding:11px;">
+          <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.5;">find the extension folder at <code style="background:var(--border);padding:1px 5px;border-radius:4px;font-size:11px;">finance-assistant/extension</code></div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;background:var(--card2);border-radius:9px;padding:11px;">
+          <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.5;">go to <strong style="color:var(--text);">edge://extensions</strong> and turn on <strong style="color:var(--text);">developer mode</strong></div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;background:var(--card2);border-radius:9px;padding:11px;">
+          <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.5;">click <strong style="color:var(--text);">load unpacked</strong> and select the extension folder</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button onclick="window.open('edge://extensions','_blank')" style="flex:1;padding:11px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:none;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;">open extensions page</button>
+        <button onclick="hideExtModal()" style="padding:11px 16px;border-radius:9px;border:1px solid var(--border);background:none;color:var(--muted);font-size:13px;font-family:'Inter',sans-serif;cursor:pointer;">close</button>
       </div>
     </div>
   </div>
@@ -282,57 +339,68 @@
   <script type="module">
     import { supabase } from './Supabase.js'
 
+    // Theme
+    const saved = localStorage.getItem('flo_theme') || 'dark'
+    applyTheme(saved)
+
+    function applyTheme(t) {
+      document.documentElement.setAttribute('data-theme', t)
+      localStorage.setItem('flo_theme', t)
+      const track = document.getElementById('toggle-track')
+      const trackM = document.getElementById('toggle-track-mobile')
+      const label = document.getElementById('theme-label')
+      const isDark = t === 'dark'
+      if (track) { track.className = 'toggle-track' + (isDark ? ' on' : '') }
+      if (trackM) { trackM.className = 'toggle-track' + (isDark ? ' on' : '') }
+      if (label) label.textContent = isDark ? 'dark mode' : 'light mode'
+    }
+
+    window.toggleTheme = function() {
+      const curr = document.documentElement.getAttribute('data-theme')
+      applyTheme(curr === 'dark' ? 'light' : 'dark')
+    }
+
+    window.showExtModal = function() { document.getElementById('ext-modal').style.display = 'flex' }
+    window.hideExtModal = function() { document.getElementById('ext-modal').style.display = 'none' }
+
     const { data: { session } } = await supabase.auth.getSession()
-    if (!session) { window.location.href = '/login.html' }
+    if (!session) { location.href = '/login.html'; }
     const user = session.user
     const accessToken = session.access_token
 
-    // Show name if available, fallback to email
     const profile = user.user_metadata
-    const displayName = profile?.first_name || profile?.full_name?.split(' ')[0] || user.email
+    const firstName = profile?.first_name || profile?.full_name?.split(' ')[0] || user.email.split('@')[0]
+    const displayName = profile?.full_name || firstName
     const initials = (profile?.first_name?.[0] || user.email[0]).toUpperCase()
 
+    document.getElementById('greeting-name').textContent = firstName.toLowerCase()
     document.getElementById('user-initials-desktop').textContent = initials
     document.getElementById('user-initials-mobile').textContent = initials
-    document.getElementById('user-email-desktop').textContent = profile?.full_name || user.email
+    document.getElementById('user-name-desktop').textContent = displayName
 
     const now = new Date()
-    const hour = now.getHours()
-    document.getElementById('greeting').textContent = (hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening') + ', ' + displayName + ' 👋'
     document.getElementById('date-badge').textContent = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
 
-    window.signOut = async function() {
-      await supabase.auth.signOut()
-      window.location.href = '/login.html'
-    }
-
+    window.signOut = async function() { await supabase.auth.signOut(); location.href = '/login.html' }
     window.scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
-    window.scrollToSection = (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    window.scrollToSection = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 
     const { data: budget } = await supabase.from('budgets').select('*').eq('user_id', user.id).limit(1).single()
-    if (!budget) { window.location.href = '/setup.html' }
+    if (!budget) { location.href = '/setup.html' }
 
     document.getElementById('income').textContent = '$' + budget.income.toLocaleString()
     document.getElementById('savings-sub').textContent = '$' + budget.savings_goal.toLocaleString() + ' saved/mo'
 
-    // Yearly goal display — based on actual total_saved the user tracks
     if (budget.yearly_goal) {
-      const yearlyGoalBar = document.getElementById('yearly-goal-bar')
-      yearlyGoalBar.style.display = 'block'
+      document.getElementById('yearly-goal-bar').style.display = 'block'
       const totalSaved = budget.total_saved || 0
       const monthsLeft = Math.max(12 - now.getMonth(), 1)
-      const remaining = Math.max(0, budget.yearly_goal - totalSaved)
       const pct = Math.min(Math.round((totalSaved / budget.yearly_goal) * 100), 100)
-      const neededPerMonth = Math.round(remaining / monthsLeft)
-
       document.getElementById('yearly-pct').textContent = pct + '%'
-      const fill = document.getElementById('yearly-fill')
-      fill.style.width = pct + '%'
-      if (totalSaved >= budget.yearly_goal) fill.classList.add('over')
-
+      document.getElementById('yearly-fill').style.width = pct + '%'
       document.getElementById('yearly-sub').textContent = totalSaved >= budget.yearly_goal
-        ? `🎉 Goal reached! You saved $${totalSaved.toLocaleString()} this year.`
-        : `$${totalSaved.toLocaleString()} saved of $${budget.yearly_goal.toLocaleString()} goal · $${neededPerMonth.toLocaleString()}/mo needed to hit it · update in Setup`
+        ? '🎉 goal reached! you saved $' + totalSaved.toLocaleString() + ' this year.'
+        : '$' + totalSaved.toLocaleString() + ' saved of $' + budget.yearly_goal.toLocaleString() + ' goal · $' + Math.round(Math.max(0, budget.yearly_goal - totalSaved) / monthsLeft).toLocaleString() + '/mo needed · update in setup'
     }
 
     let categories = []
@@ -341,19 +409,12 @@
       const { data: cats } = await supabase.from('categories').select('*').eq('user_id', user.id)
       if (!cats) return
       categories = cats
-      const total = cats.reduce((s, c) => s + c.budget, 0)
-      document.getElementById('total-budget').textContent = '$' + total.toLocaleString()
-
-      // Rebuild category select
+      document.getElementById('total-budget').textContent = '$' + cats.reduce((s,c) => s+c.budget, 0).toLocaleString()
       const select = document.getElementById('category')
-      const currentVal = select.value
-      select.innerHTML = '<option value="">Select...</option>'
-      cats.forEach(cat => {
-        const opt = document.createElement('option')
-        opt.value = cat.id; opt.textContent = cat.name
-        select.appendChild(opt)
-      })
-      if (currentVal) select.value = currentVal
+      const curr = select.value
+      select.innerHTML = '<option value="">select...</option>'
+      cats.forEach(c => { const o = document.createElement('option'); o.value = c.id; o.textContent = c.name; select.appendChild(o) })
+      if (curr) select.value = curr
     }
 
     function renderCategoryBars(spentByCatId) {
@@ -363,44 +424,21 @@
         const spent = spentByCatId[cat.id] || 0
         const pct = cat.budget > 0 ? Math.min((spent / cat.budget) * 100, 100) : 0
         const over = spent > cat.budget
-        const color = over ? '#ef4444' : cat.color
 
-        const pill = document.createElement('div')
-        pill.className = 'cat-pill'
+        const item = document.createElement('div'); item.className = 'cat-item'
+        const row = document.createElement('div'); row.className = 'cat-row'
 
-        const row = document.createElement('div')
-        row.className = 'cat-pill-row'
-
-        const dot = document.createElement('div')
-        dot.className = 'cat-dot'
-        dot.style.background = cat.color
-
-        const name = document.createElement('div')
-        name.className = 'cat-pill-name'
-        name.textContent = cat.name
-
-        const amt = document.createElement('div')
-        amt.className = 'cat-pill-amt' + (over ? ' over' : '')
-        amt.textContent = '$' + Math.round(spent).toLocaleString() + ' / $' + cat.budget.toLocaleString()
-
-        const del = document.createElement('button')
-        del.className = 'cat-delete'
-        del.title = 'Delete category'
-        del.textContent = '×'
-        del.onclick = () => deleteCategoryDashboard(cat)
+        const dot = document.createElement('div'); dot.className = 'cat-dot'; dot.style.background = cat.color
+        const name = document.createElement('div'); name.className = 'cat-name'; name.textContent = cat.name
+        const amt = document.createElement('div'); amt.className = 'cat-amt' + (over ? ' over' : ''); amt.textContent = '$' + Math.round(spent).toLocaleString() + ' / $' + cat.budget.toLocaleString()
+        const del = document.createElement('button'); del.className = 'cat-del'; del.textContent = '×'; del.title = 'delete'; del.onclick = () => deleteCategoryDashboard(cat)
 
         row.append(dot, name, amt, del)
-
-        const track = document.createElement('div')
-        track.className = 'cat-progress-track'
-        const fill = document.createElement('div')
-        fill.className = 'cat-progress-fill'
-        fill.style.width = pct + '%'
-        fill.style.background = color
+        const track = document.createElement('div'); track.className = 'cat-progress-track'
+        const fill = document.createElement('div'); fill.className = 'cat-progress-fill'; fill.style.width = pct + '%'; fill.style.background = over ? 'var(--red)' : cat.color
         track.appendChild(fill)
-
-        pill.append(row, track)
-        container.appendChild(pill)
+        item.append(row, track)
+        container.appendChild(item)
       })
     }
 
@@ -409,70 +447,41 @@
       const budget = parseFloat(document.getElementById('new-cat-budget').value)
       const color = document.getElementById('new-cat-color').value
       const msg = document.getElementById('cat-msg')
-      if (!name || !budget) { msg.textContent = 'Enter a name and budget amount.'; return }
+      if (!name || !budget) { msg.textContent = 'enter a name and budget.'; return }
       const { error } = await supabase.from('categories').insert({ user_id: user.id, name, budget, color })
-      if (error) { msg.textContent = 'Error: ' + error.message; return }
-      document.getElementById('new-cat-name').value = ''
-      document.getElementById('new-cat-budget').value = ''
-      msg.textContent = '✓ Category added!'
-      setTimeout(() => msg.textContent = '', 2000)
-      await loadCategories()
-      loadTransactions(true)
+      if (error) { msg.textContent = 'error: ' + error.message; return }
+      document.getElementById('new-cat-name').value = ''; document.getElementById('new-cat-budget').value = ''
+      msg.textContent = '✓ added!'; setTimeout(() => msg.textContent = '', 2000)
+      await loadCategories(); loadTransactions(true)
     }
 
     window.deleteCategoryDashboard = async function(cat) {
-      if (!confirm(`Delete "${cat.name}"? This won't delete its transactions.`)) return
+      if (!confirm('delete "' + cat.name + '"?')) return
       await supabase.from('categories').delete().eq('id', cat.id)
-      await loadCategories()
-      loadTransactions(true)
+      await loadCategories(); loadTransactions(true)
     }
 
     await loadCategories()
 
-    // Transaction pagination
     let txnOffset = 0
     const TXN_PAGE = 10
     let allTxnsLoaded = []
 
     async function loadTransactions(reset = false) {
       if (reset) { txnOffset = 0; allTxnsLoaded = []; document.getElementById('transactions-list').innerHTML = '' }
-      const { data: txns } = await supabase
-        .from('transactions').select('*, categories(name, color)')
-        .eq('user_id', user.id).order('created_at', { ascending: false })
-        .range(txnOffset, txnOffset + TXN_PAGE - 1)
-
+      const { data: txns } = await supabase.from('transactions').select('*, categories(name,color)').eq('user_id', user.id).order('created_at', { ascending: false }).range(txnOffset, txnOffset + TXN_PAGE - 1)
       const list = document.getElementById('transactions-list')
-
       if (reset && (!txns || !txns.length)) {
-        list.innerHTML = '<p style="color:var(--muted);font-size:0.83rem;">No transactions yet. Log your first one!</p>'
-        document.getElementById('total-spent').textContent = '$0'
-        document.getElementById('remaining').textContent = '$' + (budget.income - budget.savings_goal).toLocaleString()
-        document.getElementById('remaining').className = 'stat-value green'
-        return
+        list.innerHTML = '<p style="color:var(--muted2);font-size:12px;padding:8px 0;">no transactions yet. log your first one!</p>'
       }
-
       if (txns && txns.length) {
         allTxnsLoaded = [...allTxnsLoaded, ...txns]
         txns.forEach(t => {
-          const row = document.createElement('div')
-          row.className = 'txn-row'
-          row.id = 'txn-' + t.id
-
-          const info = document.createElement('div')
-          info.innerHTML = `<div class="txn-note">${t.note || 'No note'}</div><div class="txn-cat">${t.categories?.name || 'Uncategorized'}</div>`
-
-          const amt = document.createElement('div')
-          amt.className = 'txn-amt'
-          amt.textContent = '$' + Number(t.amount).toLocaleString()
-
-          const del = document.createElement('button')
-          del.className = 'txn-delete'
-          del.title = 'Delete transaction'
-          del.textContent = '×'
-          del.onclick = () => deleteTransaction(t)
-
-          row.append(info, amt, del)
-          list.appendChild(row)
+          const row = document.createElement('div'); row.className = 'txn-row'; row.id = 'txn-' + t.id
+          const info = document.createElement('div'); info.innerHTML = '<div class="txn-note">' + (t.note || 'no note') + '</div><div class="txn-cat">' + (t.categories?.name || 'uncategorized') + '</div>'
+          const amt = document.createElement('div'); amt.className = 'txn-amt'; amt.textContent = '$' + Number(t.amount).toLocaleString()
+          const del = document.createElement('button'); del.className = 'txn-delete'; del.textContent = '×'; del.title = 'delete'; del.onclick = () => deleteTransaction(t)
+          row.append(info, amt, del); list.appendChild(row)
         })
         txnOffset += txns.length
         document.getElementById('load-more-btn').style.display = txns.length < TXN_PAGE ? 'none' : 'block'
@@ -480,63 +489,49 @@
         document.getElementById('load-more-btn').style.display = 'none'
       }
 
-      // Recalculate totals from ALL transactions
       const { data: allTxns } = await supabase.from('transactions').select('amount, category_id').eq('user_id', user.id)
-      const totalSpent = allTxns?.reduce((s, t) => s + Number(t.amount), 0) || 0
+      const totalSpent = allTxns?.reduce((s,t) => s + Number(t.amount), 0) || 0
       const remaining = budget.income - budget.savings_goal - totalSpent
       document.getElementById('total-spent').textContent = '$' + totalSpent.toLocaleString()
       const remEl = document.getElementById('remaining')
       remEl.textContent = '$' + Math.abs(remaining).toLocaleString() + (remaining < 0 ? ' over' : '')
       remEl.className = 'stat-value ' + (remaining < 0 ? 'red' : 'green')
       document.getElementById('header-sub').textContent = remaining < 0
-        ? "⚠ You've exceeded your spending budget this month"
-        : "Here's your financial overview for this month"
+        ? "⚠ you've exceeded your spending budget this month"
+        : "here's your financial overview for this month"
 
-      // Build spentByCatId and update category bars
       const spentByCatId = {}
-      allTxns?.forEach(t => {
-        if (t.category_id) spentByCatId[t.category_id] = (spentByCatId[t.category_id] || 0) + Number(t.amount)
-      })
+      allTxns?.forEach(t => { if (t.category_id) spentByCatId[t.category_id] = (spentByCatId[t.category_id] || 0) + Number(t.amount) })
       renderCategoryBars(spentByCatId)
-
-      if (reset) checkBudgetAlerts(allTxns, spentByCatId)
+      if (reset) checkBudgetAlerts(spentByCatId)
     }
 
-    async function checkBudgetAlerts(allTxns, spentByCatId) {
-      if (!categories || !categories.length) return
-      const alertsArea = document.getElementById('alerts-area')
-      alertsArea.innerHTML = ''
+    async function checkBudgetAlerts(spentByCatId) {
+      if (!categories.length) return
+      const alertsArea = document.getElementById('alerts-area'); alertsArea.innerHTML = ''
       const dismissed = JSON.parse(sessionStorage.getItem('flo_dismissed_alerts') || '[]')
-
       categories.forEach(cat => {
         const spent = spentByCatId[cat.id] || 0
         const pct = cat.budget > 0 ? spent / cat.budget : 0
-        const alertId = `${cat.id}_${new Date().toISOString().slice(0,7)}`
+        const alertId = cat.id + '_' + new Date().toISOString().slice(0,7)
         if (dismissed.includes(alertId)) return
-
         if (pct >= 1) {
-          const el = document.createElement('div')
-          el.className = 'alert-banner danger'
-          el.innerHTML = `🚨 <strong>${cat.name}</strong> is over budget — spent $${Math.round(spent).toLocaleString()} of $${cat.budget.toLocaleString()} <button class="alert-dismiss" onclick="dismissAlert('${alertId}', this.parentElement)">×</button>`
+          const el = document.createElement('div'); el.className = 'alert-banner danger'
+          el.innerHTML = '🚨 <strong>' + cat.name + '</strong> is over budget — $' + Math.round(spent).toLocaleString() + ' of $' + cat.budget.toLocaleString() + ' <button class="alert-dismiss" onclick="dismissAlert(\'' + alertId + '\',this.parentElement)">×</button>'
           alertsArea.appendChild(el)
         } else if (pct >= 0.8) {
-          const el = document.createElement('div')
-          el.className = 'alert-banner warning'
-          el.innerHTML = `⚠️ <strong>${cat.name}</strong> is at ${Math.round(pct*100)}% of budget — $${Math.round(cat.budget - spent).toLocaleString()} left <button class="alert-dismiss" onclick="dismissAlert('${alertId}', this.parentElement)">×</button>`
+          const el = document.createElement('div'); el.className = 'alert-banner warning'
+          el.innerHTML = '⚠ <strong>' + cat.name + '</strong> is at ' + Math.round(pct*100) + '% — $' + Math.round(cat.budget - spent).toLocaleString() + ' left <button class="alert-dismiss" onclick="dismissAlert(\'' + alertId + '\',this.parentElement)">×</button>'
           alertsArea.appendChild(el)
         }
       })
     }
 
     window.dismissAlert = function(id, el) {
-      const dismissed = JSON.parse(sessionStorage.getItem('flo_dismissed_alerts') || '[]')
-      dismissed.push(id)
-      sessionStorage.setItem('flo_dismissed_alerts', JSON.stringify(dismissed))
-      el.remove()
+      const d = JSON.parse(sessionStorage.getItem('flo_dismissed_alerts') || '[]'); d.push(id); sessionStorage.setItem('flo_dismissed_alerts', JSON.stringify(d)); el.remove()
     }
 
     window.loadMoreTransactions = () => loadTransactions(false)
-
     loadTransactions(true)
 
     window.saveTransaction = async function() {
@@ -544,221 +539,50 @@
       const category_id = document.getElementById('category').value
       const note = document.getElementById('note').value
       const msg = document.getElementById('form-msg')
-      if (!amount || !category_id) { msg.textContent = 'Please fill in amount and category.'; return }
+      if (!amount || !category_id) { msg.textContent = 'fill in amount and category.'; return }
       const { error } = await supabase.from('transactions').insert({ amount: parseFloat(amount), category_id, note, user_id: user.id })
-      if (error) { msg.textContent = 'Error: ' + error.message; return }
-      msg.textContent = '✓ Saved!'
-      document.getElementById('amount').value = ''
-      document.getElementById('note').value = ''
-      document.getElementById('category').value = ''
-      setTimeout(() => msg.textContent = '', 2000)
-      loadTransactions(true)
+      if (error) { msg.textContent = 'error: ' + error.message; return }
+      msg.textContent = '✓ saved!'
+      document.getElementById('amount').value = ''; document.getElementById('note').value = ''; document.getElementById('category').value = ''
+      setTimeout(() => msg.textContent = '', 2000); loadTransactions(true)
     }
 
-    let catEditMode = false
-    let editableCats = []
-
-    window.toggleCatEdit = function() {
-      catEditMode = !catEditMode
-      const editArea = document.getElementById('cat-edit-area')
-      const saveRow = document.getElementById('cat-save-row')
-      const btn = document.getElementById('cat-edit-btn')
-
-      if (catEditMode) {
-        btn.textContent = 'Cancel'
-        editArea.style.display = 'block'
-        saveRow.style.display = 'flex'
-        editArea.innerHTML = ''
-        editableCats = categories ? [...categories] : []
-        editableCats.forEach((cat, i) => {
-          const row = document.createElement('div')
-          row.className = 'cat-edit-row'
-
-          const dot = document.createElement('div')
-          dot.className = 'cat-edit-dot'
-          dot.style.background = cat.color
-
-          const nameInp = document.createElement('input')
-          nameInp.className = 'cat-edit-name'
-          nameInp.type = 'text'
-          nameInp.value = cat.name
-          nameInp.addEventListener('input', () => { editableCats[i].name = nameInp.value })
-
-          const dollar = document.createElement('span')
-          dollar.textContent = '$'
-          dollar.style.cssText = 'font-size:0.8rem;color:var(--muted);'
-
-          const amtInp = document.createElement('input')
-          amtInp.className = 'cat-edit-amt'
-          amtInp.type = 'number'
-          amtInp.value = cat.budget
-          amtInp.addEventListener('input', () => { editableCats[i].budget = parseFloat(amtInp.value) || 0 })
-
-          const mo = document.createElement('span')
-          mo.textContent = '/mo'
-          mo.style.cssText = 'font-size:0.75rem;color:var(--muted);'
-
-          row.append(dot, nameInp, dollar, amtInp, mo)
-          editArea.appendChild(row)
-        })
-      } else {
-        btn.textContent = 'Edit →'
-        editArea.style.display = 'none'
-        saveRow.style.display = 'none'
-        document.getElementById('cat-save-msg').textContent = ''
-      }
-    }
-
-    window.saveCategories = async function() {
-      const btn = document.getElementById('cat-save-btn')
-      const msg = document.getElementById('cat-save-msg')
-      btn.disabled = true; btn.textContent = 'Saving...'
-      // Update each category budget in Supabase
-      const updates = editableCats.map(cat =>
-        supabase.from('categories').update({ name: cat.name, budget: cat.budget }).eq('id', cat.id)
-      )
-      const results = await Promise.all(updates)
-      const err = results.find(r => r.error)
-      if (err) { msg.textContent = 'Error: ' + err.error.message; btn.disabled = false; btn.textContent = 'Save changes'; return }
-      msg.textContent = '✓ Saved!'
-      btn.disabled = false; btn.textContent = 'Save changes'
-      // Refresh page data
-      setTimeout(() => { catEditMode = false; window.location.reload() }, 800)
-    }
-
-    let undoTimer = null
-    let toastEl = null
-
+    let undoTimer = null, toastEl = null
     window.deleteTransaction = async function(t) {
-      // Immediately hide the row
-      const row = document.getElementById('txn-' + t.id)
-      if (row) row.style.opacity = '0.3'
-
-      // Show undo toast
-      if (toastEl) toastEl.remove()
-      if (undoTimer) clearTimeout(undoTimer)
-
-      toastEl = document.createElement('div')
-      toastEl.className = 'toast'
-      toastEl.innerHTML = `<span>Transaction deleted</span><button class="toast-undo" onclick="undoDelete()">Undo</button>`
-      document.body.appendChild(toastEl)
-
-      // Store pending delete
-      window._pendingDelete = t
-
-      // Actually delete after 4 seconds
-      undoTimer = setTimeout(async () => {
-        await supabase.from('transactions').delete().eq('id', t.id)
-        if (toastEl) { toastEl.remove(); toastEl = null }
-        loadTransactions(true)
-      }, 4000)
+      const row = document.getElementById('txn-' + t.id); if (row) row.style.opacity = '0.3'
+      if (toastEl) toastEl.remove(); if (undoTimer) clearTimeout(undoTimer)
+      toastEl = document.createElement('div'); toastEl.className = 'toast'
+      toastEl.innerHTML = '<span>transaction deleted</span><button class="toast-undo" onclick="undoDelete()">undo</button>'
+      document.body.appendChild(toastEl); window._pendingDelete = t
+      undoTimer = setTimeout(async () => { await supabase.from('transactions').delete().eq('id', t.id); if (toastEl) { toastEl.remove(); toastEl = null }; loadTransactions(true) }, 4000)
     }
+    window.undoDelete = function() { clearTimeout(undoTimer); if (toastEl) { toastEl.remove(); toastEl = null }; const r = document.getElementById('txn-' + window._pendingDelete?.id); if (r) r.style.opacity = '1'; window._pendingDelete = null }
 
-    window.undoDelete = function() {
-      clearTimeout(undoTimer)
-      if (toastEl) { toastEl.remove(); toastEl = null }
-      const row = document.getElementById('txn-' + window._pendingDelete?.id)
-      if (row) row.style.opacity = '1'
-      window._pendingDelete = null
-    }
-
-    window.quickAsk = function(q) { document.getElementById('ai-input').value = q; askAI() }
-
+    window.quickAsk = q => { document.getElementById('ai-input').value = q; askAI() }
     window.askAI = async function() {
       const input = document.getElementById('ai-input')
       const question = input.value.trim()
       if (!question || question.length > 2000) return
       const msgs = document.getElementById('chat-messages')
-      msgs.innerHTML += `<div class="msg-user">${question}</div>`
+      msgs.innerHTML += '<div class="msg-user">' + question + '</div>'
       input.value = ''
       const lid = 'l' + Date.now()
-      msgs.innerHTML += `<div id="${lid}" class="msg-ai" style="color:var(--muted)">Thinking...</div>`
+      msgs.innerHTML += '<div id="' + lid + '" class="msg-ai" style="color:var(--muted2)">thinking...</div>'
       msgs.scrollTop = msgs.scrollHeight
-
       const { data: fb } = await supabase.from('budgets').select('*').eq('user_id', user.id).limit(1).single()
       const { data: fc } = await supabase.from('categories').select('*').eq('user_id', user.id)
       const { data: ft } = await supabase.from('transactions').select('*, categories(name)').eq('user_id', user.id).order('created_at', { ascending: false }).limit(20)
-      const totalSpent = ft?.reduce((s, t) => s + Number(t.amount), 0) || 0
-      const bycat = {}
-      ft?.forEach(t => { const n = t.categories?.name || 'Misc'; bycat[n] = (bycat[n] || 0) + Number(t.amount) })
-
-      const sys = `You are Flo, a concise and friendly AI financial advisor. User's data:
-Income: $${fb?.income || 0}/mo | Savings goal: $${fb?.savings_goal || 0}/mo | Spent: $${totalSpent.toFixed(2)} | Remaining: $${((fb?.income || 0) - totalSpent - (fb?.savings_goal || 0)).toFixed(2)}
-${fb?.yearly_goal ? `Yearly savings goal: $${fb.yearly_goal}` : ''}
-Categories: ${fc?.map(c => c.name + ' $' + c.budget).join(', ') || 'none'}
-Spending by category: ${Object.entries(bycat).map(([k, v]) => k + ' $' + v.toFixed(2)).join(', ') || 'none yet'}
-Recent: ${ft?.slice(0, 8).map(t => '$' + Number(t.amount).toFixed(2) + ' ' + (t.categories?.name || 'misc') + (t.note ? ' (' + t.note + ')' : '')).join(', ') || 'none'}
-Be direct. Under 3 sentences. For purchases, give a clear yes/no recommendation.`
-
+      const totalSpent = ft?.reduce((s,t) => s + Number(t.amount), 0) || 0
+      const bycat = {}; ft?.forEach(t => { const n = t.categories?.name || 'misc'; bycat[n] = (bycat[n] || 0) + Number(t.amount) })
+      const sys = 'You are Flo, a concise AI financial advisor. Income: $' + (fb?.income||0) + '/mo | Savings: $' + (fb?.savings_goal||0) + '/mo | Spent: $' + totalSpent.toFixed(2) + ' | Remaining: $' + ((fb?.income||0) - totalSpent - (fb?.savings_goal||0)).toFixed(2) + '\nCategories: ' + (fc?.map(c => c.name + ' $' + c.budget).join(', ')||'none') + '\nSpending: ' + (Object.entries(bycat).map(([k,v]) => k + ' $' + v.toFixed(2)).join(', ')||'none') + '\nBe direct. Under 3 sentences.'
       try {
-        const res = await fetch('/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${accessToken}` },
-          body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: sys, messages: [{ role: 'user', content: question }] })
-        })
+        const res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + accessToken }, body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: sys, messages: [{ role: 'user', content: question }] }) })
         const data = await res.json()
-        if (data.error) { document.getElementById(lid).textContent = data.error; return }
-        const reply = data.content?.[0]?.text || 'Sorry, could not get a response.'
-        document.getElementById(lid).textContent = reply
-        document.getElementById(lid).style.color = 'var(--text)'
-      } catch {
-        document.getElementById(lid).textContent = 'Error reaching AI. Please try again.'
-      }
+        const reply = data.content?.[0]?.text || 'sorry, could not get a response.'
+        document.getElementById(lid).textContent = reply; document.getElementById(lid).style.color = 'var(--text)'
+      } catch { document.getElementById(lid).textContent = 'error reaching ai. try again.' }
       msgs.scrollTop = msgs.scrollHeight
     }
   </script>
-
-  <!-- Extension install modal -->
-  <div class="modal-overlay" id="ext-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;" onclick="if(event.target===this)hideExtModal()">
-    <div style="background:white;border-radius:20px;padding:2rem;max-width:440px;width:92%;box-shadow:0 8px 40px rgba(0,0,0,0.15);">
-      <div style="font-size:2rem;margin-bottom:12px;">🧩</div>
-      <h2 style="font-size:1.1rem;font-weight:600;margin-bottom:8px;">Install the Flo extension</h2>
-      <p style="font-size:0.87rem;color:#64748b;line-height:1.7;margin-bottom:1.25rem;">The Flo extension pops up on Amazon, Walmart, Target and more — asking "Should I buy this?" before you checkout.</p>
-      <div style="background:#f0faff;border:1px solid #bae6fd;border-radius:12px;padding:1rem;font-size:0.83rem;color:#0c4a6e;line-height:1.8;margin-bottom:1.25rem;">
-        <strong>How to install:</strong><br>
-        1. Open <strong>edge://extensions</strong> or <strong>chrome://extensions</strong><br>
-        2. Enable <strong>Developer mode</strong> (top right toggle)<br>
-        3. Click <strong>Load unpacked</strong><br>
-        4. Select your <code style="background:#e0f2fe;padding:1px 5px;border-radius:4px;">finance-assistant/extension</code> folder
-      </div>
-      <button onclick="hideExtModal()" style="width:100%;padding:12px;border-radius:10px;border:none;background:#0ea5e9;color:white;font-size:0.9rem;font-weight:600;font-family:'Sora',sans-serif;cursor:pointer;">Got it</button>
-    </div>
-  </div>
-  <script>
-    function showExtModal() { const m = document.getElementById('ext-modal'); m.style.display='flex'; }
-    function hideExtModal() { const m = document.getElementById('ext-modal'); m.style.display='none'; }
-  </script>
-
-  <!-- Extension install modal -->
-  <div class="modal-overlay" id="ext-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;" onclick="if(event.target===this)hideExtModal()">
-    <div style="background:white;border-radius:20px;padding:2rem;max-width:420px;width:92%;box-shadow:0 8px 40px rgba(0,0,0,0.15);">
-      <div style="font-size:2rem;margin-bottom:0.75rem;">🧩</div>
-      <h2 style="font-size:1.1rem;font-weight:600;margin-bottom:6px;">Install the Flo Extension</h2>
-      <p style="font-size:0.85rem;color:#64748b;line-height:1.6;margin-bottom:1.25rem;">The Flo extension isn't on the Chrome Web Store yet. Install it manually in 3 steps:</p>
-      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:1.5rem;">
-        <div style="display:flex;gap:12px;align-items:flex-start;background:#f0faff;border-radius:10px;padding:12px;">
-          <div style="width:24px;height:24px;border-radius:50%;background:#0ea5e9;color:white;font-size:0.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
-          <div style="font-size:0.85rem;line-height:1.5;">Download the extension folder from GitHub or copy it from <code style="background:#e2e8f0;padding:1px 5px;border-radius:4px;">C:\Users\clxmp\Desktop\finance-assistant\extension</code></div>
-        </div>
-        <div style="display:flex;gap:12px;align-items:flex-start;background:#f0faff;border-radius:10px;padding:12px;">
-          <div style="width:24px;height:24px;border-radius:50%;background:#0ea5e9;color:white;font-size:0.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
-          <div style="font-size:0.85rem;line-height:1.5;">Go to <strong>edge://extensions</strong> (or <strong>chrome://extensions</strong>) and turn on <strong>Developer mode</strong></div>
-        </div>
-        <div style="display:flex;gap:12px;align-items:flex-start;background:#f0faff;border-radius:10px;padding:12px;">
-          <div style="width:24px;height:24px;border-radius:50%;background:#0ea5e9;color:white;font-size:0.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
-          <div style="font-size:0.85rem;line-height:1.5;">Click <strong>Load unpacked</strong> and select the extension folder</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:10px;">
-        <button onclick="window.open('edge://extensions','_blank')" style="flex:1;padding:11px;border-radius:10px;background:#0ea5e9;color:white;border:none;font-size:0.88rem;font-weight:600;font-family:'Sora',sans-serif;cursor:pointer;">Open Extensions Page</button>
-        <button onclick="hideExtModal()" style="padding:11px 18px;border-radius:10px;border:1.5px solid #e2e8f0;background:white;color:#64748b;font-size:0.88rem;font-family:'Sora',sans-serif;cursor:pointer;">Close</button>
-      </div>
-    </div>
-  </div>
-  <script>
-    function showExtModal() { const m = document.getElementById('ext-modal'); m.style.display='flex'; }
-    function hideExtModal() { const m = document.getElementById('ext-modal'); m.style.display='none'; }
-  </script>
-
 </body>
 </html>

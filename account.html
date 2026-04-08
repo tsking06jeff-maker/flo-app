@@ -1,282 +1,201 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flo — Account Settings</title>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flo — Account</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root { --sky: #38bdf8; --sky-dark: #0ea5e9; --sky-pale: #f0faff; --text: #0f172a; --muted: #64748b; --border: #e2e8f0; --danger: #ef4444; --danger-pale: #fef2f2; --bg: #f8fafc; }
-    body { background: var(--bg); color: var(--text); font-family: 'Sora', sans-serif; min-height: 100vh; }
-    .sidebar { position: fixed; top: 0; left: 0; width: 224px; height: 100vh; background: white; border-right: 1px solid var(--border); padding: 1.5rem 1rem; display: flex; flex-direction: column; z-index: 10; }
-    .sidebar-logo { padding: 0.25rem 0.5rem 1.75rem; }
-    .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; font-size: 0.85rem; font-weight: 500; color: var(--muted); cursor: pointer; transition: all 0.15s; text-decoration: none; margin-bottom: 2px; }
-    .nav-item:hover, .nav-item.active { background: var(--sky-pale); color: var(--sky-dark); }
-    .nav-icon { font-size: 0.95rem; width: 18px; text-align: center; }
-    .nav-ext { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; font-size: 0.82rem; font-weight: 500; color: #7c3aed; cursor: pointer; transition: all 0.15s; text-decoration: none; margin-bottom: 2px; background: #faf5ff; border: 1px solid #ede9fe; }
-    .nav-ext:hover { background: #ede9fe; }
-    .sidebar-bottom { margin-top: auto; }
-    .user-pill { display: flex; align-items: center; gap: 9px; padding: 10px 12px; border-radius: 10px; background: var(--sky-pale); }
-    .user-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--sky-dark); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.72rem; font-weight: 600; flex-shrink: 0; }
-    .user-info { flex: 1; overflow: hidden; }
-    .user-email-pill { font-size: 0.73rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .user-label { font-size: 0.68rem; color: #94a3b8; }
-    .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid var(--border); padding: 8px 0 max(8px, env(safe-area-inset-bottom)); z-index: 100; justify-content: space-around; }
-    .bottom-nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 12px; cursor: pointer; color: var(--muted); font-size: 0.65rem; font-weight: 500; border: none; background: none; font-family: 'Sora', sans-serif; transition: color 0.15s; }
-    .bottom-nav-item.active { color: var(--sky-dark); }
-    .bottom-nav-icon { font-size: 1.2rem; }
-    .mobile-topbar { display: none; position: fixed; top: 0; left: 0; right: 0; background: white; border-bottom: 1px solid var(--border); padding: 12px 1.25rem; z-index: 10; align-items: center; justify-content: space-between; }
-    .main { margin-left: 224px; padding: 2rem 2.5rem 3rem; max-width: 760px; }
-    .page-header { margin-bottom: 2rem; }
-    .page-header h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; }
-    .page-header p { color: var(--muted); font-size: 0.85rem; margin-top: 3px; }
-    .card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem; margin-bottom: 1.25rem; }
-    .card-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 1rem; }
-    .info-row { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
-    .info-row:last-child { border-bottom: none; }
-    .info-label { color: var(--muted); }
-    .info-value { font-weight: 500; }
-    .edit-name-row { display: flex; gap: 8px; align-items: center; }
-    .name-inp { background: var(--sky-pale); border: 1.5px solid var(--border); border-radius: 8px; padding: 7px 10px; font-size: 0.85rem; font-family: 'Sora', sans-serif; color: var(--text); outline: none; width: 160px; }
-    .name-inp:focus { border-color: var(--sky); background: white; }
-    .btn-save-name { padding: 7px 14px; border-radius: 8px; background: var(--sky-dark); color: white; border: none; font-size: 0.82rem; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; }
-    .btn-save-name:hover { background: #0284c7; }
-    .btn-signout { width: 100%; padding: 13px; border-radius: 10px; border: none; background: var(--sky-dark); color: white; font-size: 0.92rem; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; transition: background 0.15s; }
-    .btn-signout:hover { background: #0284c7; }
-    .ext-card { background: #faf5ff; border: 1px solid #ede9fe; border-radius: 16px; padding: 1.75rem; margin-bottom: 1.25rem; }
-    .ext-card-title { font-size: 0.85rem; font-weight: 600; color: #7c3aed; margin-bottom: 8px; }
-    .ext-card-desc { font-size: 0.85rem; color: #6d28d9; line-height: 1.6; margin-bottom: 1.25rem; }
-    .btn-ext { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 10px; background: #7c3aed; color: white; border: none; font-size: 0.88rem; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; text-decoration: none; transition: background 0.15s; }
-    .btn-ext:hover { background: #6d28d9; }
-    .danger-card { background: var(--danger-pale); border: 1px solid #fecaca; border-radius: 16px; padding: 1.75rem; margin-bottom: 1.25rem; }
-    .danger-title { font-size: 0.85rem; font-weight: 600; color: var(--danger); margin-bottom: 8px; }
-    .danger-desc { font-size: 0.85rem; color: #7f1d1d; line-height: 1.6; margin-bottom: 1.25rem; }
-    .btn-danger { background: var(--danger); color: white; border: none; border-radius: 10px; padding: 12px 20px; font-size: 0.88rem; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; transition: background 0.15s; }
-    .btn-danger:hover { background: #dc2626; }
-    .btn-danger:disabled { background: #fca5a5; cursor: not-allowed; }
-    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
-    .modal-overlay.show { display: flex; }
-    .modal { background: white; border-radius: 16px; padding: 2rem; max-width: 400px; width: 90%; }
-    .modal h2 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
-    .modal p { font-size: 0.88rem; color: var(--muted); line-height: 1.6; margin-bottom: 1.5rem; }
-    .modal-actions { display: flex; gap: 10px; }
-    .btn-cancel { flex: 1; padding: 12px; border-radius: 10px; border: 1.5px solid var(--border); background: white; color: var(--muted); font-size: 0.88rem; font-family: 'Sora', sans-serif; cursor: pointer; }
-    .btn-cancel:hover { border-color: var(--sky); color: var(--sky-dark); }
-    .confirm-input { width: 100%; background: #fef2f2; border: 1.5px solid #fecaca; border-radius: 8px; padding: 10px 12px; color: var(--text); font-size: 0.88rem; font-family: 'Sora', sans-serif; outline: none; margin-bottom: 1rem; }
-    .confirm-input:focus { border-color: var(--danger); }
-    #delete-msg { font-size: 0.82rem; color: var(--muted); margin-top: 8px; min-height: 16px; }
-    #name-msg { font-size: 0.78rem; color: #16a34a; margin-top: 6px; min-height: 14px; }
-    @media (max-width: 768px) {
-      .sidebar { display: none; }
-      .bottom-nav { display: flex; }
-      .mobile-topbar { display: flex; }
-      .main { margin-left: 0; padding: 5rem 1rem 6rem; }
-      .modal { width: 95%; padding: 1.5rem; }
-    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root[data-theme="dark"]{--bg:#0c0c0f;--card:#141418;--card2:#18181d;--border:#1e1e27;--border2:#2a2a35;--text:#f4f4f5;--muted:#71717a;--muted2:#52525b;--accent:#a78bfa;--accent2:#ec4899;--accent-dim:rgba(167,139,250,0.12);--red:#f87171;--red-dim:rgba(248,113,113,0.1);--inp-bg:#0c0c0f;}
+    :root[data-theme="light"]{--bg:#f5f5fa;--card:#ffffff;--card2:#f8f8fc;--border:#e4e4f0;--border2:#d4d4e8;--text:#0c0c0f;--muted:#6b6b7b;--muted2:#9898ab;--accent:#7c3aed;--accent2:#db2777;--accent-dim:rgba(124,58,237,0.08);--red:#dc2626;--red-dim:rgba(220,38,38,0.08);--inp-bg:#f5f5fa;}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sans-serif;min-height:100vh;transition:background 0.2s;}
+    .sidebar{position:fixed;top:0;left:0;width:220px;height:100vh;background:var(--card);border-right:1px solid var(--border);padding:20px 12px;display:flex;flex-direction:column;z-index:10;}
+    .sidebar-logo{padding:4px 8px 20px;display:flex;align-items:center;gap:10px;}
+    .logo-mark{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .logo-text{font-size:14px;font-weight:800;letter-spacing:3px;color:var(--text);}
+    .nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all 0.15s;text-decoration:none;margin-bottom:1px;}
+    .nav-item:hover,.nav-item.active{background:var(--accent-dim);color:var(--accent);}
+    .nav-icon{font-size:14px;width:16px;text-align:center;}
+    .nav-ext{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;font-size:13px;font-weight:500;color:var(--accent2);cursor:pointer;transition:all 0.15s;text-decoration:none;margin-bottom:1px;background:rgba(236,72,153,0.08);border:1px solid rgba(236,72,153,0.15);}
+    .sidebar-bottom{margin-top:auto;display:flex;flex-direction:column;gap:8px;}
+    .theme-toggle{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:8px;background:var(--card2);border:1px solid var(--border);cursor:pointer;font-size:12px;font-weight:500;color:var(--muted);}
+    .toggle-track{width:32px;height:18px;background:var(--border2);border-radius:99px;position:relative;transition:background 0.2s;}
+    .toggle-track.on{background:var(--accent);}
+    .toggle-thumb{position:absolute;width:12px;height:12px;background:white;border-radius:50%;top:3px;left:3px;transition:transform 0.2s;}
+    .toggle-track.on .toggle-thumb{transform:translateX(14px);}
+    .user-pill{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:8px;background:var(--card2);border:1px solid var(--border);}
+    .user-avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;color:white;font-size:11px;font-weight:700;flex-shrink:0;}
+    .user-info{flex:1;overflow:hidden;}
+    .user-name-pill{font-size:12px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .user-sub-pill{font-size:10px;color:var(--muted2);}
+    .sign-out-btn{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:14px;padding:2px;}
+    .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);padding:8px 0 max(8px,env(safe-area-inset-bottom));z-index:100;justify-content:space-around;}
+    .bottom-nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 12px;cursor:pointer;color:var(--muted);font-size:10px;font-weight:500;border:none;background:none;font-family:'Inter',sans-serif;}
+    .bottom-nav-item.active{color:var(--accent);}
+    .bottom-nav-icon{font-size:18px;}
+    .mobile-topbar{display:none;position:fixed;top:0;left:0;right:0;background:var(--card);border-bottom:1px solid var(--border);padding:12px 16px;z-index:10;align-items:center;justify-content:space-between;}
+    .main{margin-left:220px;padding:28px 32px 40px;max-width:calc(220px + 700px);}
+    .page-title{font-size:22px;font-weight:800;letter-spacing:-0.5px;margin-bottom:4px;}
+    .page-sub{font-size:12px;color:var(--muted);}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:12px;transition:background 0.2s;}
+    .card-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted2);margin-bottom:14px;}
+    .info-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}
+    .info-row:last-child{border-bottom:none;}
+    .info-label{color:var(--muted);}
+    .info-value{font-weight:600;}
+    .edit-row{display:flex;gap:8px;align-items:center;}
+    .name-inp{background:var(--inp-bg);border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:12px;font-family:'Inter',sans-serif;color:var(--text);outline:none;width:150px;transition:border-color 0.15s;}
+    .name-inp:focus{border-color:var(--accent);}
+    .btn-save-name{padding:7px 14px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:none;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;}
+    .btn-signout{width:100%;padding:12px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;}
+    .ext-card{background:rgba(236,72,153,0.06);border:1px solid rgba(236,72,153,0.15);border-radius:12px;padding:18px;margin-bottom:12px;}
+    .ext-title{font-size:13px;font-weight:700;color:var(--accent2);margin-bottom:6px;}
+    .ext-desc{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:14px;}
+    .btn-ext{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:none;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;text-decoration:none;}
+    .danger-card{background:var(--red-dim);border:1px solid rgba(248,113,113,0.2);border-radius:12px;padding:18px;margin-bottom:12px;}
+    .danger-title{font-size:13px;font-weight:700;color:var(--red);margin-bottom:6px;}
+    .danger-desc{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:14px;}
+    .btn-danger{background:var(--red);color:white;border:none;border-radius:9px;padding:10px 18px;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;transition:opacity 0.15s;}
+    .btn-danger:hover{opacity:0.85;}
+    .btn-danger:disabled{opacity:0.4;cursor:not-allowed;}
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;align-items:center;justify-content:center;}
+    .modal-overlay.show{display:flex;}
+    .modal{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:380px;width:92%;}
+    .modal h2{font-size:15px;font-weight:800;margin-bottom:6px;}
+    .modal p{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:14px;}
+    .confirm-input{width:100%;background:var(--red-dim);border:1px solid rgba(248,113,113,0.3);border-radius:8px;padding:9px 11px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;margin-bottom:12px;}
+    .confirm-input:focus{border-color:var(--red);}
+    .modal-actions{display:flex;gap:8px;}
+    .btn-cancel{flex:1;padding:11px;border-radius:9px;border:1px solid var(--border);background:none;color:var(--muted);font-size:13px;font-family:'Inter',sans-serif;cursor:pointer;}
+    #name-msg{font-size:11px;color:var(--muted);margin-top:6px;min-height:14px;}
+    #delete-msg{font-size:11px;color:var(--muted);margin-top:6px;min-height:14px;}
+    @media(max-width:768px){.sidebar{display:none;}.bottom-nav{display:flex;}.mobile-topbar{display:flex;}.main{margin-left:0;padding:5rem 14px 6rem;}}
   </style>
 </head>
 <body>
-
   <div class="sidebar">
     <div class="sidebar-logo">
-      <svg width="96" height="34" viewBox="0 0 96 34">
-        <rect x="0" y="0" width="34" height="34" rx="17" fill="#0ea5e9"/>
-        <path d="M7 17 Q11 11 16 17 Q21 23 25 17" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <text x="42" y="23" font-family="'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="300" fill="#0f172a" letter-spacing="2.5">FLO</text>
-      </svg>
+      <div class="logo-mark"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M2 8 Q5 3 8 8 Q11 13 14 8" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg></div>
+      <span class="logo-text">FLO</span>
     </div>
-    <a class="nav-item" onclick="window.location.href='/index.html'"><span class="nav-icon">◉</span> Dashboard</a>
-    <a class="nav-item" onclick="window.location.href='/charts.html'"><span class="nav-icon">📊</span> Charts</a>
-    <a class="nav-item" onclick="window.location.href='/reports.html'"><span class="nav-icon">📋</span> Reports</a>
-    <a class="nav-item" onclick="window.location.href='/planner.html'"><span class="nav-icon">✈️</span> Planner</a>
-    <a class="nav-item" onclick="window.location.href='/setup.html'"><span class="nav-icon">⚙</span> Edit budget</a>
-    <a class="nav-item active"><span class="nav-icon">👤</span> Account</a>
-    <a class="nav-ext" onclick="showExtModal()" style="cursor:pointer;"><span class="nav-icon">🧩</span> Add extension</a>
+    <a class="nav-item" onclick="location.href='/index.html'"><span class="nav-icon">⬡</span> Dashboard</a>
+    <a class="nav-item" onclick="location.href='/charts.html'"><span class="nav-icon">◈</span> Charts</a>
+    <a class="nav-item" onclick="location.href='/reports.html'"><span class="nav-icon">◧</span> Reports</a>
+    <a class="nav-item" onclick="location.href='/planner.html'"><span class="nav-icon">✦</span> Planner</a>
+    <a class="nav-item" onclick="location.href='/setup.html'"><span class="nav-icon">⊕</span> Edit budget</a>
+    <a class="nav-item active"><span class="nav-icon">◎</span> Account</a>
+    <a class="nav-ext" href="#" onclick="showExtModal();return false;"><span class="nav-icon">⧉</span> Add extension</a>
     <div class="sidebar-bottom">
-      <div class="user-pill">
-        <div class="user-avatar" id="user-initials">?</div>
-        <div class="user-info">
-          <div class="user-email-pill" id="user-email-pill">—</div>
-          <div class="user-label">let your money flow</div>
-        </div>
-      </div>
+      <div class="theme-toggle" onclick="toggleTheme()"><span class="theme-label">dark mode</span><div class="toggle-track on" id="toggle-track"><div class="toggle-thumb"></div></div></div>
+      <div class="user-pill"><div class="user-avatar" id="user-initials">?</div><div class="user-info"><div class="user-name-pill" id="user-name-display">—</div><div class="user-sub-pill">let your money flow</div></div></div>
     </div>
   </div>
-
   <div class="mobile-topbar">
-    <svg width="52" height="20" viewBox="0 0 52 20">
-      <rect x="0" y="0" width="20" height="20" rx="10" fill="#0ea5e9"/>
-      <path d="M4 10 Q7 6 10 10 Q13 14 16 10" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-      <text x="24" y="14" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="300" fill="#0f172a" letter-spacing="1.5">FLO</text>
-    </svg>
-    <span style="font-size:0.9rem;font-weight:600;">Account</span>
-    <div style="width:52px;"></div>
+    <div style="display:flex;align-items:center;gap:8px;"><div class="logo-mark" style="width:24px;height:24px;border-radius:7px;"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M2 8 Q5 3 8 8 Q11 13 14 8" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg></div><span style="font-size:13px;font-weight:800;letter-spacing:2px;color:var(--text);">FLO</span></div>
+    <div class="toggle-track" id="toggle-track-mobile" onclick="toggleTheme()" style="cursor:pointer;"><div class="toggle-thumb"></div></div>
   </div>
-
   <div class="bottom-nav">
-    <button class="bottom-nav-item" onclick="window.location.href='/index.html'"><span class="bottom-nav-icon">◉</span><span>Home</span></button>
-    <button class="bottom-nav-item" onclick="window.location.href='/charts.html'"><span class="bottom-nav-icon">📊</span><span>Charts</span></button>
-    <button class="bottom-nav-item" onclick="window.location.href='/index.html'"><span class="bottom-nav-icon">＋</span><span>Log</span></button>
-    <button class="bottom-nav-item" onclick="window.location.href='/index.html'"><span class="bottom-nav-icon">✦</span><span>Ask Flo</span></button>
-    <button class="bottom-nav-item active"><span class="bottom-nav-icon">👤</span><span>Account</span></button>
+    <button class="bottom-nav-item" onclick="location.href='/index.html'"><span class="bottom-nav-icon">⬡</span><span>Home</span></button>
+    <button class="bottom-nav-item" onclick="location.href='/charts.html'"><span class="bottom-nav-icon">◈</span><span>Charts</span></button>
+    <button class="bottom-nav-item" onclick="location.href='/index.html'"><span class="bottom-nav-icon">＋</span><span>Log</span></button>
+    <button class="bottom-nav-item" onclick="location.href='/index.html'"><span class="bottom-nav-icon">✦</span><span>Ask</span></button>
+    <button class="bottom-nav-item active"><span class="bottom-nav-icon">◎</span><span>Account</span></button>
   </div>
-
   <div class="main">
-    <div class="page-header">
-      <h1>Account settings</h1>
-      <p>Manage your account and data</p>
-    </div>
-
+    <div style="margin-bottom:24px;"><div class="page-title">account</div><div class="page-sub">manage your profile and data</div></div>
     <div class="card">
-      <div class="card-title">Account info</div>
-      <div class="info-row"><span class="info-label">Email</span><span class="info-value" id="user-email">—</span></div>
+      <div class="card-title">Profile</div>
+      <div class="info-row"><span class="info-label">email</span><span class="info-value" id="user-email">—</span></div>
       <div class="info-row">
-        <span class="info-label">Display name</span>
-        <div class="edit-name-row">
-          <input type="text" class="name-inp" id="name-input" placeholder="Your name" />
-          <button class="btn-save-name" onclick="saveName()">Save</button>
-        </div>
+        <span class="info-label">display name</span>
+        <div class="edit-row"><input type="text" class="name-inp" id="name-input" placeholder="your name" /><button class="btn-save-name" onclick="saveName()">save</button></div>
       </div>
       <div id="name-msg"></div>
-      <div class="info-row"><span class="info-label">Member since</span><span class="info-value" id="member-since">—</span></div>
-      <div class="info-row"><span class="info-label">Transactions logged</span><span class="info-value" id="txn-count">—</span></div>
+      <div class="info-row"><span class="info-label">member since</span><span class="info-value" id="member-since">—</span></div>
+      <div class="info-row"><span class="info-label">transactions logged</span><span class="info-value" id="txn-count">—</span></div>
     </div>
-
-    <!-- Extension card -->
     <div class="ext-card">
-      <div class="ext-card-title">🧩 Flo Browser Extension</div>
-      <p class="ext-card-desc">Get real-time purchase advice while you shop on Amazon, Walmart, Target, and more. The extension pops up automatically and checks your budget before you buy.</p>
-      <a onclick="showExtModal()" class="btn-ext" style="cursor:pointer;">🧩 Add to Chrome / Edge</a>
+      <div class="ext-title">⧉ flo browser extension</div>
+      <p class="ext-desc">get real-time purchase advice while you shop on amazon, walmart, target, and more. pops up automatically and checks your budget before you buy.</p>
+      <a href="#" onclick="showExtModal();return false;" class="btn-ext">⧉ add to chrome / edge</a>
     </div>
-
     <div class="card">
       <div class="card-title">Sign out</div>
-      <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.6;">Sign out of your Flo account on this device. Your data will be saved and waiting when you sign back in.</p>
-      <button class="btn-signout" onclick="signOut()">Sign out of Flo</button>
+      <p style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:14px;">your data stays saved. come back anytime.</p>
+      <button class="btn-signout" onclick="signOut()">sign out of flo</button>
     </div>
-
     <div class="card">
       <div class="card-title">Legal</div>
-      <div class="info-row">
-        <span class="info-label">Terms of Service</span>
-        <a href="/terms.html" style="font-size:0.85rem;color:var(--sky-dark);">View →</a>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Privacy Policy</span>
-        <a href="/privacy.html" style="font-size:0.85rem;color:var(--sky-dark);">View →</a>
-      </div>
+      <div class="info-row"><span class="info-label">terms of service</span><a href="/terms.html" style="font-size:12px;color:var(--accent);">view →</a></div>
+      <div class="info-row"><span class="info-label">privacy policy</span><a href="/privacy.html" style="font-size:12px;color:var(--accent);">view →</a></div>
     </div>
-
     <div class="danger-card">
-      <div class="danger-title">Delete account</div>
-      <p class="danger-desc">Permanently delete your account and all associated data including your budget, categories, and transaction history. This action cannot be undone.</p>
-      <button class="btn-danger" onclick="showDeleteModal()">Delete my account</button>
+      <div class="danger-title">delete account</div>
+      <p class="danger-desc">permanently deletes your account and all data. this cannot be undone.</p>
+      <button class="btn-danger" onclick="showDeleteModal()">delete my account</button>
     </div>
   </div>
-
   <div class="modal-overlay" id="delete-modal">
     <div class="modal">
-      <h2>Are you sure?</h2>
-      <p>This will permanently delete your account and all your data. Type <strong>DELETE</strong> below to confirm.</p>
-      <input type="text" class="confirm-input" id="confirm-input" placeholder="Type DELETE to confirm" />
+      <h2>are you sure?</h2>
+      <p>type <strong>DELETE</strong> to permanently delete your account and all data.</p>
+      <input type="text" class="confirm-input" id="confirm-input" placeholder="type DELETE to confirm" />
       <div class="modal-actions">
-        <button class="btn-cancel" onclick="hideDeleteModal()">Cancel</button>
-        <button class="btn-danger" id="confirm-delete-btn" onclick="deleteAccount()" disabled>Delete forever</button>
+        <button class="btn-cancel" onclick="hideDeleteModal()">cancel</button>
+        <button class="btn-danger" id="confirm-delete-btn" onclick="deleteAccount()" disabled>delete forever</button>
       </div>
       <p id="delete-msg"></p>
     </div>
   </div>
-
-  <script type="module">
-    import { supabase } from './Supabase.js'
-
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session) { window.location.href = '/login.html' }
-    const user = session.user
-
-    const profile = user.user_metadata
-    const displayName = profile?.full_name || profile?.first_name || ''
-
-    document.getElementById('user-email').textContent = user.email
-    document.getElementById('user-email-pill').textContent = displayName || user.email
-    document.getElementById('user-initials').textContent = (displayName?.[0] || user.email[0]).toUpperCase()
-    document.getElementById('name-input').value = displayName
-    document.getElementById('member-since').textContent = new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
-
-    const { count } = await supabase.from('transactions').select('*', { count: 'exact', head: true }).eq('user_id', user.id)
-    document.getElementById('txn-count').textContent = count || 0
-
-    window.saveName = async function() {
-      const name = document.getElementById('name-input').value.trim()
-      const msg = document.getElementById('name-msg')
-      if (!name) { msg.textContent = 'Please enter a name.'; msg.style.color = '#dc2626'; return }
-      const firstName = name.split(' ')[0]
-      const { error } = await supabase.auth.updateUser({ data: { full_name: name, first_name: firstName } })
-      if (error) { msg.textContent = error.message; msg.style.color = '#dc2626'; return }
-      await supabase.from('profiles').upsert({ id: user.id, full_name: name, first_name: firstName, email: user.email })
-      msg.textContent = '✓ Name updated!'
-      msg.style.color = '#16a34a'
-      document.getElementById('user-email-pill').textContent = name
-      document.getElementById('user-initials').textContent = name[0].toUpperCase()
-      setTimeout(() => msg.textContent = '', 3000)
-    }
-
-    window.signOut = async function() {
-      await supabase.auth.signOut()
-      window.location.href = '/login.html'
-    }
-
-    document.getElementById('confirm-input').addEventListener('input', function() {
-      document.getElementById('confirm-delete-btn').disabled = this.value !== 'DELETE'
-    })
-
-    window.showDeleteModal = () => document.getElementById('delete-modal').classList.add('show')
-    window.hideDeleteModal = () => {
-      document.getElementById('delete-modal').classList.remove('show')
-      document.getElementById('confirm-input').value = ''
-      document.getElementById('confirm-delete-btn').disabled = true
-      document.getElementById('delete-msg').textContent = ''
-    }
-
-    window.deleteAccount = async function() {
-      const msg = document.getElementById('delete-msg')
-      const btn = document.getElementById('confirm-delete-btn')
-      btn.disabled = true
-      msg.textContent = 'Deleting your data...'
-      try {
-        await supabase.from('transactions').delete().eq('user_id', user.id)
-        await supabase.from('categories').delete().eq('user_id', user.id)
-        await supabase.from('budgets').delete().eq('user_id', user.id)
-        await supabase.from('profiles').delete().eq('id', user.id)
-        await supabase.auth.signOut()
-        window.location.href = '/login.html?deleted=true'
-      } catch (err) {
-        msg.textContent = 'Something went wrong. Please try again.'
-        btn.disabled = false
-      }
-    }
-  </script>
-
-  <!-- Extension install modal -->
-  <div class="modal-overlay" id="ext-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;" onclick="if(event.target===this)hideExtModal()">
-    <div style="background:white;border-radius:20px;padding:2rem;max-width:440px;width:92%;box-shadow:0 8px 40px rgba(0,0,0,0.15);">
-      <div style="font-size:2rem;margin-bottom:12px;">🧩</div>
-      <h2 style="font-size:1.1rem;font-weight:600;margin-bottom:8px;">Install the Flo extension</h2>
-      <p style="font-size:0.87rem;color:#64748b;line-height:1.7;margin-bottom:1.25rem;">The Flo extension pops up on Amazon, Walmart, Target and more — asking "Should I buy this?" before you checkout.</p>
-      <div style="background:#f0faff;border:1px solid #bae6fd;border-radius:12px;padding:1rem;font-size:0.83rem;color:#0c4a6e;line-height:1.8;margin-bottom:1.25rem;">
-        <strong>How to install:</strong><br>
-        1. Open <strong>edge://extensions</strong> or <strong>chrome://extensions</strong><br>
-        2. Enable <strong>Developer mode</strong> (top right toggle)<br>
-        3. Click <strong>Load unpacked</strong><br>
-        4. Select your <code style="background:#e0f2fe;padding:1px 5px;border-radius:4px;">finance-assistant/extension</code> folder
+  <div id="ext-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:999;align-items:center;justify-content:center;" onclick="if(event.target===this)hideExtModal()">
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:380px;width:92%;">
+      <h2 style="font-size:15px;font-weight:800;margin-bottom:6px;color:var(--text);">⧉ install the flo extension</h2>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6;">get real-time advice while you shop.</p>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;">
+        <div style="background:var(--card2);border-radius:8px;padding:9px;font-size:12px;color:var(--muted);">1. find folder at <code style="background:var(--border);padding:1px 4px;border-radius:4px;">finance-assistant/extension</code></div>
+        <div style="background:var(--card2);border-radius:8px;padding:9px;font-size:12px;color:var(--muted);">2. go to <strong style="color:var(--text);">edge://extensions</strong> → developer mode on</div>
+        <div style="background:var(--card2);border-radius:8px;padding:9px;font-size:12px;color:var(--muted);">3. click <strong style="color:var(--text);">load unpacked</strong> → select folder</div>
       </div>
-      <button onclick="hideExtModal()" style="width:100%;padding:12px;border-radius:10px;border:none;background:#0ea5e9;color:white;font-size:0.9rem;font-weight:600;font-family:'Sora',sans-serif;cursor:pointer;">Got it</button>
+      <div style="display:flex;gap:8px;">
+        <button onclick="window.open('edge://extensions')" style="flex:1;padding:10px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:none;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;">open extensions</button>
+        <button onclick="hideExtModal()" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--muted);font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;">close</button>
+      </div>
     </div>
   </div>
-  <script>
-    function showExtModal() { const m = document.getElementById('ext-modal'); m.style.display='flex'; }
-    function hideExtModal() { const m = document.getElementById('ext-modal'); m.style.display='none'; }
+  <script type="module">
+    import { supabase } from './Supabase.js'
+    const _t=localStorage.getItem('flo_theme')||'dark'; document.documentElement.setAttribute('data-theme',_t)
+    function applyTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('flo_theme',t);document.querySelectorAll('.toggle-track').forEach(el=>el.className='toggle-track'+(t==='dark'?' on':''));document.querySelectorAll('.theme-label').forEach(el=>el.textContent=t==='dark'?'dark mode':'light mode')}
+    applyTheme(_t); window.toggleTheme=()=>applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark')
+    window.showExtModal=()=>document.getElementById('ext-modal').style.display='flex'
+    window.hideExtModal=()=>document.getElementById('ext-modal').style.display='none'
+    const {data:{session}}=await supabase.auth.getSession()
+    if(!session){location.href='/login.html'}
+    const user=session.user
+    const p=user.user_metadata; const n=p?.full_name||p?.first_name||user.email.split('@')[0]; const i=(p?.first_name?.[0]||user.email[0]).toUpperCase()
+    document.getElementById('user-initials').textContent=i; document.getElementById('user-name-display').textContent=n
+    document.getElementById('user-email').textContent=user.email
+    document.getElementById('name-input').value=p?.full_name||p?.first_name||''
+    document.getElementById('member-since').textContent=new Date(user.created_at).toLocaleDateString('en-US',{month:'long',year:'numeric'})
+    const {count}=await supabase.from('transactions').select('*',{count:'exact',head:true}).eq('user_id',user.id)
+    document.getElementById('txn-count').textContent=count||0
+    window.saveName=async()=>{
+      const name=document.getElementById('name-input').value.trim(), msg=document.getElementById('name-msg')
+      if(!name){msg.textContent='enter a name.';msg.style.color='var(--red)';return}
+      const first=name.split(' ')[0]; const {error}=await supabase.auth.updateUser({data:{full_name:name,first_name:first}})
+      if(error){msg.textContent=error.message;msg.style.color='var(--red)';return}
+      await supabase.from('profiles').upsert({id:user.id,full_name:name,first_name:first,email:user.email})
+      msg.textContent='✓ name updated!';msg.style.color='var(--accent)';document.getElementById('user-name-display').textContent=name;setTimeout(()=>msg.textContent='',3000)
+    }
+    window.signOut=async()=>{await supabase.auth.signOut();location.href='/login.html'}
+    document.getElementById('confirm-input').addEventListener('input',function(){document.getElementById('confirm-delete-btn').disabled=this.value!=='DELETE'})
+    window.showDeleteModal=()=>document.getElementById('delete-modal').classList.add('show')
+    window.hideDeleteModal=()=>{document.getElementById('delete-modal').classList.remove('show');document.getElementById('confirm-input').value='';document.getElementById('confirm-delete-btn').disabled=true;document.getElementById('delete-msg').textContent=''}
+    window.deleteAccount=async()=>{
+      const msg=document.getElementById('delete-msg'),btn=document.getElementById('confirm-delete-btn'); btn.disabled=true; msg.textContent='deleting...'
+      try{await supabase.from('transactions').delete().eq('user_id',user.id);await supabase.from('categories').delete().eq('user_id',user.id);await supabase.from('budgets').delete().eq('user_id',user.id);await supabase.from('profiles').delete().eq('id',user.id);await supabase.auth.signOut();location.href='/login.html?deleted=true'}
+      catch(err){msg.textContent='something went wrong.';btn.disabled=false}
+    }
   </script>
 </body>
 </html>

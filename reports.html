@@ -387,5 +387,37 @@
     function showExtModal() { const m = document.getElementById('ext-modal'); m.style.display='flex'; }
     function hideExtModal() { const m = document.getElementById('ext-modal'); m.style.display='none'; }
   </script>
+
+  <!-- Extension install modal -->
+  <div class="modal-overlay" id="ext-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;" onclick="if(event.target===this)hideExtModal()">
+    <div style="background:white;border-radius:20px;padding:2rem;max-width:420px;width:92%;box-shadow:0 8px 40px rgba(0,0,0,0.15);">
+      <div style="font-size:2rem;margin-bottom:0.75rem;">🧩</div>
+      <h2 style="font-size:1.1rem;font-weight:600;margin-bottom:6px;">Install the Flo Extension</h2>
+      <p style="font-size:0.85rem;color:#64748b;line-height:1.6;margin-bottom:1.25rem;">The Flo extension isn't on the Chrome Web Store yet. Install it manually in 3 steps:</p>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:1.5rem;">
+        <div style="display:flex;gap:12px;align-items:flex-start;background:#f0faff;border-radius:10px;padding:12px;">
+          <div style="width:24px;height:24px;border-radius:50%;background:#0ea5e9;color:white;font-size:0.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
+          <div style="font-size:0.85rem;line-height:1.5;">Download the extension folder from GitHub or copy it from <code style="background:#e2e8f0;padding:1px 5px;border-radius:4px;">C:\Users\clxmp\Desktop\finance-assistant\extension</code></div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;background:#f0faff;border-radius:10px;padding:12px;">
+          <div style="width:24px;height:24px;border-radius:50%;background:#0ea5e9;color:white;font-size:0.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
+          <div style="font-size:0.85rem;line-height:1.5;">Go to <strong>edge://extensions</strong> (or <strong>chrome://extensions</strong>) and turn on <strong>Developer mode</strong></div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;background:#f0faff;border-radius:10px;padding:12px;">
+          <div style="width:24px;height:24px;border-radius:50%;background:#0ea5e9;color:white;font-size:0.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
+          <div style="font-size:0.85rem;line-height:1.5;">Click <strong>Load unpacked</strong> and select the extension folder</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button onclick="window.open('edge://extensions','_blank')" style="flex:1;padding:11px;border-radius:10px;background:#0ea5e9;color:white;border:none;font-size:0.88rem;font-weight:600;font-family:'Sora',sans-serif;cursor:pointer;">Open Extensions Page</button>
+        <button onclick="hideExtModal()" style="padding:11px 18px;border-radius:10px;border:1.5px solid #e2e8f0;background:white;color:#64748b;font-size:0.88rem;font-family:'Sora',sans-serif;cursor:pointer;">Close</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    function showExtModal() { const m = document.getElementById('ext-modal'); m.style.display='flex'; }
+    function hideExtModal() { const m = document.getElementById('ext-modal'); m.style.display='none'; }
+  </script>
+
 </body>
 </html>
