@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <script>document.documentElement.setAttribute("data-theme",localStorage.getItem("flo_theme")||"dark")</script>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flo — Welcome to Pro!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root[data-theme="dark"]{--bg:#0c0c0f;--card:#141418;--border:#1e1e27;--text:#f4f4f5;--muted:#71717a;--muted2:#52525b;--accent:#a78bfa;--accent2:#ec4899;--green:#4ade80;}
+    :root[data-theme="light"]{--bg:#f5f5fa;--card:#ffffff;--border:#e4e4f0;--text:#0c0c0f;--muted:#6b6b7b;--muted2:#9898ab;--accent:#7c3aed;--accent2:#db2777;--green:#16a34a;}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;transition:background 0.2s;}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:3rem 2.5rem;max-width:440px;width:100%;text-align:center;}
+    .icon{font-size:3rem;margin-bottom:1rem;}
+    h1{font-size:1.6rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:8px;}
+    p{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:1.5rem;}
+    .features{display:flex;flex-direction:column;gap:8px;margin-bottom:2rem;text-align:left;}
+    .feat{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);}
+    .feat-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;}
+    .btn{display:block;width:100%;padding:13px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-size:14px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;text-decoration:none;text-align:center;transition:opacity 0.15s;}
+    .btn:hover{opacity:0.9;}
+    .confetti{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+  </style>
+</head>
+<body>
+  <div class="card" style="position:relative;z-index:1;">
+    <div class="icon">🎉</div>
+    <h1>Welcome to Flo Pro!</h1>
+    <p>Your 7-day free trial has started. You now have full access to everything Flo has to offer.</p>
+    <div class="features">
+      <div class="feat"><div class="feat-dot"></div>Unlimited transactions</div>
+      <div class="feat"><div class="feat-dot"></div>AI financial advisor — Ask Flo anything</div>
+      <div class="feat"><div class="feat-dot"></div>Monthly reports & spending insights</div>
+      <div class="feat"><div class="feat-dot"></div>Browser extension for smart shopping</div>
+      <div class="feat"><div class="feat-dot"></div>Vacation & expense planner</div>
+    </div>
+    <a class="btn" href="/index.html">Go to dashboard →</a>
+  </div>
+
+  <script type="module">
+    import { supabase } from './Supabase.js'
+    const { data: { session } } = await supabase.auth.getSession()
+    if (session) {
+      await supabase.from('profiles').upsert({
+        id: session.user.id,
+        subscription_status: 'active',
+        subscription_updated_at: new Date().toISOString()
+      })
+    }
+    const _t=localStorage.getItem('flo_theme')||'dark'
+    document.documentElement.setAttribute('data-theme',_t)
+  </script>
+</body>
+</html>
