@@ -471,7 +471,10 @@
           aiSection.style.position = 'relative'
           const overlay = document.createElement('div')
           overlay.style.cssText = 'position:absolute;inset:0;background:rgba(12,12,15,0.88);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;z-index:10;backdrop-filter:blur(2px);padding:20px;text-align:center;'
-          overlay.innerHTML = '<div style="font-size:1.5rem;margin-bottom:4px;">✦</div><div style="font-size:14px;font-weight:700;color:var(--text);">You've used your 3 free questions</div><div style="font-size:12px;color:var(--muted);max-width:240px;line-height:1.6;margin-bottom:4px;">Upgrade to Flo Pro for 50 AI questions per day — resets every midnight.</div>'
+          const _icon = document.createElement('div'); _icon.style.cssText='font-size:1.5rem;margin-bottom:4px;'; _icon.textContent='✦'
+          const _title = document.createElement('div'); _title.style.cssText='font-size:14px;font-weight:700;color:var(--text);'; _title.textContent="You've used your 3 free questions"
+          const _sub = document.createElement('div'); _sub.style.cssText='font-size:12px;color:var(--muted);max-width:240px;line-height:1.6;margin-bottom:4px;text-align:center;'; _sub.textContent='Upgrade to Flo Pro for 50 AI questions per day.'
+          overlay.innerHTML=''; overlay.appendChild(_icon); overlay.appendChild(_title); overlay.appendChild(_sub)
           const upgradeBtn = document.createElement('button')
           upgradeBtn.textContent = 'Upgrade to Pro →'
           upgradeBtn.style.cssText = 'padding:10px 22px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:none;font-size:13px;font-weight:700;cursor:pointer;margin-top:4px;'
