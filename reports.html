@@ -157,7 +157,10 @@
     const {data:budget}=await supabase.from('budgets').select('*').eq('user_id',user.id).limit(1).single()
     const {data:categories}=await supabase.from('categories').select('*').eq('user_id',user.id)
     const {data:allTxns}=await supabase.from('transactions').select('*,categories(name,color)').eq('user_id',user.id)
-    if(!budget||!categories){location.href='/setup.html'}
+    if(!budget){
+      document.getElementById('report-content').innerHTML='<div class="empty-state" style="padding:4rem 1rem;text-align:center;color:var(--muted2);"><div style="font-size:3rem;margin-bottom:12px;">📊</div><div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px;">No budget set up yet</div><div style="font-size:13px;line-height:1.6;margin-bottom:20px;">Set up your budget first to see monthly reports.</div><button onclick="location.href='/setup.html'" style="padding:11px 24px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-size:13px;font-weight:700;font-family:Inter,sans-serif;cursor:pointer;">Set up budget →</button></div>'
+      return
+    }
     const monthsWithData=new Set(); allTxns?.forEach(t=>{if(t.date)monthsWithData.add(t.date.slice(0,7))})
     monthsWithData.add(`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`)
     const sortedMonths=Array.from(monthsWithData).sort().reverse()
@@ -222,6 +225,7 @@
       if(!insights.length){insightList.innerHTML='<div class="empty-state">No data to analyze yet.</div>'}
       else insights.forEach(ins=>{const el=document.createElement('div');el.className=`insight ${ins.type}`;el.innerHTML=`<span class="insight-icon">${ins.icon}</span><span>${ins.text}</span>`;insightList.appendChild(el)})
     }
+    })() // end IIFE
     window.changeMonth=function(dir){currentMonth+=dir;if(currentMonth<0){currentMonth=11;currentYear--}if(currentMonth>11){currentMonth=0;currentYear++}renderReport()}
     renderReport()
   </script>

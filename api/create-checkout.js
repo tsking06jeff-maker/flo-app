@@ -21,7 +21,7 @@ export default async function handler(req, res) {
       success_url: `https://flo-app-rosy.vercel.app/subscribe-success.html?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `https://flo-app-rosy.vercel.app/pricing.html?cancelled=true`,
       metadata: { userId, email },
-      subscription_data: { metadata: { userId, email }, trial_period_days: 7 }
+      subscription_data: { metadata: { userId, email }, trial_period_days: 3 }
     })
     return res.status(200).json({ url: session.url })
   } catch (err) {

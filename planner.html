@@ -118,7 +118,7 @@
   <div class="main"><div id="main-content">
     <div class="page-header">
       <div><div class="page-title">Expense planner</div><div class="page-sub">Plan and save for vacations and big purchases</div></div>
-      <button class="btn-new" onclick="openNewGoal()">+ New goal</button>
+      <button class="btn-new" id="new-goal-btn">+ New goal</button>
     </div>
     <div class="goals-grid" id="goals-grid"></div>
   </div>
@@ -196,7 +196,7 @@
     window.addSavings=function(idx){const inp=document.getElementById(`si-${idx}`),amount=parseFloat(inp.value);if(!amount||amount<=0)return;goals[idx].saved=Math.min((goals[idx].saved||0)+amount,goals[idx].target);saveGoals();inp.value='';renderGoals()}
     function renderGoals(){
       const grid=document.getElementById('goals-grid')
-      if(!goals.length){grid.innerHTML=`<div style="grid-column:1/-1;" class="empty-goals"><div class="empty-icon">✈️</div><div class="empty-title">No goals yet</div><div class="empty-sub">Create a saving goal for your next vacation, big purchase, or life event.</div><button class="btn-new" onclick="openNewGoal()">+ Create your first goal</button></div>`;return}
+      if(!goals.length){grid.innerHTML=`<div style="grid-column:1/-1;" class="empty-goals"><div class="empty-icon">✈️</div><div class="empty-title">No goals yet</div><div class="empty-sub">Create a saving goal for your next vacation, big purchase, or life event.</div><button class="btn-new" id="empty-new-btn">+ Create your first goal</button></div>`;return}
       grid.innerHTML=''
       goals.forEach((g,idx)=>{
         const pct=g.target>0?Math.min((g.saved/g.target)*100,100):0,remaining=Math.max(0,g.target-g.saved),complete=g.saved>=g.target,months=g.date?monthsUntil(g.date):null
@@ -209,6 +209,11 @@
       })
     }
     renderGoals()
+    })() // end IIFE
+    document.getElementById('new-goal-btn')?.addEventListener('click', openNewGoal)
+    document.addEventListener('click', e => {
+      if (e.target.id === 'empty-new-btn') openNewGoal()
+    })
   </script>
 </body>
 </html>
