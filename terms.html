@@ -7,10 +7,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    :root[data-theme="dark"]{--bg:#0c0c0f;--card:#141418;--border:#1e1e27;--text:#f4f4f5;--muted:#71717a;--muted2:#52525b;--accent:#a78bfa;--accent2:#ec4899;--body-text:#c4c4cc;}
-    :root[data-theme="light"]{--bg:#f5f5fa;--card:#ffffff;--border:#e4e4f0;--text:#0c0c0f;--muted:#6b6b7b;--muted2:#9898ab;--accent:#7c3aed;--accent2:#db2777;--body-text:#374151;}
+    :root[data-theme="dark"]{--bg:#0c0c0f;--card:#141418;--border:#1e1e27;--text:#f4f4f5;--muted:#71717a;--muted2:#52525b;--accent:#a78bfa;--accent2:#ec4899;--body-text:#c4c4cc;--warn-bg:rgba(248,113,113,0.08);--warn-border:rgba(248,113,113,0.2);--warn-text:#f87171;--note-bg:rgba(167,139,250,0.08);--note-border:rgba(167,139,250,0.2);--note-text:#a78bfa;}
+    :root[data-theme="light"]{--bg:#f5f5fa;--card:#ffffff;--border:#e4e4f0;--text:#0c0c0f;--muted:#6b6b7b;--muted2:#9898ab;--accent:#7c3aed;--accent2:#db2777;--body-text:#374151;--warn-bg:rgba(220,38,38,0.06);--warn-border:rgba(220,38,38,0.2);--warn-text:#dc2626;--note-bg:rgba(124,58,237,0.06);--note-border:rgba(124,58,237,0.15);--note-text:#7c3aed;}
     body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sans-serif;min-height:100vh;padding:2rem;transition:background 0.2s;}
-    .container{max-width:740px;margin:0 auto;}
+    .container{max-width:760px;margin:0 auto;}
     .top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:2.5rem;}
     .logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
     .logo-mark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;}
@@ -25,18 +25,19 @@
     h1{font-size:1.75rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:6px;}
     .updated{font-size:12px;color:var(--muted2);margin-bottom:8px;}
     .intro{font-size:14px;color:var(--muted);line-height:1.7;}
-    h2{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--accent);margin:2rem 0 0.75rem;}
-    p{font-size:14px;line-height:1.8;color:var(--body-text);margin-bottom:0.75rem;}
+    h2{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent);margin:2rem 0 0.75rem;}
+    p{font-size:14px;line-height:1.85;color:var(--body-text);margin-bottom:0.75rem;}
     ul{padding-left:1.5rem;margin-bottom:0.75rem;}
-    li{font-size:14px;line-height:1.8;color:var(--body-text);margin-bottom:4px;}
-    .callout{background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);border-radius:10px;padding:14px 16px;margin:1rem 0;font-size:13px;line-height:1.7;color:var(--body-text);}
-    .callout strong{color:var(--accent);}
-    .warning{background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:10px;padding:14px 16px;margin:1rem 0;font-size:13px;line-height:1.7;color:var(--body-text);}
-    .warning strong{color:#f87171;}
+    li{font-size:14px;line-height:1.85;color:var(--body-text);margin-bottom:5px;}
+    .warning{background:var(--warn-bg);border:1px solid var(--warn-border);border-radius:10px;padding:14px 16px;margin:1rem 0;}
+    .warning p{color:var(--warn-text);margin:0;font-size:13px;line-height:1.7;}
+    .warning strong{color:var(--warn-text);}
+    .note{background:var(--note-bg);border:1px solid var(--note-border);border-radius:10px;padding:14px 16px;margin:1rem 0;}
+    .note p{color:var(--note-text);margin:0;font-size:13px;line-height:1.7;}
     a{color:var(--accent);text-decoration:none;}
     a:hover{text-decoration:underline;}
     .footer-links{display:flex;gap:1.5rem;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);font-size:13px;}
-    @media(max-width:600px){.card{padding:1.5rem;}.top-bar{flex-wrap:wrap;gap:10px;}}
+    @media(max-width:600px){.card{padding:1.5rem;}}
   </style>
 </head>
 <body>
@@ -51,91 +52,123 @@
         <button class="back-btn" onclick="history.back()">← Back</button>
       </div>
     </div>
-
     <div class="card">
       <div class="doc-header">
         <h1>Terms of Service</h1>
-        <div class="updated">Last updated: April 2026</div>
-        <p class="intro">Please read these terms carefully before using Flo. By creating an account or using any part of our service, you agree to be bound by these terms.</p>
+        <div class="updated">Effective date: April 9, 2026 · Last updated: April 9, 2026</div>
+        <p class="intro">These Terms of Service govern your access to and use of Flo ("the Service"), operated by Flo ("we," "us," or "our"). By creating an account or using any part of the Service, you agree to be legally bound by these Terms. If you do not agree, do not use the Service.</p>
       </div>
 
-      <h2>1. About Flo</h2>
-      <p>Flo is a personal finance management platform that provides budgeting tools, transaction tracking, spending insights, and AI-powered financial commentary. Flo is offered as a subscription-based service.</p>
+      <h2>1. Description of Service</h2>
+      <p>Flo is a personal finance management platform that provides budgeting tools, transaction tracking, spending charts, and AI-generated financial commentary. Flo is offered on a subscription basis with a limited free tier.</p>
       <div class="warning">
-        <strong>Important disclaimer:</strong> Flo is a financial wellness tool, not a licensed financial advisor, broker, or investment service. Nothing on Flo constitutes professional financial, investment, tax, or legal advice. Flo does not make buy or sell recommendations on any assets, securities, or financial products. All AI-generated insights are for general informational and educational purposes only. <strong>If you require professional financial advice, please consult a qualified financial advisor.</strong>
+        <p><strong>Important:</strong> Flo is not a licensed financial advisor, investment advisor, broker-dealer, bank, or any other regulated financial institution. Nothing on Flo — including AI-generated responses — constitutes professional financial, investment, tax, or legal advice of any kind. Flo does not recommend whether you should or should not buy, sell, or hold any asset, security, or product. <strong>If you need professional financial guidance, please consult a licensed financial advisor.</strong></p>
       </div>
 
-      <h2>2. Subscription & Billing</h2>
-      <p>Access to Flo requires a valid subscription. By subscribing, you agree to the following:</p>
+      <h2>2. Eligibility</h2>
+      <p>You must be at least 18 years old to create an account and subscribe to Flo. Users between the ages of 13 and 17 may only use the free tier with verifiable parental or guardian consent. By using Flo, you represent that you meet these requirements.</p>
+
+      <h2>3. Accounts</h2>
+      <p>You must provide a valid email address to create an account. You are responsible for:</p>
       <ul>
-        <li>Subscriptions are billed on a recurring basis (monthly or annually, depending on your plan)</li>
-        <li>You authorize us to charge your payment method automatically at the start of each billing period</li>
-        <li>Prices may change with 30 days' advance notice</li>
-        <li>Subscriptions auto-renew unless cancelled before the renewal date</li>
-        <li>No refunds are issued for partial billing periods, except where required by law</li>
+        <li>Maintaining the confidentiality of your login credentials</li>
+        <li>All activity that occurs under your account, whether authorized by you or not</li>
+        <li>Notifying us promptly if you suspect unauthorized access to your account</li>
+        <li>Ensuring all information you provide is accurate and current</li>
       </ul>
-      <p>You can cancel your subscription at any time from your account settings. Cancellation takes effect at the end of your current billing period — you retain access until then.</p>
+      <p>We reserve the right to suspend or terminate accounts that violate these Terms, are fraudulent, or pose a security risk.</p>
 
-      <h2>3. AI-Powered Features</h2>
-      <p>Flo uses AI (powered by Anthropic's Claude) to provide financial commentary, spending summaries, and general budgeting observations. You understand and agree that:</p>
-      <div class="callout">
-        <strong>The AI does not tell you whether to buy or not buy any specific item or product.</strong> Any commentary generated by the AI is general in nature and based solely on the financial data you have entered. It is not personalized investment advice, and it does not account for your full financial situation, risk tolerance, tax obligations, or future financial needs.
+      <h2>4. Subscription, Billing & Trial</h2>
+      <p>Access to Flo Pro features requires a paid subscription. By starting a trial or subscribing, you agree to the following:</p>
+      <ul>
+        <li><strong>Free trial:</strong> Flo Pro includes a 3-day free trial. A valid credit or debit card is required to start the trial. You will not be charged during the trial period.</li>
+        <li><strong>Trial cancellation:</strong> If you cancel before the trial ends, you will not be charged. If you do not cancel, your card will be automatically charged $9.99 at the end of the trial period.</li>
+        <li><strong>Recurring billing:</strong> Subscriptions renew automatically each month on your billing date. By subscribing, you authorize us to charge your payment method on a recurring monthly basis.</li>
+        <li><strong>Price changes:</strong> We may change subscription pricing with at least 30 days' written notice. Continued use after the price change takes effect constitutes acceptance.</li>
+        <li><strong>Cancellation:</strong> You may cancel at any time from your account settings. Cancellation takes effect at the end of the current billing period. You will retain Pro access until the period ends. We do not offer refunds for partial billing periods.</li>
+        <li><strong>Failed payments:</strong> If a payment fails, we will attempt to retry the charge. We will notify you by email. Your account may be downgraded to the free tier if payment cannot be collected after reasonable attempts.</li>
+        <li><strong>Refunds:</strong> Except where required by applicable law, all charges are non-refundable. If you believe you have been charged in error, contact us and we will investigate.</li>
+      </ul>
+      <p>All payments are processed by Stripe. We do not store your full card details. Stripe's terms apply to payment processing.</p>
+
+      <h2>5. Free Tier</h2>
+      <p>A limited free tier is available at no cost. Free tier users may access basic budgeting and dashboard features with the following limitations: up to 20 transactions per month, no access to AI features, monthly reports, or the browser extension. We reserve the right to modify free tier limits at any time with notice.</p>
+
+      <h2>6. AI Features & Limitations</h2>
+      <p>Flo uses AI technology (powered by Anthropic's Claude) to generate financial commentary and budgeting observations. By using AI features, you understand and agree that:</p>
+      <div class="warning">
+        <p><strong>The AI does not tell you whether to buy or not buy any specific item, product, investment, or financial product.</strong> AI responses are general in nature, generated based solely on the financial data you have manually entered, and do not account for your complete financial situation, tax obligations, investment goals, or risk tolerance. AI responses may contain errors, omissions, or outdated information.</p>
       </div>
       <ul>
-        <li>AI responses may occasionally be inaccurate, incomplete, or outdated</li>
         <li>You should not make significant financial decisions based solely on AI-generated content</li>
-        <li>For personalized financial planning, investment decisions, or tax matters — consult a licensed professional</li>
-        <li>Flo is not responsible for any financial outcome resulting from acting on AI-generated commentary</li>
+        <li>Flo is not liable for any financial outcome resulting from reliance on AI responses</li>
+        <li>AI responses are not reviewed by licensed financial professionals before delivery</li>
+        <li>For any financial decision of material consequence, you should consult a licensed financial advisor</li>
       </ul>
 
-      <h2>4. Your Account</h2>
-      <p>To use Flo you must provide a valid email address and create a secure password. You are responsible for:</p>
-      <ul>
-        <li>Keeping your login credentials secure and confidential</li>
-        <li>All activity that occurs under your account</li>
-        <li>Notifying us immediately if you suspect unauthorized access</li>
-      </ul>
-      <p>You must be at least 18 years old to create an account. Users between 13 and 17 may use Flo only with parental consent.</p>
+      <h2>7. Your Data</h2>
+      <p>You retain ownership of all financial data you enter into Flo. We store it securely to provide the Service. We do not sell your data to third parties. Upon account deletion, your data is permanently removed. See our <a href="/privacy.html">Privacy Policy</a> for full details.</p>
 
-      <h2>5. Your Data</h2>
-      <p>You own your financial data. We store it securely to power your Flo experience. We do not sell your personal or financial data to third parties. See our <a href="/privacy.html">Privacy Policy</a> for full details on how your data is collected, stored, and used.</p>
-
-      <h2>6. Acceptable Use</h2>
+      <h2>8. Acceptable Use</h2>
       <p>You agree not to:</p>
       <ul>
-        <li>Use Flo for any unlawful purpose or in violation of any applicable law</li>
-        <li>Attempt to access, tamper with, or obtain data belonging to other users</li>
-        <li>Abuse, overload, or attempt to exploit the AI service</li>
-        <li>Reverse engineer, decompile, or copy any part of the service</li>
-        <li>Use automated tools to scrape or extract data from Flo</li>
-        <li>Impersonate any person or entity or misrepresent your identity</li>
+        <li>Use the Service for any unlawful purpose or in violation of any applicable laws or regulations</li>
+        <li>Attempt to gain unauthorized access to any other user's account or data</li>
+        <li>Abuse, overload, or exploit the AI service through excessive automated requests</li>
+        <li>Reverse engineer, decompile, disassemble, or copy any part of the Service</li>
+        <li>Use automated scripts, bots, or scrapers to access or extract data from the Service</li>
+        <li>Impersonate any person, entity, or misrepresent your affiliation with any person or entity</li>
+        <li>Introduce malware, viruses, or any other malicious code into the Service</li>
+        <li>Engage in any conduct that restricts or inhibits any other user's use of the Service</li>
       </ul>
-      <p>We reserve the right to suspend or terminate accounts that violate these terms without notice.</p>
 
-      <h2>7. Service Availability</h2>
-      <p>We aim to keep Flo available and reliable at all times. However, we do not guarantee uninterrupted service. We may perform maintenance, updates, or modifications at any time. We will make reasonable efforts to notify users of planned downtime in advance.</p>
+      <h2>9. Intellectual Property</h2>
+      <p>All content, design, code, trademarks, and features of Flo are owned by or licensed to us and are protected by intellectual property laws. You are granted a limited, non-exclusive, non-transferable, revocable license to use the Service for personal, non-commercial purposes only.</p>
+      <p>You may not reproduce, distribute, create derivative works from, publicly display, or exploit any part of the Service without our prior written consent.</p>
 
-      <h2>8. Intellectual Property</h2>
-      <p>All content, design, code, and features of Flo are the property of Flo and are protected by applicable intellectual property laws. You may not reproduce, distribute, or create derivative works from any part of the service without our explicit written consent.</p>
-
-      <h2>9. Limitation of Liability</h2>
-      <p>To the fullest extent permitted by law, Flo and its operators are not liable for:</p>
+      <h2>10. Account Deletion & Subscription Cancellation</h2>
+      <p>You may delete your account at any time from your account settings page. When you delete your account:</p>
       <ul>
-        <li>Any financial losses, damages, or missed opportunities arising from your use of the service</li>
-        <li>Reliance on AI-generated commentary or budgeting insights</li>
-        <li>Data loss due to service interruption or technical failure</li>
-        <li>Any indirect, incidental, special, or consequential damages</li>
+        <li>Any active subscription will be cancelled immediately with no further charges</li>
+        <li>All your personal data, financial data, transactions, and account records will be permanently deleted within 30 days</li>
+        <li>This action is irreversible. We cannot recover your data after deletion.</li>
+        <li>Billing records may be retained as required by applicable law or for fraud prevention</li>
       </ul>
-      <p>Flo is provided "as is" without warranties of any kind, express or implied.</p>
 
-      <h2>10. Termination</h2>
-      <p>You may delete your account at any time from the account settings page. Upon deletion, all your personal data, financial data, and transaction history will be permanently removed within 30 days. Cancelling your subscription does not delete your account — you must delete it separately if desired.</p>
+      <h2>11. Service Availability & Modifications</h2>
+      <p>We strive to maintain consistent availability but do not guarantee uninterrupted service. We may modify, suspend, or discontinue any feature or the Service itself at any time. We will provide reasonable advance notice of significant changes where possible. We are not liable for any interruptions, outages, or data loss resulting from service downtime.</p>
 
-      <h2>11. Changes to These Terms</h2>
-      <p>We may update these terms from time to time. If we make material changes, we'll notify you via email or an in-app notice at least 14 days before they take effect. Continued use of Flo after that date constitutes acceptance of the updated terms.</p>
+      <h2>12. Disclaimer of Warranties</h2>
+      <p>The Service is provided "as is" and "as available" without warranties of any kind, express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, accuracy, reliability, or non-infringement. We do not warrant that the Service will be error-free, uninterrupted, or free of harmful components.</p>
 
-      <h2>12. Contact</h2>
-      <p>If you have questions about these terms or need to exercise any rights under them, please contact us through the app. We'll respond as promptly as possible.</p>
+      <h2>13. Limitation of Liability</h2>
+      <p>To the fullest extent permitted by applicable law, Flo and its operators, officers, employees, and agents shall not be liable for:</p>
+      <ul>
+        <li>Any indirect, incidental, special, consequential, or punitive damages</li>
+        <li>Any financial losses, missed savings opportunities, or investment losses</li>
+        <li>Any damages arising from your reliance on AI-generated financial commentary</li>
+        <li>Any loss of data, revenue, profits, or business opportunities</li>
+        <li>Any damages arising from unauthorized access to your account</li>
+      </ul>
+      <p>In no event shall our total liability to you exceed the amount you paid us in the 12 months preceding the claim.</p>
+
+      <h2>14. Indemnification</h2>
+      <p>You agree to indemnify, defend, and hold harmless Flo and its operators from and against any claims, liabilities, damages, losses, and expenses (including reasonable legal fees) arising out of or in connection with your use of the Service, your violation of these Terms, or your violation of any rights of a third party.</p>
+
+      <h2>15. Governing Law</h2>
+      <p>These Terms are governed by and construed in accordance with the laws of the State of North Carolina, United States, without regard to its conflict of law provisions. Any disputes arising under these Terms shall be resolved exclusively in the state or federal courts located in Mecklenburg County, North Carolina.</p>
+
+      <h2>16. Changes to These Terms</h2>
+      <p>We may update these Terms from time to time. If we make material changes, we will notify you via email or in-app notice at least 14 days before the changes take effect. Your continued use of the Service after that date constitutes acceptance of the updated Terms. If you do not agree to the changes, you must stop using the Service and cancel your subscription before the effective date.</p>
+
+      <h2>17. Severability</h2>
+      <p>If any provision of these Terms is found to be unenforceable or invalid, that provision will be limited or eliminated to the minimum extent necessary so that the remaining Terms remain in full force and effect.</p>
+
+      <h2>18. Entire Agreement</h2>
+      <p>These Terms, together with our Privacy Policy, constitute the entire agreement between you and Flo regarding the Service and supersede all prior agreements, representations, and understandings.</p>
+
+      <h2>19. Contact</h2>
+      <p>If you have questions about these Terms, believe you have been charged in error, or need to exercise any rights under these Terms, please contact us through the app. We will respond within 5 business days.</p>
 
       <div class="footer-links">
         <a href="/privacy.html">Privacy Policy</a>

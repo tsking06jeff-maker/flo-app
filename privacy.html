@@ -7,10 +7,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    :root[data-theme="dark"]{--bg:#0c0c0f;--card:#141418;--border:#1e1e27;--text:#f4f4f5;--muted:#71717a;--muted2:#52525b;--accent:#a78bfa;--accent2:#ec4899;--body-text:#c4c4cc;}
-    :root[data-theme="light"]{--bg:#f5f5fa;--card:#ffffff;--border:#e4e4f0;--text:#0c0c0f;--muted:#6b6b7b;--muted2:#9898ab;--accent:#7c3aed;--accent2:#db2777;--body-text:#374151;}
+    :root[data-theme="dark"]{--bg:#0c0c0f;--card:#141418;--border:#1e1e27;--text:#f4f4f5;--muted:#71717a;--muted2:#52525b;--accent:#a78bfa;--accent2:#ec4899;--body-text:#c4c4cc;--note-bg:rgba(167,139,250,0.08);--note-border:rgba(167,139,250,0.2);--note-text:#a78bfa;}
+    :root[data-theme="light"]{--bg:#f5f5fa;--card:#ffffff;--border:#e4e4f0;--text:#0c0c0f;--muted:#6b6b7b;--muted2:#9898ab;--accent:#7c3aed;--accent2:#db2777;--body-text:#374151;--note-bg:rgba(124,58,237,0.06);--note-border:rgba(124,58,237,0.15);--note-text:#7c3aed;}
     body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sans-serif;min-height:100vh;padding:2rem;transition:background 0.2s;}
-    .container{max-width:740px;margin:0 auto;}
+    .container{max-width:760px;margin:0 auto;}
     .top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:2.5rem;}
     .logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
     .logo-mark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;}
@@ -25,16 +25,20 @@
     h1{font-size:1.75rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:6px;}
     .updated{font-size:12px;color:var(--muted2);margin-bottom:8px;}
     .intro{font-size:14px;color:var(--muted);line-height:1.7;}
-    h2{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--accent);margin:2rem 0 0.75rem;}
-    p{font-size:14px;line-height:1.8;color:var(--body-text);margin-bottom:0.75rem;}
+    h2{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent);margin:2rem 0 0.75rem;}
+    p{font-size:14px;line-height:1.85;color:var(--body-text);margin-bottom:0.75rem;}
     ul{padding-left:1.5rem;margin-bottom:0.75rem;}
-    li{font-size:14px;line-height:1.8;color:var(--body-text);margin-bottom:4px;}
-    .callout{background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);border-radius:10px;padding:14px 16px;margin:1rem 0;font-size:13px;line-height:1.7;color:var(--body-text);}
-    .callout strong{color:var(--accent);}
+    li{font-size:14px;line-height:1.85;color:var(--body-text);margin-bottom:5px;}
+    .note{background:var(--note-bg);border:1px solid var(--note-border);border-radius:10px;padding:14px 16px;margin:1rem 0;}
+    .note p{color:var(--note-text);margin:0;font-size:13px;line-height:1.7;}
+    table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:13px;}
+    th{text-align:left;padding:8px 12px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted2);border-bottom:1px solid var(--border);}
+    td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--body-text);vertical-align:top;}
+    tr:last-child td{border-bottom:none;}
     a{color:var(--accent);text-decoration:none;}
     a:hover{text-decoration:underline;}
     .footer-links{display:flex;gap:1.5rem;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);font-size:13px;}
-    @media(max-width:600px){.card{padding:1.5rem;}.top-bar{flex-wrap:wrap;gap:10px;}}
+    @media(max-width:600px){.card{padding:1.5rem;}}
   </style>
 </head>
 <body>
@@ -49,93 +53,109 @@
         <button class="back-btn" onclick="history.back()">← Back</button>
       </div>
     </div>
-
     <div class="card">
       <div class="doc-header">
         <h1>Privacy Policy</h1>
-        <div class="updated">Last updated: April 2026</div>
-        <p class="intro">Your privacy is important to us. This policy explains exactly what data Flo collects, how we use it, who we share it with, and what control you have over it.</p>
+        <div class="updated">Effective date: April 9, 2026 · Last updated: April 9, 2026</div>
+        <p class="intro">This Privacy Policy explains how Flo ("we," "us," or "our") collects, uses, stores, and protects your personal information when you use our Service. We are committed to being transparent about our data practices. Please read this carefully.</p>
       </div>
 
-      <h2>1. What We Collect</h2>
-      <p>When you use Flo, we collect the following categories of data:</p>
-      <ul>
-        <li><strong>Account data</strong> — your email address, name, and encrypted password (managed by Supabase Auth)</li>
-        <li><strong>Financial data</strong> — income, savings goals, budget categories, and transactions that you manually enter</li>
-        <li><strong>AI interaction data</strong> — questions you ask the Flo AI advisor and the financial summary sent to generate responses</li>
-        <li><strong>Usage data</strong> — login timestamps, feature usage, and session information for service improvement</li>
-        <li><strong>Device data</strong> — browser type and general device information for compatibility purposes</li>
-      </ul>
-      <p>We do not collect your bank credentials, credit card numbers, or connect to any financial institutions directly. All financial data in Flo is entered manually by you.</p>
+      <h2>1. Information We Collect</h2>
+      <p>We collect only what is necessary to provide the Service:</p>
+      <table>
+        <tr><th>Category</th><th>What we collect</th><th>Why</th></tr>
+        <tr><td>Account data</td><td>Email address, name, encrypted password</td><td>Account creation and authentication</td></tr>
+        <tr><td>Financial data</td><td>Income, budget categories, savings goals, transactions you manually enter</td><td>To provide budgeting features</td></tr>
+        <tr><td>AI queries</td><td>Questions you send to Flo AI and the financial summary sent with them</td><td>To generate AI responses</td></tr>
+        <tr><td>Subscription data</td><td>Subscription status, billing history (via Stripe)</td><td>Payment processing and access control</td></tr>
+        <tr><td>Usage data</td><td>Login timestamps, feature usage, browser type</td><td>Service improvement and security</td></tr>
+        <tr><td>Preferences</td><td>Dark/light mode, cached session data</td><td>User experience</td></tr>
+      </table>
+      <p>We do not collect your bank account credentials, credit card numbers, Social Security numbers, government IDs, or connect directly to any financial institution. All financial data in Flo is entered manually by you.</p>
 
-      <h2>2. How We Use Your Data</h2>
-      <p>Your data is used exclusively to:</p>
+      <h2>2. How We Use Your Information</h2>
+      <p>We use the information we collect solely to:</p>
       <ul>
-        <li>Provide, maintain, and improve the Flo service</li>
-        <li>Generate AI-powered financial insights using your budget and transaction data</li>
-        <li>Send transactional emails such as password resets and security alerts</li>
-        <li>Process subscription payments and manage your account</li>
-        <li>Understand aggregate usage patterns to improve the product (anonymized)</li>
+        <li>Provide, operate, and maintain the Flo Service</li>
+        <li>Authenticate your identity and secure your account</li>
+        <li>Generate AI-powered budgeting commentary using your financial data</li>
+        <li>Process subscription payments and manage billing</li>
+        <li>Send transactional emails (payment receipts, security alerts, trial expiry reminders)</li>
+        <li>Detect and prevent fraud, abuse, and security threats</li>
+        <li>Improve the Service through anonymized, aggregated usage analysis</li>
+        <li>Comply with legal obligations</li>
       </ul>
+      <p>We do not use your data for advertising, do not sell it to third parties, and do not use it to train AI models.</p>
 
-      <h2>3. AI & Your Financial Data</h2>
-      <div class="callout">
-        <strong>When you use Ask Flo AI</strong>, a summary of your financial data (income, spending, budget categories) is sent to Anthropic's API to generate a response. This data is used only to produce your response and is not retained by Anthropic beyond the duration of the request, per their data processing policies.
+      <h2>3. AI Features & Your Financial Data</h2>
+      <div class="note">
+        <p>When you use Ask Flo AI, a summary of your financial data (income, spending totals, budget categories) is transmitted to Anthropic's API to generate a response. This data is used only to generate your specific response. Per Anthropic's API data handling policies, this data is not stored by Anthropic beyond the duration of the API request and is not used to train AI models.</p>
       </div>
-      <p>We do not use your personal financial data to train AI models. We do not share identifiable financial data with any third party for advertising or analytics purposes.</p>
+      <p>We transmit only aggregated financial summaries — not your full transaction history or personally identifiable information beyond what is necessary for the response. You can review what is sent by reviewing your budget data in the app.</p>
 
-      <h2>4. What We Don't Do</h2>
+      <h2>4. Third-Party Services</h2>
+      <p>Flo relies on the following third-party services. Each operates under their own privacy policy:</p>
+      <table>
+        <tr><th>Service</th><th>Purpose</th><th>Data shared</th></tr>
+        <tr><td>Supabase</td><td>Database, authentication, file storage</td><td>All user data is stored here</td></tr>
+        <tr><td>Anthropic</td><td>AI response generation</td><td>Financial summary per AI request (not retained)</td></tr>
+        <tr><td>Vercel</td><td>Application hosting and serverless functions</td><td>Server logs, request metadata</td></tr>
+        <tr><td>Stripe</td><td>Payment processing</td><td>Email, subscription status (card details handled by Stripe directly)</td></tr>
+      </table>
+      <p>We do not share your data with any other third parties. We do not use advertising networks, analytics trackers, or data brokers.</p>
+
+      <h2>5. Data Security</h2>
+      <p>We implement multiple layers of security to protect your data:</p>
       <ul>
-        <li>We do not sell your personal or financial data to any third party</li>
-        <li>We do not share your data with advertisers</li>
-        <li>We do not use your data to train AI or machine learning models</li>
-        <li>We do not access your bank accounts, investments, or external financial services</li>
+        <li><strong>Row-level security (RLS):</strong> Enforced at the database level — you can only read and write your own data</li>
+        <li><strong>Encryption in transit:</strong> All data transmitted over HTTPS/TLS</li>
+        <li><strong>Password security:</strong> Passwords are hashed using bcrypt via Supabase Auth — never stored in plain text</li>
+        <li><strong>API key protection:</strong> All sensitive API keys (Anthropic, Stripe) are stored as server-side environment variables and never exposed to the browser</li>
+        <li><strong>Service role isolation:</strong> Administrative database operations (e.g. subscription updates from webhooks) use a separate service role key not accessible to users</li>
       </ul>
+      <p>No system is perfectly secure. In the event of a data breach that affects your personal information, we will notify you in accordance with applicable law.</p>
 
-      <h2>5. Third-Party Services</h2>
-      <p>Flo relies on the following trusted third parties to operate:</p>
+      <h2>6. Data Retention</h2>
+      <p>We retain your data for as long as your account is active. When you delete your account:</p>
       <ul>
-        <li><strong>Supabase</strong> — database storage and authentication. Your financial data and account credentials are stored here with row-level security.</li>
-        <li><strong>Anthropic</strong> — AI response generation. A financial summary is sent per request and not retained.</li>
-        <li><strong>Vercel</strong> — application hosting and serverless functions.</li>
-        <li><strong>Stripe</strong> (if applicable) — payment processing for subscriptions. We do not store full card details.</li>
-      </ul>
-      <p>Each provider operates under their own privacy policy and data processing agreements.</p>
-
-      <h2>6. Data Security</h2>
-      <p>We take data security seriously. Your data is protected by:</p>
-      <ul>
-        <li>Row-level security (RLS) — you can only access your own data, enforced at the database level</li>
-        <li>HTTPS encryption for all data in transit</li>
-        <li>Supabase Auth for secure password hashing — we never store plain-text passwords</li>
-        <li>Server-side API key management — your AI API keys are never exposed client-side</li>
+        <li>All personal data, financial data, transactions, categories, and budgets are permanently deleted within 30 days</li>
+        <li>Your Stripe subscription is cancelled immediately upon account deletion</li>
+        <li>Billing records may be retained for up to 7 years as required by financial regulations</li>
+        <li>Anonymized, aggregated usage statistics may be retained indefinitely as they cannot be linked to you</li>
       </ul>
 
       <h2>7. Your Rights</h2>
-      <p>You have the following rights over your data:</p>
+      <p>You have the following rights regarding your personal data:</p>
       <ul>
-        <li><strong>Access</strong> — request a copy of the data we hold about you</li>
-        <li><strong>Correction</strong> — update or correct inaccurate information</li>
-        <li><strong>Deletion</strong> — delete your account and all associated data at any time from account settings</li>
-        <li><strong>Portability</strong> — request an export of your financial data in a readable format</li>
-        <li><strong>Objection</strong> — object to specific processing of your data where applicable</li>
+        <li><strong>Access:</strong> Request a copy of the personal data we hold about you</li>
+        <li><strong>Correction:</strong> Update or correct inaccurate information in your account settings</li>
+        <li><strong>Deletion:</strong> Delete your account and all associated data at any time from account settings</li>
+        <li><strong>Portability:</strong> Request an export of your financial data in a machine-readable format</li>
+        <li><strong>Objection:</strong> Object to certain processing of your data where applicable law permits</li>
+        <li><strong>Withdraw consent:</strong> Where processing is based on consent, you may withdraw it at any time</li>
       </ul>
-      <p>To exercise any of these rights, contact us through the app. We'll respond within 30 days.</p>
+      <p>To exercise any of these rights, contact us through the app. We will respond within 30 days. We may need to verify your identity before fulfilling your request.</p>
 
-      <h2>8. Data Retention</h2>
-      <p>We retain your data for as long as your account is active or as needed to provide the service. When you delete your account, all personal data, financial data, and transaction history is permanently and irreversibly deleted within 30 days. Subscription billing records may be retained longer as required by law.</p>
+      <h2>8. Cookies & Local Storage</h2>
+      <p>Flo uses minimal browser storage:</p>
+      <ul>
+        <li><strong>LocalStorage:</strong> Used for theme preference (dark/light mode) and session tokens managed by Supabase Auth</li>
+        <li><strong>SessionStorage:</strong> Used to cache subscription status during your browsing session to reduce database queries</li>
+        <li><strong>Cookies:</strong> Supabase Auth may set authentication cookies for session management</li>
+      </ul>
+      <p>We do not use advertising cookies, tracking pixels, or third-party analytics cookies. We do not use cookies to track your activity across other websites.</p>
 
-      <h2>9. Cookies</h2>
-      <p>Flo uses minimal cookies and local storage — primarily for session management and user preferences such as dark/light mode. We do not use advertising or tracking cookies.</p>
+      <h2>9. Children's Privacy</h2>
+      <p>Flo's subscription service is intended for users 18 and older. The free tier is available to users 13 and older with parental consent. We do not knowingly collect personal information from children under 13. If we become aware that we have collected data from a child under 13, we will delete it promptly. If you believe a child under 13 has used our Service, please contact us immediately.</p>
 
-      <h2>10. Children's Privacy</h2>
-      <p>Flo is not directed at children under 13. We do not knowingly collect personal data from children under 13. If you believe a child under 13 has provided us with data, please contact us and we will delete it promptly.</p>
+      <h2>10. International Users</h2>
+      <p>Flo is operated in the United States. If you access the Service from outside the United States, your data will be transferred to and processed in the United States. By using the Service, you consent to this transfer. We take steps to ensure your data receives appropriate protection regardless of where it is processed.</p>
 
       <h2>11. Changes to This Policy</h2>
-      <p>We may update this privacy policy from time to time. If we make material changes, we will notify you via email or an in-app notice at least 14 days before changes take effect. Your continued use of Flo after that date constitutes acceptance of the updated policy.</p>
+      <p>We may update this Privacy Policy from time to time. If we make material changes, we will notify you via email or in-app notice at least 14 days before the changes take effect. The "Last updated" date at the top of this page will reflect the most recent revision. Your continued use of the Service after the effective date constitutes acceptance of the updated policy.</p>
 
       <h2>12. Contact</h2>
-      <p>If you have questions about this privacy policy, want to exercise your data rights, or have a privacy concern, please contact us through the app. We take all privacy inquiries seriously and will respond as promptly as possible.</p>
+      <p>If you have questions about this Privacy Policy, want to exercise your data rights, or have a privacy concern, please contact us through the app. We take all privacy inquiries seriously and will respond within 5 business days.</p>
 
       <div class="footer-links">
         <a href="/terms.html">Terms of Service</a>
