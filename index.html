@@ -294,7 +294,7 @@
       <div class="card" id="ai-section">
         <div class="card-header"><div class="card-title">Ask Flo AI</div></div>
         <div class="chat-msgs" id="chat-messages">
-          <div class="msg-ai">hey! i can see your full budget. ask me anything — purchases, tips, or a quick Summary.</div>
+          <div class="msg-ai">Hey! Ask me anything about your finances.</div>
         </div>
         <div class="chat-row">
           <input id="ai-input" type="text" class="inp" placeholder="Ask about your finances..." onkeydown="if(event.key==='Enter') askAI()" />
@@ -413,6 +413,30 @@
       sessionStorage.setItem(_cacheKey, JSON.stringify({ status: subStatus, isPro, ts: Date.now() }))
     }
     window._isPro = isPro
+
+    // Show AI question counter for free users
+    if (!isPro) {
+      const { data: prof } = await supabase.from('profiles').select('ai_questions_used, ai_questions_month').eq('id', user.id).single()
+      const monthKey = new Date().toISOString().slice(0,7)
+      const usedThisMonth = prof?.ai_questions_month === monthKey ? (prof?.ai_questions_used || 0) : 0
+      const remaining = Math.max(0, 3 - usedThisMonth)
+      const counterEl = document.getElementById('ai-question-counter')
+      if (counterEl) {
+        counterEl.textContent = remaining > 0
+          ? `${usedThisMonth}/3 free questions used this month`
+          : 'Free questions used up — upgrade for 50/day'
+        counterEl.style.color = remaining === 0 ? 'var(--accent2)' : 'var(--muted2)'
+      }
+    } else {
+      const today = new Date().toISOString().slice(0,10)
+      const dayKey = 'flo_ai_' + user.id + '_' + today
+      const used = parseInt(localStorage.getItem(dayKey) || '0')
+      const counterEl = document.getElementById('ai-question-counter')
+      if (counterEl) {
+        counterEl.textContent = `${used}/50 questions used today`
+        counterEl.style.color = 'var(--muted2)'
+      }
+    }
 
     // Show pro badge or upgrade prompt in sidebar
     const proEl = document.getElementById('pro-status')
@@ -631,6 +655,43 @@
       const input = document.getElementById('ai-input')
       const question = input.value.trim()
       if (!question || question.length > 2000) return
+
+      // ── AI Question Limits ──
+      const today = new Date().toISOString().slice(0,10)
+      const monthKey = new Date().toISOString().slice(0,7)
+
+      if (!window._isPro) {
+        // Free: 3 questions per month stored in Supabase profiles
+        const { data: prof } = await supabase.from('profiles').select('ai_questions_used, ai_questions_month').eq('id', user.id).single()
+        const usedMonth = prof?.ai_questions_month === monthKey ? (prof?.ai_questions_used || 0) : 0
+        if (usedMonth >= 3) {
+          const msgs = document.getElementById('chat-messages')
+          msgs.innerHTML += '<div class="msg-ai" style="color:var(--accent2);font-size:12px;">You've used your 3 free AI questions for this month. <a href="/pricing.html" style="color:var(--accent);font-weight:700;">Upgrade to Pro for 50 questions/day →</a></div>'
+          msgs.scrollTop = msgs.scrollHeight
+          return
+        }
+        // Increment counter
+        await supabase.from('profiles').update({
+          ai_questions_used: usedMonth + 1,
+          ai_questions_month: monthKey
+        }).eq('id', user.id)
+        // Update UI counter
+        const counterEl = document.getElementById('ai-question-counter')
+        if (counterEl) counterEl.textContent = `${usedMonth + 1}/3 free questions used`
+      } else {
+        // Pro: 50 per day tracked in localStorage
+        const dayKey = 'flo_ai_' + user.id + '_' + today
+        const used = parseInt(localStorage.getItem(dayKey) || '0')
+        if (used >= 50) {
+          const msgs = document.getElementById('chat-messages')
+          msgs.innerHTML += '<div class="msg-ai" style="color:var(--muted2);font-size:12px;">You've reached your 50 daily AI questions. Your limit resets at midnight.</div>'
+          msgs.scrollTop = msgs.scrollHeight
+          return
+        }
+        localStorage.setItem(dayKey, used + 1)
+        // Clean up old keys
+        Object.keys(localStorage).filter(k => k.startsWith('flo_ai_' + user.id + '_') && !k.endsWith(today)).forEach(k => localStorage.removeItem(k))
+      }
       const msgs = document.getElementById('chat-messages')
       msgs.innerHTML += '<div class="msg-user">' + question + '</div>'
       input.value = ''
