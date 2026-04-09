@@ -666,7 +666,11 @@
         const usedMonth = prof?.ai_questions_month === monthKey ? (prof?.ai_questions_used || 0) : 0
         if (usedMonth >= 3) {
           const msgs = document.getElementById('chat-messages')
-          msgs.innerHTML += '<div class="msg-ai" style="color:var(--accent2);font-size:12px;">You've used your 3 free AI questions for this month. <a href="/pricing.html" style="color:var(--accent);font-weight:700;">Upgrade to Pro for 50 questions/day →</a></div>'
+          const _limitMsg = document.createElement('div')
+          _limitMsg.className = 'msg-ai'
+          _limitMsg.style.cssText = 'color:var(--accent2);font-size:12px;'
+          _limitMsg.innerHTML = 'You\'ve used your 3 free AI questions this month. <a href="/pricing.html" style="color:var(--accent);font-weight:700;">Upgrade to Pro for 50/day →</a>'
+          msgs.appendChild(_limitMsg)
           msgs.scrollTop = msgs.scrollHeight
           return
         }
@@ -684,7 +688,11 @@
         const used = parseInt(localStorage.getItem(dayKey) || '0')
         if (used >= 50) {
           const msgs = document.getElementById('chat-messages')
-          msgs.innerHTML += '<div class="msg-ai" style="color:var(--muted2);font-size:12px;">You've reached your 50 daily AI questions. Your limit resets at midnight.</div>'
+          const _limitMsg = document.createElement('div')
+          _limitMsg.className = 'msg-ai'
+          _limitMsg.style.cssText = 'color:var(--accent2);font-size:12px;'
+          _limitMsg.innerHTML = 'You\'ve used your 3 free AI questions this month. <a href="/pricing.html" style="color:var(--accent);font-weight:700;">Upgrade to Pro for 50/day →</a>'
+          msgs.appendChild(_limitMsg)
           msgs.scrollTop = msgs.scrollHeight
           return
         }
