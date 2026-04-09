@@ -387,12 +387,12 @@
       msg.textContent = 'Saving...'; btn.disabled = true
 
       // Ensure profile exists FIRST to prevent foreign key constraint error
+      // NOTE: Never include subscription_status here — it would overwrite active subscriptions
       await supabase.from('profiles').upsert({
         id: user.id,
         email: user.email,
         first_name: user.user_metadata?.first_name || '',
-        full_name: user.user_metadata?.full_name || user.email,
-        subscription_status: 'free'
+        full_name: user.user_metadata?.full_name || user.email
       }, { onConflict: 'id', ignoreDuplicates: false })
 
       // Wait for profile write to complete

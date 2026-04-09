@@ -263,8 +263,20 @@
     window.showDeleteModal=()=>document.getElementById('delete-modal').classList.add('show')
     window.hideDeleteModal=()=>{document.getElementById('delete-modal').classList.remove('show');document.getElementById('confirm-input').value='';document.getElementById('confirm-delete-btn').disabled=true;document.getElementById('delete-msg').textContent=''}
     window.deleteAccount=async()=>{
-      const msg=document.getElementById('delete-msg'),btn=document.getElementById('confirm-delete-btn'); btn.disabled=true; msg.textContent='deleting...'
-      try{await supabase.from('transactions').delete().eq('user_id',user.id);await supabase.from('categories').delete().eq('user_id',user.id);await supabase.from('budgets').delete().eq('user_id',user.id);await supabase.from('profiles').delete().eq('id',user.id);await supabase.auth.signOut();location.href='/login.html?deleted=true'}
+      const msg=document.getElementById('delete-msg'),btn=document.getElementById('confirm-delete-btn')
+      btn.disabled=true; msg.textContent='Cancelling subscription and deleting account...'
+      try{
+        // Use server-side delete which cancels Stripe subscription first
+        const res=await fetch('/api/delete-account',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({userId:user.id})
+        })
+        const data=await res.json()
+        if(!res.ok) throw new Error(data.error||'Delete failed')
+        await supabase.auth.signOut()
+        localStorage.clear(); sessionStorage.clear()
+        location.href='/login.html?deleted=true'}
       catch(err){msg.textContent='something went wrong.';btn.disabled=false}
     }
   </script>
