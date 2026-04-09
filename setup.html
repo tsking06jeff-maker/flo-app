@@ -444,19 +444,18 @@
       const hasPro = ['active', 'trialing'].includes(subStatus)
       // isEditMode = user already has budgets in DB (came from "Edit budget")
       // activeBudgetId = specific budget tab was selected
-      const isEditingExisting = isEditMode || !!activeBudgetId
+      // Re-query budgets fresh to be 100% sure (don't rely on outer scope)
+      const { data: _freshBudgets } = await supabase.from('budgets').select('id').eq('user_id', user.id).limit(1)
+      const hasBudgets = (_freshBudgets && _freshBudgets.length > 0) || isEditMode || !!activeBudgetId
 
-      // Cache subscription status in sessionStorage for this session
-      sessionStorage.setItem('flo_sub_' + user.id, JSON.stringify({
-        status: subStatus, isPro: hasPro, ts: Date.now()
-      }))
+      // If they have ANY budgets → they're an existing user → dashboard
+      if (hasBudgets) { location.href = '/index.html'; return }
 
-      // Only show pricing if brand new user with no subscription AND no existing budgets
-      if (!hasPro && !isEditingExisting) {
-        location.href = '/pricing.html?firsttime=true'
-      } else {
-        location.href = '/index.html'
-      }
+      // If they have a subscription → dashboard
+      if (hasPro) { location.href = '/index.html'; return }
+
+      // Only here if truly brand new: no budgets, no subscription
+      location.href = '/pricing.html?firsttime=true'
     }
 
     renderCategories()
