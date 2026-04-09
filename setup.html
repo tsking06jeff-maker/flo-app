@@ -384,13 +384,38 @@
 
     window.saveSetup = async function() {
       const msg = document.getElementById('msg3'), btn = document.getElementById('save-btn')
-      msg.textContent = 'saving...'; btn.disabled = true
+      msg.textContent = 'Saving...'; btn.disabled = true
+
+      // Ensure profile exists FIRST to prevent foreign key constraint error
+      await supabase.from('profiles').upsert({
+        id: user.id,
+        email: user.email,
+        first_name: user.user_metadata?.first_name || '',
+        full_name: user.user_metadata?.full_name || user.email,
+        subscription_status: 'free'
+      }, { onConflict: 'id', ignoreDuplicates: false })
+
+      // Wait for profile write to complete
+      await new Promise(r => setTimeout(r, 400))
+
       const income = parseFloat(document.getElementById('income').value)
       const savings = parseFloat(document.getElementById('savings').value) || 0
       const yearlyGoal = parseFloat(document.getElementById('yearly-goal').value) || null
       const totalSaved = parseFloat(document.getElementById('total-saved').value) || 0
       const budgetName = document.getElementById('budget-name').value.trim() || 'Regular Month'
       const month = new Date().toISOString().slice(0,7) + '-01'
+
+      // Ensure profile exists first — this fixes the foreign key constraint
+      await supabase.from('profiles').upsert({
+        id: user.id,
+        email: user.email,
+        full_name: user.user_metadata?.full_name || user.email,
+        first_name: user.user_metadata?.first_name || ''
+      }, { onConflict: 'id' })
+
+      // Small delay to ensure profile write completes
+      await new Promise(r => setTimeout(r, 300))
+
       let budgetError
       if (activeBudgetId) {
         const { error } = await supabase.from('budgets').update({ name: budgetName, income, savings_goal: savings, yearly_goal: yearlyGoal, total_saved: totalSaved, month }).eq('id', activeBudgetId)
@@ -401,12 +426,22 @@
       }
       if (budgetError) {
         const { error: be } = await supabase.from('budgets').upsert({ user_id: user.id, name: budgetName, income, savings_goal: savings, yearly_goal: yearlyGoal, total_saved: totalSaved, month }, { onConflict: 'user_id,month' })
-        if (be) { msg.textContent = 'error: ' + be.message; btn.disabled = false; return }
+        if (be) { msg.textContent = 'Error: ' + be.message; btn.disabled = false; return }
       }
       await supabase.from('categories').delete().eq('user_id', user.id)
       const { error: ce } = await supabase.from('categories').insert(categories.map(c => ({ user_id: user.id, name: c.name, budget: c.budget, color: c.color })))
-      if (ce) { msg.textContent = 'error: ' + ce.message; btn.disabled = false; return }
-      location.href = '/index.html'
+      if (ce) { msg.textContent = 'Error: ' + ce.message; btn.disabled = false; return }
+
+      // Check if this is first time setup — if so, redirect to pricing
+      const { data: profile } = await supabase.from('profiles').select('subscription_status').eq('id', user.id).single()
+      const isFirstSetup = !profile?.subscription_status || profile.subscription_status === 'free'
+      const hasExistingBudget = !!activeBudgetId
+
+      if (isFirstSetup && !hasExistingBudget) {
+        location.href = '/pricing.html?firsttime=true'
+      } else {
+        location.href = '/index.html'
+      }
     }
 
     renderCategories()

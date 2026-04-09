@@ -7,8 +7,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    :root[data-theme="dark"]{--bg:#0c0c0f;--card:#141418;--card2:#18181d;--border:#1e1e27;--border2:#2a2a35;--text:#f4f4f5;--muted:#71717a;--muted2:#52525b;--accent:#a78bfa;--accent2:#ec4899;--accent-dim:rgba(167,139,250,0.12);--red:#f87171;--red-dim:rgba(248,113,113,0.1);--inp-bg:#0c0c0f;}
-    :root[data-theme="light"]{--bg:#f5f5fa;--card:#ffffff;--card2:#f8f8fc;--border:#e4e4f0;--border2:#d4d4e8;--text:#0c0c0f;--muted:#6b6b7b;--muted2:#9898ab;--accent:#7c3aed;--accent2:#db2777;--accent-dim:rgba(124,58,237,0.08);--red:#dc2626;--red-dim:rgba(220,38,38,0.08);--inp-bg:#f5f5fa;}
+    :root[data-theme="dark"]{--bg:#0c0c0f;--card:#141418;--card2:#18181d;--border:#1e1e27;--border2:#2a2a35;--text:#f4f4f5;--muted:#71717a;--muted2:#52525b;--accent:#a78bfa;--accent2:#ec4899;--accent-dim:rgba(167,139,250,0.12);--red:#f87171;--red-dim:rgba(248,113,113,0.1);--green:#4ade80;--inp-bg:#0c0c0f;}
+    :root[data-theme="light"]{--bg:#f5f5fa;--card:#ffffff;--card2:#f8f8fc;--border:#e4e4f0;--border2:#d4d4e8;--text:#0c0c0f;--muted:#6b6b7b;--muted2:#9898ab;--accent:#7c3aed;--accent2:#db2777;--accent-dim:rgba(124,58,237,0.08);--red:#dc2626;--red-dim:rgba(220,38,38,0.08);--green:#16a34a;--inp-bg:#f5f5fa;}
     body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sans-serif;min-height:100vh;transition:background 0.2s;}
     .sidebar{position:fixed;top:0;left:0;width:220px;height:100vh;background:var(--card);border-right:1px solid var(--border);padding:20px 12px;display:flex;flex-direction:column;z-index:10;}
     .sidebar-logo{padding:4px 8px 20px;display:flex;align-items:center;gap:10px;}
@@ -115,10 +115,17 @@
       <div class="info-row"><span class="info-label">Member since</span><span class="info-value" id="member-since">—</span></div>
       <div class="info-row"><span class="info-label">Transactions logged</span><span class="info-value" id="txn-count">—</span></div>
     </div>
+    <!-- Subscription management card -->
+    <div class="card" id="sub-card">
+      <div class="card-title">Subscription</div>
+      <div class="info-row"><span class="info-label">Status</span><span id="sub-status">Loading...</span></div>
+      <div id="sub-actions" style="margin-top:14px;"></div>
+    </div>
+
     <div class="ext-card">
-      <div class="ext-title">⧉ flo browser extension</div>
-      <p class="ext-desc">Get real-time purchase advice while you shop on amazon, walmart, target, and more. pops up automatically and checks your budget before you buy.</p>
-      <a href="#" onclick="showExtModal();return false;" class="btn-ext">⧉ add to chrome / edge</a>
+      <div class="ext-title">⧉ Flo browser extension <span id="ext-pro-badge" style="font-size:10px;background:var(--accent-dim);color:var(--accent);padding:1px 7px;border-radius:99px;margin-left:4px;">Pro</span></div>
+      <p class="ext-desc">Get real-time purchase advice while you shop on Amazon, Walmart, Target, and more. Requires Flo Pro.</p>
+      <a href="#" id="ext-btn" class="btn-ext">⧉ Add to Chrome / Edge</a>
     </div>
     <div class="card">
       <div class="card-title">Sign out</div>
@@ -190,7 +197,68 @@
       await supabase.from('profiles').upsert({id:user.id,full_name:name,first_name:first,email:user.email})
       msg.textContent='✓ name updated!';msg.style.color='var(--accent)';document.getElementById('user-name-display').textContent=name;setTimeout(()=>msg.textContent='',3000)
     }
-    window.signOut=async()=>{await supabase.auth.signOut();location.href='/login.html'}
+    window.signOut=async()=>{await supabase.auth.signOut();localStorage.clear();location.href='/login.html'}
+
+    // Load subscription status
+    async function loadSubscription(){
+      const {data:prof}=await supabase.from('profiles').select('subscription_status,stripe_customer_id').eq('id',user.id).single()
+      const status=prof?.subscription_status||'free'
+      const customerId=prof?.stripe_customer_id
+      const isPro=['active','trialing'].includes(status)
+      const statusLabels={
+        free:'<span style="font-size:12px;background:rgba(113,113,122,0.15);color:var(--muted2);padding:2px 10px;border-radius:99px;font-weight:600;">Free plan</span>',
+        active:'<span style="font-size:12px;background:rgba(74,222,128,0.1);color:#4ade80;padding:2px 10px;border-radius:99px;font-weight:600;">Pro — Active ✓</span>',
+        trialing:'<span style="font-size:12px;background:rgba(167,139,250,0.15);color:var(--accent);padding:2px 10px;border-radius:99px;font-weight:600;">Pro — Trial ✓</span>',
+        past_due:'<span style="font-size:12px;background:rgba(248,113,113,0.1);color:#f87171;padding:2px 10px;border-radius:99px;font-weight:600;">Payment failed</span>',
+        cancelled:'<span style="font-size:12px;background:rgba(113,113,122,0.15);color:var(--muted2);padding:2px 10px;border-radius:99px;font-weight:600;">Cancelled</span>'
+      }
+      document.getElementById('sub-status').innerHTML=statusLabels[status]||statusLabels.free
+      const actionsEl=document.getElementById('sub-actions')
+      if(isPro&&customerId){
+        actionsEl.innerHTML=`
+          <button onclick="openPortal()" style="width:100%;padding:11px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;">Manage subscription →</button>
+          <p style="font-size:11px;color:var(--muted2);margin-top:8px;text-align:center;line-height:1.5;">Update payment, view invoices, or cancel — all via Stripe.</p>`
+      } else if(status==='past_due'&&customerId){
+        actionsEl.innerHTML=`
+          <button onclick="openPortal()" style="width:100%;padding:11px;border-radius:9px;border:none;background:#f87171;color:white;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;">Fix payment issue</button>
+          <p style="font-size:11px;color:#f87171;margin-top:8px;text-align:center;">Your last payment failed — update your card to restore Pro access.</p>`
+      } else {
+        actionsEl.innerHTML=`
+          <button onclick="location.href='/pricing.html'" style="width:100%;padding:11px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;">Upgrade to Pro — $9.99/mo →</button>
+          <div style="margin-top:12px;background:var(--card2);border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+            <div style="padding:10px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted2);border-bottom:1px solid var(--border);">What you unlock with Pro</div>
+            <div style="padding:8px 14px;display:flex;flex-direction:column;gap:7px;">
+              <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:var(--muted);">Transactions</span><span style="color:var(--text);font-weight:600;">20/mo → Unlimited</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:var(--muted);">Ask Flo AI advisor</span><span style="color:#4ade80;font-weight:600;">✓ Unlocked</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:var(--muted);">Monthly reports</span><span style="color:#4ade80;font-weight:600;">✓ Unlocked</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:var(--muted);">Expense planner</span><span style="color:#4ade80;font-weight:600;">✓ Unlocked</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:var(--muted);">Browser extension</span><span style="color:#4ade80;font-weight:600;">✓ Unlocked</span></div>
+            </div>
+          </div>
+          <p style="font-size:11px;color:var(--muted2);text-align:center;margin-top:8px;">7-day free trial · Cancel anytime</p>`
+      }
+      // Extension button
+      const extBtn=document.getElementById('ext-btn')
+      if(isPro){
+        extBtn.onclick=e=>{e.preventDefault();showExtModal()}
+      } else {
+        extBtn.style.opacity='0.5'
+        extBtn.style.cursor='not-allowed'
+        extBtn.onclick=e=>{e.preventDefault();location.href='/pricing.html'}
+      }
+    }
+
+    window.openPortal=async function(){
+      const {data:prof}=await supabase.from('profiles').select('stripe_customer_id').eq('id',user.id).single()
+      if(!prof?.stripe_customer_id){location.href='/pricing.html';return}
+      try{
+        const res=await fetch('/api/create-portal',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({customerId:prof.stripe_customer_id})})
+        const data=await res.json()
+        if(data.url)location.href=data.url
+      }catch{alert('Could not open billing portal.')}
+    }
+
+    loadSubscription()
     document.getElementById('confirm-input').addEventListener('input',function(){document.getElementById('confirm-delete-btn').disabled=this.value!=='DELETE'})
     window.showDeleteModal=()=>document.getElementById('delete-modal').classList.add('show')
     window.hideDeleteModal=()=>{document.getElementById('delete-modal').classList.remove('show');document.getElementById('confirm-input').value='';document.getElementById('confirm-delete-btn').disabled=true;document.getElementById('delete-msg').textContent=''}

@@ -115,7 +115,7 @@
     <button class="bottom-nav-item active"><span class="bottom-nav-icon">✦</span><span>Planner</span></button>
     <button class="bottom-nav-item" onclick="location.href='/account.html'"><span class="bottom-nav-icon">◎</span><span>Account</span></button>
   </div>
-  <div class="main">
+  <div class="main"><div id="main-content">
     <div class="page-header">
       <div><div class="page-title">Expense planner</div><div class="page-sub">Plan and save for vacations and big purchases</div></div>
       <button class="btn-new" onclick="openNewGoal()">+ New goal</button>
@@ -145,6 +145,7 @@
   <div id="ext-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:999;align-items:center;justify-content:center;" onclick="if(event.target===this)hideExtModal()">
     <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:380px;width:92%;"><h2 style="font-size:15px;font-weight:800;margin-bottom:6px;color:var(--text);">⧉ Install the Flo extension</h2><p style="font-size:12px;color:var(--muted);margin-bottom:14px;">Get real-time advice while you shop.</p><div style="display:flex;gap:8px;"><button onclick="window.open('edge://extensions')" style="flex:1;padding:10px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:none;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;">Open extensions</button><button onclick="hideExtModal()" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--muted);font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;">Close</button></div></div>
   </div>
+  </div>
   <script type="module">
     import { supabase } from './Supabase.js'
     const _t=localStorage.getItem('flo_theme')||'dark'
@@ -160,6 +161,24 @@
     const user=session.user
     const p=user.user_metadata; document.getElementById('user-name').textContent=p?.full_name||p?.first_name||user.email; document.getElementById('user-initials').textContent=(p?.first_name?.[0]||user.email[0]).toUpperCase()
     window.signOut=async()=>{await supabase.auth.signOut();localStorage.clear();location.href='/login.html'}
+    // Check subscription — Expense Planner is Pro only
+    const { data: _prof } = await supabase.from('profiles').select('subscription_status').eq('id', user.id).single()
+    const _isPro = ['active','trialing'].includes(_prof?.subscription_status||'free')
+    if (!_isPro) {
+      document.getElementById('main-content').style.display = 'none'
+      const wall = document.createElement('div')
+      wall.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;padding:2rem;'
+      wall.innerHTML = `<div style="font-size:3rem;margin-bottom:16px;">✦</div>
+        <h2 style="font-size:20px;font-weight:800;margin-bottom:8px;color:var(--text);">Expense Planner — Pro Feature</h2>
+        <p style="font-size:14px;color:var(--muted);line-height:1.6;max-width:380px;margin-bottom:24px;">Upgrade to Flo Pro to unlock expense planner, AI insights, and more. Start with a 7-day free trial.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+          <button onclick="location.href='/pricing.html'" style="padding:12px 24px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:none;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;">Start free trial →</button>
+          <button onclick="location.href='/index.html'" style="padding:12px 18px;border-radius:9px;border:1px solid var(--border);background:none;color:var(--muted);font-size:13px;font-family:'Inter',sans-serif;cursor:pointer;">Back to dashboard</button>
+        </div>`
+      document.querySelector('.main').appendChild(wall)
+      return
+    }
+
     const GOALS_KEY=`flo_goals_${user.id}`
     let goals=JSON.parse(localStorage.getItem(GOALS_KEY)||'[]')
     let editingIndex=null,selectedEmoji='✈️'

@@ -393,6 +393,31 @@
     document.getElementById('user-initials-mobile').textContent = initials
     document.getElementById('user-name-desktop').textContent = displayName
 
+    // Check subscription status
+    const { data: profileData } = await supabase.from('profiles').select('subscription_status, stripe_customer_id').eq('id', user.id).single()
+    const subStatus = profileData?.subscription_status || 'free'
+    const isPro = ['active', 'trialing'].includes(subStatus)
+    window._isPro = isPro
+
+    // Show pro badge or upgrade prompt in sidebar
+    const proEl = document.getElementById('pro-status')
+    if (proEl) {
+      if (isPro) { proEl.innerHTML = '<span style="font-size:10px;background:var(--accent-dim);color:var(--accent);padding:2px 8px;border-radius:99px;font-weight:700;">PRO</span>' }
+      else { proEl.innerHTML = '<a href="/pricing.html" style="font-size:10px;background:rgba(236,72,153,0.1);color:var(--accent2);padding:2px 8px;border-radius:99px;font-weight:700;text-decoration:none;">Upgrade →</a>' }
+    }
+
+    // Gate AI section for free users
+    if (!isPro) {
+      const aiSection = document.getElementById('ai-section')
+      if (aiSection) {
+        aiSection.style.position = 'relative'
+        const overlay = document.createElement('div')
+        overlay.style.cssText = 'position:absolute;inset:0;background:rgba(12,12,15,0.85);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:10;backdrop-filter:blur(2px);'
+        overlay.innerHTML = '<div style="font-size:22px;">✦</div><div style="font-size:13px;font-weight:700;color:var(--text);">Ask Flo AI — Pro Feature</div><div style="font-size:12px;color:var(--muted);text-align:center;max-width:220px;line-height:1.5;">Unlock AI-powered financial advice with Flo Pro.</div><button onclick="location.href='/pricing.html'" style="padding:9px 20px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:none;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;margin-top:4px;">Start free trial →</button>'
+        aiSection.appendChild(overlay)
+      }
+    }
+
     const now = new Date()
     document.getElementById('date-badge').textContent = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
 
