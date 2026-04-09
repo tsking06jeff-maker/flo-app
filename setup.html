@@ -434,10 +434,14 @@
 
       // Check if this is first time setup — if so, redirect to pricing
       const { data: profile } = await supabase.from('profiles').select('subscription_status').eq('id', user.id).single()
-      const isFirstSetup = !profile?.subscription_status || profile.subscription_status === 'free'
-      const hasExistingBudget = !!activeBudgetId
+      const subStatus = profile?.subscription_status || 'free'
+      const hasPro = ['active', 'trialing'].includes(subStatus)
+      const isEditingExisting = !!activeBudgetId
+      const hasSeenPricing = localStorage.getItem('flo_seen_pricing') === 'true'
 
-      if (isFirstSetup && !hasExistingBudget) {
+      // Only show pricing if: new user, no subscription, and hasn't seen pricing before
+      if (!hasPro && !isEditingExisting && !hasSeenPricing) {
+        localStorage.setItem('flo_seen_pricing', 'true')
         location.href = '/pricing.html?firsttime=true'
       } else {
         location.href = '/index.html'

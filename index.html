@@ -398,6 +398,8 @@
     const subStatus = profileData?.subscription_status || 'free'
     const isPro = ['active', 'trialing'].includes(subStatus)
     window._isPro = isPro
+    // If user has pro, mark pricing as seen so setup never redirects them
+    if (isPro) localStorage.setItem('flo_seen_pricing', 'true')
 
     // Show pro badge or upgrade prompt in sidebar
     const proEl = document.getElementById('pro-status')
