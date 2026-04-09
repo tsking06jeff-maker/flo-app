@@ -135,6 +135,7 @@
     const user=session.user
     const p=user.user_metadata; document.getElementById('user-name').textContent=p?.full_name||p?.first_name||user.email; document.getElementById('user-initials').textContent=(p?.first_name?.[0]||user.email[0]).toUpperCase()
     window.signOut=async()=>{await supabase.auth.signOut();localStorage.clear();location.href='/login.html'}
+    ;(async()=>{
     // Check subscription — Monthly Reports is Pro only
     const { data: _prof } = await supabase.from('profiles').select('subscription_status').eq('id', user.id).single()
     const _isPro = ['active','trialing'].includes(_prof?.subscription_status||'free')
