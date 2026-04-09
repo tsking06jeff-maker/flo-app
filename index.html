@@ -393,13 +393,26 @@
     document.getElementById('user-initials-mobile').textContent = initials
     document.getElementById('user-name-desktop').textContent = displayName
 
-    // Check subscription status
-    const { data: profileData } = await supabase.from('profiles').select('subscription_status, stripe_customer_id').eq('id', user.id).single()
-    const subStatus = profileData?.subscription_status || 'free'
-    const isPro = ['active', 'trialing'].includes(subStatus)
+    // Check subscription — always from Supabase, cache in sessionStorage
+    const _cacheKey = 'flo_sub_' + user.id
+    let subStatus = 'free', isPro = false
+    try {
+      const _cached = sessionStorage.getItem(_cacheKey)
+      if (_cached) {
+        const _c = JSON.parse(_cached)
+        if (Date.now() - _c.ts < 5 * 60 * 1000) {
+          subStatus = _c.status; isPro = _c.isPro
+        }
+      }
+    } catch {}
+    if (!isPro) {
+      // Not cached or expired — fetch fresh from DB
+      const { data: profileData } = await supabase.from('profiles').select('subscription_status').eq('id', user.id).single()
+      subStatus = profileData?.subscription_status || 'free'
+      isPro = ['active', 'trialing'].includes(subStatus)
+      sessionStorage.setItem(_cacheKey, JSON.stringify({ status: subStatus, isPro, ts: Date.now() }))
+    }
     window._isPro = isPro
-    // If user has pro, mark pricing as seen so setup never redirects them
-    if (isPro) localStorage.setItem('flo_seen_pricing', 'true')
 
     // Show pro badge or upgrade prompt in sidebar
     const proEl = document.getElementById('pro-status')

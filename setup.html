@@ -433,15 +433,24 @@
       if (ce) { msg.textContent = 'Error: ' + ce.message; btn.disabled = false; return }
 
       // Check if this is first time setup — if so, redirect to pricing
-      const { data: profile } = await supabase.from('profiles').select('subscription_status').eq('id', user.id).single()
+      // Always read subscription from DB — never trust localStorage for this
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('subscription_status, stripe_customer_id')
+        .eq('id', user.id)
+        .single()
+
       const subStatus = profile?.subscription_status || 'free'
       const hasPro = ['active', 'trialing'].includes(subStatus)
       const isEditingExisting = !!activeBudgetId
-      const hasSeenPricing = localStorage.getItem('flo_seen_pricing') === 'true'
 
-      // Only show pricing if: new user, no subscription, and hasn't seen pricing before
-      if (!hasPro && !isEditingExisting && !hasSeenPricing) {
-        localStorage.setItem('flo_seen_pricing', 'true')
+      // Cache subscription status in sessionStorage for this session
+      sessionStorage.setItem('flo_sub_' + user.id, JSON.stringify({
+        status: subStatus, isPro: hasPro, ts: Date.now()
+      }))
+
+      // Only show pricing page if: brand new first-time user with no subscription
+      if (!hasPro && !isEditingExisting) {
         location.href = '/pricing.html?firsttime=true'
       } else {
         location.href = '/index.html'
