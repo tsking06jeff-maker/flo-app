@@ -30,11 +30,6 @@
     .user-name-pill{font-size:12px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
     .user-sub-pill{font-size:10px;color:var(--muted2);}
     .sign-out-btn{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:14px;padding:2px;}
-    .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);padding:8px 0 max(8px,env(safe-area-inset-bottom));z-index:100;justify-content:space-around;}
-    .bottom-nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 12px;cursor:pointer;color:var(--muted);font-size:10px;font-weight:500;border:none;background:none;font-family:'Inter',sans-serif;}
-    .bottom-nav-item.active{color:var(--accent);}
-    .bottom-nav-icon{font-size:18px;}
-    .mobile-topbar{display:none;position:fixed;top:0;left:0;right:0;background:var(--card);border-bottom:1px solid var(--border);padding:12px 16px;z-index:10;align-items:center;justify-content:space-between;}
     .main{margin-left:220px;padding:28px 32px 40px;}
     .page-header{margin-bottom:24px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;}
     .page-title{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
@@ -56,8 +51,7 @@
     .stat-sub{font-size:11px;color:var(--muted2);margin-top:3px;}
     .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
     .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:12px;}
-    .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-    .card-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted2);}
+    .card-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted2);margin-bottom:14px;}
     .card-sub{font-size:11px;color:var(--muted2);margin-top:2px;}
     .chart-wrap{position:relative;height:220px;}
     .cat-breakdown{display:flex;flex-direction:column;gap:10px;}
@@ -66,7 +60,7 @@
     .cat-row-name{font-weight:600;display:flex;align-items:center;gap:6px;}
     .cat-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
     .cat-row-amts{font-size:11px;color:var(--muted);}
-    .cat-row-amts .over{color:var(--red);font-weight:700;}
+    .over{color:var(--red);font-weight:700;}
     .progress-track{background:var(--border);border-radius:99px;height:5px;overflow:hidden;}
     .progress-fill{height:100%;border-radius:99px;transition:width 0.5s ease;}
     .insight-list{display:flex;flex-direction:column;gap:8px;}
@@ -75,8 +69,11 @@
     .insight.warn{background:rgba(251,146,60,0.08);border:1px solid rgba(251,146,60,0.2);}
     .insight.bad{background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);}
     .insight-icon{font-size:14px;flex-shrink:0;margin-top:1px;}
-    .empty-state{text-align:center;padding:2.5rem 1rem;color:var(--muted2);font-size:12px;}
-    @media(max-width:768px){.sidebar{display:none;}.bottom-nav{display:flex;}.mobile-topbar{display:flex;}.main{margin-left:0;padding:5rem 14px 6rem;}.stats-grid{grid-template-columns:1fr 1fr;}.grid-2{grid-template-columns:1fr;}}
+    .empty-state{text-align:center;padding:3rem 1rem;color:var(--muted2);font-size:13px;}
+    .empty-icon{font-size:3rem;margin-bottom:12px;}
+    .empty-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px;}
+    .bottom-nav{display:none;}
+    @media(max-width:768px){.sidebar{display:none;}.bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);padding:8px 0;z-index:100;justify-content:space-around;}.main{margin-left:0;padding:1rem 14px 6rem;}.stats-grid{grid-template-columns:1fr 1fr;}.grid-2{grid-template-columns:1fr;}}
   </style>
 </head>
 <body>
@@ -94,31 +91,27 @@
       <div class="user-pill"><div class="user-avatar" id="user-initials">?</div><div style="flex:1;overflow:hidden;"><div class="user-name-pill" id="user-name">—</div><div class="user-sub-pill">Let your money flow</div></div><button class="sign-out-btn" onclick="signOut()">⇥</button></div>
     </div>
   </div>
-  <div class="mobile-topbar">
-    <div style="display:flex;align-items:center;gap:8px;"><div class="logo-mark" style="width:24px;height:24px;border-radius:7px;"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M2 8 Q5 3 8 8 Q11 13 14 8" stroke="white" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg></div><span style="font-size:13px;font-weight:800;letter-spacing:2px;color:var(--text);">FLO</span></div>
-    <div class="toggle-track" id="toggle-track-mobile" onclick="toggleTheme()" style="cursor:pointer;"><div class="toggle-thumb"></div></div>
-  </div>
   <div class="bottom-nav">
-    <button class="bottom-nav-item" onclick="location.href='/index.html'"><span class="bottom-nav-icon">⬡</span><span>Home</span></button>
-    <button class="bottom-nav-item" onclick="location.href='/charts.html'"><span class="bottom-nav-icon">◈</span><span>Charts</span></button>
-    <button class="bottom-nav-item active"><span class="bottom-nav-icon">◧</span><span>Reports</span></button>
-    <button class="bottom-nav-item" onclick="location.href='/account.html'"><span class="bottom-nav-icon">◎</span><span>Account</span></button>
-  </div>
-  <div class="main"><div id="main-content">
-    <div class="page-header">
-      <div><div class="page-title">Monthly reports</div><div class="page-sub">Review your finances month by month</div></div>
-      <div class="month-nav">
-        <button class="month-btn" onclick="changeMonth(-1)">← Prev</button>
-        <div class="month-label" id="month-label">—</div>
-        <button class="month-btn" onclick="changeMonth(1)">Next →</button>
-      </div>
-    </div>
-    <div class="month-chips" id="month-chips"></div>
-    <div id="report-content"><div class="empty-state">Loading report...</div></div>
+    <button style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 12px;color:var(--muted);font-size:10px;border:none;background:none;font-family:'Inter',sans-serif;cursor:pointer;" onclick="location.href='/index.html'">⬡<span>Home</span></button>
+    <button style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 12px;color:var(--accent);font-size:10px;border:none;background:none;font-family:'Inter',sans-serif;cursor:pointer;">◧<span>Reports</span></button>
+    <button style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 12px;color:var(--muted);font-size:10px;border:none;background:none;font-family:'Inter',sans-serif;cursor:pointer;" onclick="location.href='/account.html'">◎<span>Account</span></button>
   </div>
   <div id="ext-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:999;align-items:center;justify-content:center;" onclick="if(event.target===this)hideExtModal()">
     <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:380px;width:92%;"><h2 style="font-size:15px;font-weight:800;margin-bottom:6px;color:var(--text);">⧉ Install the Flo extension</h2><p style="font-size:12px;color:var(--muted);margin-bottom:14px;">Get real-time advice while you shop.</p><div style="display:flex;gap:8px;"><button onclick="window.open('edge://extensions')" style="flex:1;padding:10px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:none;font-size:12px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;">Open extensions</button><button onclick="hideExtModal()" style="padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--muted);font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;">Close</button></div></div>
   </div>
+  <div class="main">
+    <div id="main-content">
+      <div class="page-header">
+        <div><div class="page-title">Monthly reports</div><div class="page-sub">Review your finances month by month</div></div>
+        <div class="month-nav">
+          <button class="month-btn" onclick="changeMonth(-1)">← Prev</button>
+          <div class="month-label" id="month-label">—</div>
+          <button class="month-btn" onclick="changeMonth(1)">Next →</button>
+        </div>
+      </div>
+      <div class="month-chips" id="month-chips"></div>
+      <div id="report-content"><div class="empty-state">Loading report...</div></div>
+    </div>
   </div>
   <script type="module">
     import { supabase } from './Supabase.js'
@@ -128,29 +121,29 @@
     window.toggleTheme=()=>applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark')
     window.showExtModal=()=>document.getElementById('ext-modal').style.display='flex'
     window.hideExtModal=()=>document.getElementById('ext-modal').style.display='none'
+
     const {data:{session}}=await supabase.auth.getSession()
     if(!session){localStorage.clear();location.href='/login.html'}
     const {data:{user:vu},error:ue}=await supabase.auth.getUser()
     if(!vu||ue){await supabase.auth.signOut();localStorage.clear();location.href='/login.html'}
     const user=session.user
-    const p=user.user_metadata; document.getElementById('user-name').textContent=p?.full_name||p?.first_name||user.email; document.getElementById('user-initials').textContent=(p?.first_name?.[0]||user.email[0]).toUpperCase()
+    const p=user.user_metadata
+    document.getElementById('user-name').textContent=p?.full_name||p?.first_name||user.email
+    document.getElementById('user-initials').textContent=(p?.first_name?.[0]||user.email[0]).toUpperCase()
     window.signOut=async()=>{await supabase.auth.signOut();localStorage.clear();location.href='/login.html'}
+
     ;(async()=>{
-    // Check subscription — Monthly Reports is Pro only
-    const { data: _prof } = await supabase.from('profiles').select('subscription_status').eq('id', user.id).single()
-    const _isPro = ['active','trialing'].includes(_prof?.subscription_status||'free')
-    if (!_isPro) {
-      document.getElementById('main-content').style.display = 'none'
-      const wall = document.createElement('div')
-      wall.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;padding:2rem;'
-      wall.innerHTML = `<div style="font-size:3rem;margin-bottom:16px;">✦</div>
-        <h2 style="font-size:20px;font-weight:800;margin-bottom:8px;color:var(--text);">Monthly Reports — Pro Feature</h2>
-        <p style="font-size:14px;color:var(--muted);line-height:1.6;max-width:380px;margin-bottom:24px;">Upgrade to Flo Pro to unlock monthly reports, AI insights, and more. Start with a 7-day free trial.</p>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
-          <button onclick="location.href='/pricing.html'" style="padding:12px 24px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:none;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;">Start free trial →</button>
-          <button onclick="location.href='/index.html'" style="padding:12px 18px;border-radius:9px;border:1px solid var(--border);background:none;color:var(--muted);font-size:13px;font-family:'Inter',sans-serif;cursor:pointer;">Back to dashboard</button>
-        </div>`
+    // Check subscription
+    const {data:_prof}=await supabase.from('profiles').select('subscription_status').eq('id',user.id).single()
+    const _isPro=['active','trialing'].includes(_prof?.subscription_status||'free')
+    if(!_isPro){
+      document.getElementById('main-content').style.display='none'
+      const wall=document.createElement('div')
+      wall.style.cssText='display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;padding:2rem;'
+      wall.innerHTML='<div style="font-size:3rem;margin-bottom:16px;">◧</div><h2 style="font-size:20px;font-weight:800;margin-bottom:8px;color:var(--text);">Monthly Reports — Pro Feature</h2><p style="font-size:14px;color:var(--muted);line-height:1.6;max-width:380px;margin-bottom:24px;">Upgrade to Flo Pro to unlock monthly reports, AI insights, and more. Start with a 3-day free trial.</p><div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;"><button id="upgrade-wall-btn" style="padding:12px 24px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:none;font-size:13px;font-weight:700;font-family:Inter,sans-serif;cursor:pointer;">Start free trial →</button><button id="back-wall-btn" style="padding:12px 18px;border-radius:9px;border:1px solid var(--border);background:none;color:var(--muted);font-size:13px;font-family:Inter,sans-serif;cursor:pointer;">Back to dashboard</button></div>'
       document.querySelector('.main').appendChild(wall)
+      document.getElementById('upgrade-wall-btn').onclick=()=>location.href='/pricing.html'
+      document.getElementById('back-wall-btn').onclick=()=>location.href='/index.html'
       return
     }
 
@@ -158,19 +151,22 @@
     const {data:budget}=await supabase.from('budgets').select('*').eq('user_id',user.id).limit(1).single()
     const {data:categories}=await supabase.from('categories').select('*').eq('user_id',user.id)
     const {data:allTxns}=await supabase.from('transactions').select('*,categories(name,color)').eq('user_id',user.id)
+
     if(!budget){
-      const rc=document.getElementById('report-content')
-      rc.innerHTML=''
-      const _icon=document.createElement('div'); _icon.textContent='📊'; _icon.style.cssText='font-size:3rem;margin-bottom:12px;text-align:center;'
-      const _title=document.createElement('div'); _title.textContent='No budget set up yet'; _title.style.cssText='font-size:15px;font-weight:700;margin-bottom:8px;text-align:center;color:var(--text);'
-      const _sub=document.createElement('div'); _sub.textContent='Set up your budget first to see monthly reports.'; _sub.style.cssText='font-size:13px;color:var(--muted2);margin-bottom:20px;text-align:center;'
-      const _btn=document.createElement('button'); _btn.textContent='Set up budget →'; _btn.onclick=()=>location.href='/setup.html'; _btn.style.cssText='display:block;margin:0 auto;padding:11px 24px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-size:13px;font-weight:700;cursor:pointer;'
-      rc.appendChild(_icon); rc.appendChild(_title); rc.appendChild(_sub); rc.appendChild(_btn)
+      document.getElementById('report-content').innerHTML='<div class="empty-state"><div class="empty-icon">📊</div><div class="empty-title">No budget set up yet</div><p>Set up your budget to start seeing monthly reports.</p></div>'
+      const setupBtn=document.createElement('button')
+      setupBtn.textContent='Set up budget →'
+      setupBtn.style.cssText='display:block;margin:12px auto 0;padding:11px 24px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-size:13px;font-weight:700;font-family:Inter,sans-serif;cursor:pointer;'
+      setupBtn.onclick=()=>location.href='/setup.html'
+      document.getElementById('report-content').appendChild(setupBtn)
       return
     }
-    const monthsWithData=new Set(); allTxns?.forEach(t=>{if(t.date)monthsWithData.add(t.date.slice(0,7))})
+
+    const monthsWithData=new Set()
+    allTxns?.forEach(t=>{if(t.date)monthsWithData.add(t.date.slice(0,7))})
     monthsWithData.add(`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`)
     const sortedMonths=Array.from(monthsWithData).sort().reverse()
+
     function renderMonthChips(activeKey){
       const c=document.getElementById('month-chips'); c.innerHTML=''
       sortedMonths.forEach(key=>{
@@ -180,8 +176,9 @@
         chip.onclick=()=>{currentYear=y;currentMonth=m-1;renderReport()}; c.appendChild(chip)
       })
     }
+
     let barChart=null
-    async function renderReport(){
+    function renderReport(){
       const monthKey=`${currentYear}-${String(currentMonth+1).padStart(2,'0')}`
       const monthLabel=new Date(currentYear,currentMonth,1).toLocaleDateString('en-US',{month:'long',year:'numeric'})
       document.getElementById('month-label').textContent=monthLabel
@@ -192,28 +189,22 @@
       const txnCount=monthTxns.length
       const biggestTxn=monthTxns.reduce((max,t)=>Number(t.amount)>Number(max?.amount||0)?t:max,null)
       const spentByCat={}; monthTxns.forEach(t=>{const n=t.categories?.name||'Uncategorized';spentByCat[n]=(spentByCat[n]||0)+Number(t.amount)})
-      const overCats=categories.filter(c=>(spentByCat[c.name]||0)>c.budget)
-      const nearCats=categories.filter(c=>{const p=(spentByCat[c.name]||0)/c.budget;return p>=0.8&&p<1})
+      const overCats=(categories||[]).filter(c=>(spentByCat[c.name]||0)>c.budget)
+      const nearCats=(categories||[]).filter(c=>{const pct=(spentByCat[c.name]||0)/c.budget;return pct>=0.8&&pct<1})
       const insights=[]
       if(totalSpent===0){insights.push({type:'good',icon:'📊',text:'No transactions logged yet for this month.'})}
       else{
         if(remaining>=0&&overCats.length===0) insights.push({type:'good',icon:'✅',text:`You stayed within budget — $${Math.round(remaining).toLocaleString()} to spare!`})
         else if(remaining<0) insights.push({type:'bad',icon:'🚨',text:`You went over your total budget by $${Math.abs(Math.round(remaining)).toLocaleString()} this month.`})
-        else insights.push({type:'warn',icon:'⚠️',text:`Overall budget is okay, but ${overCats.length} ${overCats.length===1?'category':'categories'} went over their limit.`})
-        overCats.forEach(c=>{const s=spentByCat[c.name]||0;insights.push({type:'bad',icon:'🔴',text:`${c.name} went over budget by $${Math.round(s-c.budget).toLocaleString()}`})})
-        nearCats.forEach(c=>{const s=spentByCat[c.name]||0;insights.push({type:'warn',icon:'⚠️',text:`${c.name} is at ${Math.round((s/c.budget)*100)}% of its budget`})})
-        if(overCats.length===0){const top=Object.entries(spentByCat).sort(([,a],[,b])=>b-a)[0];if(top)insights.push({type:'warn',icon:'📌',text:`Biggest spending category: ${top[0]} ($${Math.round(top[1]).toLocaleString()})`})}
+        else insights.push({type:'warn',icon:'⚠️',text:`Overall budget OK, but ${overCats.length} ${overCats.length===1?'category':'categories'} went over.`})
+        overCats.forEach(c=>{const s=spentByCat[c.name]||0;insights.push({type:'bad',icon:'🔴',text:`${c.name} over budget by $${Math.round(s-c.budget).toLocaleString()}`})})
+        nearCats.forEach(c=>{const s=spentByCat[c.name]||0;insights.push({type:'warn',icon:'⚠️',text:`${c.name} is at ${Math.round((s/c.budget)*100)}% of budget`})})
         if(biggestTxn) insights.push({type:'warn',icon:'💸',text:`Largest transaction: $${Number(biggestTxn.amount).toLocaleString()}${biggestTxn.note?' — '+biggestTxn.note:''}`})
         if(remaining>=0&&budget.savings_goal>0) insights.push({type:'good',icon:'💰',text:`On track for your $${budget.savings_goal.toLocaleString()}/mo savings goal.`})
       }
       if(barChart){barChart.destroy();barChart=null}
-      const rc=document.getElementById('report-content')
-      rc.innerHTML=''
-      const _icon=document.createElement('div'); _icon.textContent='📊'; _icon.style.cssText='font-size:3rem;margin-bottom:12px;text-align:center;'
-      const _title=document.createElement('div'); _title.textContent='No budget set up yet'; _title.style.cssText='font-size:15px;font-weight:700;margin-bottom:8px;text-align:center;color:var(--text);'
-      const _sub=document.createElement('div'); _sub.textContent='Set up your budget first to see monthly reports.'; _sub.style.cssText='font-size:13px;color:var(--muted2);margin-bottom:20px;text-align:center;'
-      const _btn=document.createElement('button'); _btn.textContent='Set up budget →'; _btn.onclick=()=>location.href='/setup.html'; _btn.style.cssText='display:block;margin:0 auto;padding:11px 24px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-size:13px;font-weight:700;cursor:pointer;'
-      rc.appendChild(_icon); rc.appendChild(_title); rc.appendChild(_sub); rc.appendChild(_btn)
+      const isDark=document.documentElement.getAttribute('data-theme')==='dark'
+      document.getElementById('report-content').innerHTML=`
         <div class="stats-grid">
           <div class="stat"><div class="stat-label">Total Spent</div><div class="stat-value ${totalSpent>0?'red':''}">$${Math.round(totalSpent).toLocaleString()}</div></div>
           <div class="stat"><div class="stat-label">Remaining</div><div class="stat-value ${remaining>=0?'green':'red'}">$${Math.abs(Math.round(remaining)).toLocaleString()}${remaining<0?' over':''}</div></div>
@@ -221,26 +212,24 @@
           <div class="stat"><div class="stat-label">Transactions</div><div class="stat-value">${txnCount}</div><div class="stat-sub">${txnCount===0?'none logged':'logged'}</div></div>
         </div>
         <div class="grid-2">
-          <div class="card"><div class="card-header"><div><div class="card-title">Category breakdown</div><div class="card-sub">Spent vs budget</div></div></div><div class="cat-breakdown" id="cat-breakdown"></div></div>
-          <div class="card"><div class="card-header"><div class="card-title">Budget vs spent</div></div><div class="chart-wrap"><canvas id="month-bar-chart"></canvas></div></div>
+          <div class="card"><div class="card-title">Category breakdown</div><div class="cat-breakdown" id="cat-breakdown"></div></div>
+          <div class="card"><div class="card-title">Budget vs spent</div><div class="chart-wrap"><canvas id="month-bar-chart" role="img" aria-label="Budget vs spent bar chart"></canvas></div></div>
         </div>
-        <div class="card"><div class="card-header"><div class="card-title">Monthly insights</div></div><div class="insight-list" id="insight-list"></div></div>`
-      const catBreakdown=document.getElementById('cat-breakdown')
-      categories.forEach(cat=>{
+        <div class="card"><div class="card-title">Monthly insights</div><div class="insight-list" id="insight-list"></div></div>`
+      ;(categories||[]).forEach(cat=>{
         const spent=spentByCat[cat.name]||0,pct=cat.budget>0?Math.min((spent/cat.budget)*100,100):0,over=spent>cat.budget
         const div=document.createElement('div');div.className='cat-row'
         div.innerHTML=`<div class="cat-row-header"><div class="cat-row-name"><div class="cat-dot" style="background:${cat.color}"></div>${cat.name}</div><div class="cat-row-amts"><span class="${over?'over':''}">${over?'$'+Math.round(spent).toLocaleString():''}</span> $${Math.round(spent).toLocaleString()} / $${cat.budget.toLocaleString()}</div></div><div class="progress-track"><div class="progress-fill" style="width:${pct}%;background:${over?'var(--red)':cat.color}"></div></div>`
-        catBreakdown.appendChild(div)
+        document.getElementById('cat-breakdown').appendChild(div)
       })
-      const isDark=document.documentElement.getAttribute('data-theme')==='dark'
-      barChart=new Chart(document.getElementById('month-bar-chart'),{type:'bar',data:{labels:categories.map(c=>c.name),datasets:[{label:'Budget',data:categories.map(c=>c.budget),backgroundColor:isDark?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.06)',borderRadius:5},{label:'Spent',data:categories.map(c=>spentByCat[c.name]||0),backgroundColor:categories.map(c=>(spentByCat[c.name]||0)>c.budget?'var(--red)':c.color),borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{family:'Inter',size:10},boxWidth:10,color:isDark?'#71717a':'#6b6b7b'}}},scales:{x:{grid:{display:false},ticks:{font:{family:'Inter',size:10},color:isDark?'#52525b':'#9898ab'}},y:{grid:{color:isDark?'rgba(255,255,255,0.04)':'rgba(0,0,0,0.04)'},ticks:{font:{family:'Inter',size:10},color:isDark?'#52525b':'#9898ab',callback:v=>'$'+v}}}}})
+      barChart=new Chart(document.getElementById('month-bar-chart'),{type:'bar',data:{labels:(categories||[]).map(c=>c.name),datasets:[{label:'Budget',data:(categories||[]).map(c=>c.budget),backgroundColor:isDark?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.06)',borderRadius:5},{label:'Spent',data:(categories||[]).map(c=>spentByCat[c.name]||0),backgroundColor:(categories||[]).map(c=>(spentByCat[c.name]||0)>c.budget?'var(--red)':c.color),borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{family:'Inter',size:10},boxWidth:10,color:isDark?'#71717a':'#6b6b7b'}}},scales:{x:{grid:{display:false},ticks:{font:{family:'Inter',size:10},color:isDark?'#52525b':'#9898ab'}},y:{grid:{color:isDark?'rgba(255,255,255,0.04)':'rgba(0,0,0,0.04)'},ticks:{font:{family:'Inter',size:10},color:isDark?'#52525b':'#9898ab',callback:v=>'$'+v}}}}})
       const insightList=document.getElementById('insight-list')
       if(!insights.length){insightList.innerHTML='<div class="empty-state">No data to analyze yet.</div>'}
       else insights.forEach(ins=>{const el=document.createElement('div');el.className=`insight ${ins.type}`;el.innerHTML=`<span class="insight-icon">${ins.icon}</span><span>${ins.text}</span>`;insightList.appendChild(el)})
     }
     window.changeMonth=function(dir){currentMonth+=dir;if(currentMonth<0){currentMonth=11;currentYear--}if(currentMonth>11){currentMonth=0;currentYear++}renderReport()}
     renderReport()
-    })() // end IIFE
+    })()
   </script>
 </body>
 </html>
